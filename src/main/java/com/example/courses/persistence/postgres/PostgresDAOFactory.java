@@ -1,6 +1,7 @@
 package com.example.courses.persistence.postgres;
 
 import com.example.courses.persistence.DAOFactory;
+import com.example.courses.persistence.UserDAO;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -28,7 +29,13 @@ public class PostgresDAOFactory implements DAOFactory {
         return instance;
     }
 
+    @Override
     public synchronized Connection getConnection() throws SQLException {
         return dataSource.getConnection();
+    }
+
+    @Override
+    public UserDAO getUserDao() {
+        return new PostgresUserDAO();
     }
 }

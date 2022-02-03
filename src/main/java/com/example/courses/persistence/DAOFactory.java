@@ -18,6 +18,8 @@ public interface DAOFactory {
 
     Connection getConnection() throws SQLException;
 
+    UserDAO getUserDao();
+
     static void closeResource(AutoCloseable closeable) {
         if (closeable != null) {
             try {
