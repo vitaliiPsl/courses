@@ -1,0 +1,15 @@
+<Context>
+    <Resource
+            name="jdbc/postgres"
+            type="javax.sql.DataSource"
+            driverClassName="org.postgresql.Driver"
+            url="jdbc:postgresql://localhost:5432/course"
+            username="dev"
+            password="dev123"
+            defaultAutoCommit="false"
+            initialSize="10"
+            maxTotal="100"
+            minIdle="10"
+            maxIdle="15"
+    />
+</Context>
