@@ -2,6 +2,7 @@ package com.example.courses.persistence.postgres;
 
 import com.example.courses.persistence.CourseDAO;
 import com.example.courses.persistence.DAOFactory;
+import com.example.courses.persistence.LanguageDAO;
 import com.example.courses.persistence.UserDAO;
 
 import javax.naming.InitialContext;
@@ -14,7 +15,7 @@ public class PostgresDAOFactory implements DAOFactory {
     private final DataSource dataSource;
     private static PostgresDAOFactory instance;
 
-    PostgresDAOFactory(){
+    PostgresDAOFactory() {
         try {
             dataSource = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/postgres");
         } catch (NamingException e) {
@@ -23,8 +24,8 @@ public class PostgresDAOFactory implements DAOFactory {
         }
     }
 
-    public static synchronized PostgresDAOFactory getInstance(){
-        if(instance == null){
+    public static synchronized PostgresDAOFactory getInstance() {
+        if (instance == null) {
             instance = new PostgresDAOFactory();
         }
         return instance;
@@ -43,5 +44,10 @@ public class PostgresDAOFactory implements DAOFactory {
     @Override
     public CourseDAO getCourseDao() {
         return new PostgresCourseDAO();
+    }
+
+    @Override
+    public LanguageDAO getLanguageDao() {
+        return new PostgresLanguageDAO();
     }
 }
