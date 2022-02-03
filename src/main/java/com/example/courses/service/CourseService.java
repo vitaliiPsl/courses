@@ -153,4 +153,23 @@ public class CourseService {
 
         return courseList;
     }
+
+    public List<Course> getCoursesByLanguageId(long languageId) throws SQLException {
+        List<Course> courseList = null;
+        Connection connection = null;
+
+        try{
+            connection = daoFactory.getConnection();
+            courseList = courseDao.findCoursesByLanguageId(connection, languageId);
+            connection.commit();
+        } catch (SQLException e) {
+            DAOFactory.rollback(connection);
+            System.out.println(e.getMessage());
+            throw e;
+        } finally {
+            DAOFactory.closeResource(connection);
+        }
+
+        return courseList;
+    }
 }
