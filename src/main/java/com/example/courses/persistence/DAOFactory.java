@@ -18,6 +18,26 @@ public interface DAOFactory {
 
     Connection getConnection() throws SQLException;
 
+    static void closeResource(AutoCloseable closeable) {
+        if (closeable != null) {
+            try {
+                closeable.close();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    static void rollback(Connection connection) {
+        if (connection != null) {
+            try {
+                connection.rollback();
+            } catch (SQLException e) {
+                System.out.println();
+            }
+        }
+    }
+
     enum FactoryType {
         POSTGRES
     }
