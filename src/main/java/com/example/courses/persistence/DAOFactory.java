@@ -20,6 +20,8 @@ public interface DAOFactory {
 
     UserDAO getUserDao();
 
+    CourseDAO getCourseDao();
+
     static void closeResource(AutoCloseable closeable) {
         if (closeable != null) {
             try {

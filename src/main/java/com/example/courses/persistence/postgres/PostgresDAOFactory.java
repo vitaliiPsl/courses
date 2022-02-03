@@ -1,5 +1,6 @@
 package com.example.courses.persistence.postgres;
 
+import com.example.courses.persistence.CourseDAO;
 import com.example.courses.persistence.DAOFactory;
 import com.example.courses.persistence.UserDAO;
 
@@ -37,5 +38,10 @@ public class PostgresDAOFactory implements DAOFactory {
     @Override
     public UserDAO getUserDao() {
         return new PostgresUserDAO();
+    }
+
+    @Override
+    public CourseDAO getCourseDao() {
+        return new PostgresCourseDAO();
     }
 }
