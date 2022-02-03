@@ -1,9 +1,6 @@
 package com.example.courses.persistence.postgres;
 
-import com.example.courses.persistence.CourseDAO;
-import com.example.courses.persistence.DAOFactory;
-import com.example.courses.persistence.LanguageDAO;
-import com.example.courses.persistence.UserDAO;
+import com.example.courses.persistence.*;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -49,5 +46,10 @@ public class PostgresDAOFactory implements DAOFactory {
     @Override
     public LanguageDAO getLanguageDao() {
         return new PostgresLanguageDAO();
+    }
+
+    @Override
+    public StudentCourseDAO getStudentCourseDao() {
+        return new PostgresStudentCourseDAO();
     }
 }

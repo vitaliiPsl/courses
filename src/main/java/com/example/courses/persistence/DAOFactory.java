@@ -24,6 +24,8 @@ public interface DAOFactory {
 
     LanguageDAO getLanguageDao();
 
+    StudentCourseDAO getStudentCourseDao();
+
     static void closeResource(AutoCloseable closeable) {
         if (closeable != null) {
             try {
