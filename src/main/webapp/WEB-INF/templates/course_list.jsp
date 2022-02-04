@@ -16,6 +16,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Courses</title>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/style.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/filter.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/courses/course_list.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/courses/course_row.css">
 </head>
@@ -27,6 +28,79 @@
     <%
         List<CourseDTO> courseDTOList = (List<CourseDTO>) request.getAttribute("courses");
     %>
+
+    <div class="filter-box">
+        <div class="container">
+            <form action="${pageContext.request.contextPath}/courses">
+
+                <div class="search-row">
+                    <%
+                        String query = (String) request.getAttribute("query");
+                        if (query != null) {
+                    %>
+                    <input type="text" id="search-input" name="query" placeholder="What do you want to learn?" value="<%=query%>"
+                           autocomplete="off"/>
+                    <%
+                    } else {
+                    %>
+                    <input type="text" name="query" placeholder="What do you want to learn?" autocomplete="off"/>
+                    <%
+                        }
+                    %>
+                    <button type="submit" class="search-btn">Search</button>
+                </div>
+
+                <div class="filter-row">
+                    <span class="filter-by-span">Filter By</span>
+
+                    <div class="filters">
+                        <%
+                            Map<String, List<String>> filters = (Map<String, List<String>>) request.getAttribute("filters");
+                            Map<String, List<String>> appliedFilters = (Map<String, List<String>>) request.getAttribute("applied_filters");
+
+                            for (Map.Entry<String, List<String>> filter : filters.entrySet()) {
+                                List<String> applied = appliedFilters.getOrDefault(filter.getKey(), new ArrayList<>());
+                        %>
+
+                        <div class="filter">
+                            <div class="filter-control">
+                                <h5><%=filter.getKey()%>
+                                </h5>
+                                <div class="arrow"></div>
+                            </div>
+                            <div class="filter-menu hidden">
+                                <%
+                                    for (String value : filter.getValue()) {
+                                %>
+                                <div class="option">
+                                    <%
+                                        if (applied.contains(value)) {
+                                    %>
+                                    <input class="filter-checkbox" type="checkbox" name="<%=filter.getKey()%>"
+                                           value="<%=value%>" checked/>
+                                    <%
+                                    } else {
+                                    %>
+                                    <input class="filter-checkbox" type="checkbox" name="<%=filter.getKey()%>"
+                                           value="<%=value%>"/>
+                                    <%
+                                        }
+                                    %>
+                                    <label><%=value%></label>
+                                </div>
+                                <%
+                                    }
+                                %>
+                            </div>
+                        </div>
+                        <%
+                            }
+                        %>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <div class="content-box">
         <div class="container">
@@ -97,5 +171,6 @@
     <div class="container"></div>
 </footer>
 
+<script src="${pageContext.request.contextPath}/static/js/course_list.js"></script>
 </body>
 </html>
