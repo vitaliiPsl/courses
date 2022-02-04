@@ -1,0 +1,19 @@
+main{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+main .container{
+    height: 100%;
+}
+
+.title-box{
+    width: 100%;
+    padding: 24px;
+}
+
+form{
+    width: 60%;
+}
