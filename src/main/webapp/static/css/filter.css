@@ -1,0 +1,140 @@
+.filter-box{
+    height: 200px;
+    width: 100%;
+    padding: 24px 0;
+
+    background-color: #f8f8f8;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-box form{
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.filter-box .search-row{
+    width: 100%;
+    /*margin-bottom: 16px;*/
+
+    display: flex;
+}
+
+.filter-box .search-row input{
+    width: 90%;
+    font-size: 16px;
+}
+
+.filter-box .search-row input:focus{
+    outline: none;
+    border: 2px solid var(--main-color);
+    border-right: none;
+}
+
+.filter-box .search-row button{
+    width: 10%;
+    border: 2px solid var(--main-color);
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.filter-box .filter-row{
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-box .filter-row .filter-by-span{
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.filters{
+    display: flex;
+    gap: 24px;
+}
+
+.filter-control{
+    width: 160px;
+    padding: 8px 12px;
+
+    font-size: 14px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    background: var(--background-color);
+
+    border-radius: 5px;
+    border: 1px solid #929599FF;
+    cursor: pointer;
+}
+
+.filter-control .arrow{
+    height: 12px;
+    width: 12px;
+    background: url("/static/icons/arrow-down.png") no-repeat center;
+    background-size: cover;
+}
+
+.filter-control .arrow.up{
+    height: 12px;
+    width: 12px;
+    background: url("/static/icons/arrow-up.png") no-repeat center;
+    background-size: cover;
+}
+
+.filter-menu{
+    min-width: 160px;
+    position: absolute;
+
+    padding: 0 8px;
+
+    background-color: var(--background-color);
+    border: 1px solid #ccd1d9;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-menu.hidden{
+    display: none;
+}
+
+.option{
+    margin: 4px 0;
+    padding: 2px;
+
+    display: flex;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.option:hover{
+    background: #ccd1d9;
+}
+
+.option input{
+    width: 16px;
+}
+
+.option label{
+    font-size: 14px;
+}
+
+.clear-span{
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
