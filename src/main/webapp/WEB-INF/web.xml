@@ -40,4 +40,16 @@
         <url-pattern>/teacher/*</url-pattern>
     </filter-mapping>
 
+    <!--ERROR HANDLING-->
+    <error-page>
+        <error-code>404</error-code>
+        <location>/error_handler?type=not_found</location>
+    </error-page>
+    <error-page>
+        <exception-type>com.example.courses.exception.ForbiddenException</exception-type>
+        <location>/error_handler?type=forbidden</location>
+    </error-page><error-page>
+        <error-code>403</error-code>
+        <location>/error_handler?type=forbidden</location>
+    </error-page>
 </web-app>
