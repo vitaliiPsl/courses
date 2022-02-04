@@ -63,8 +63,8 @@
 
             <input class="form-input" type="number" name="max_score" min="0" placeholder="Max score" autocomplete="off">
 
-            <input class="form-input" type="datetime-local" name="start_date">
-            <input class="form-input" type="datetime-local" name="end_date">
+            <input class="form-input" type="datetime-local" name="start_date" required>
+            <input class="form-input" type="datetime-local" name="end_date" required>
 
             <button class="form-submit">Submit</button>
         </form>
