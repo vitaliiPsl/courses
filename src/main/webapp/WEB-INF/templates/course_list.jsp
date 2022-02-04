@@ -42,9 +42,8 @@
                 </div>
                 <div class="info-box">
                     <div class="info-row">
-                        <a href="">
-                            <h2><%=course.getTitle()%>
-                            </h2>
+                        <a href="${pageContext.request.contextPath}/course?course_id=<%=course.getId()%>">
+                            <h2><%=course.getTitle()%></h2>
                         </a>
                     </div>
                     <div class="info-row">
