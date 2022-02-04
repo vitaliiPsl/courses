@@ -1,6 +1,7 @@
 <%@ page import="com.example.courses.persistence.entity.User" %>
+<%@ page import="com.example.courses.persistence.entity.Role" %>
 
-<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,14 +20,24 @@
             <div class="nav">
                 <ul>
                     <%
-                        if(user == null){
+                        if (user == null) {
                     %>
                         <li><a href="${pageContext.request.contextPath}/courses">Courses</a></li>
                         <div class="vr"></div>
                         <li><a href="${pageContext.request.contextPath}/auth/log_in">Log In</a></li>
                         <li><a href="${pageContext.request.contextPath}/auth/sign_up">Sign Up</a></li>
                     <%
-                        } else{
+                        } else {
+                    %>
+                    <%
+                        if (user.getRole().equals(Role.ADMIN)) {
+                    %>
+                        <li><a href="${pageContext.request.contextPath}/courses">Courses</a></li>
+                        <li><a href="${pageContext.request.contextPath}/admin/course/new">New Course</a></li>
+                        <li><a href="${pageContext.request.contextPath}/admin/new_user">New Account</a></li>
+                        <li><a href="${pageContext.request.contextPath}/admin/students">Students</a></li>
+                    <%
+                        }
                     %>
                         <div class="vr"></div>
                         <li><a href="${pageContext.request.contextPath}/auth/log_out">Log Out</a></li>
