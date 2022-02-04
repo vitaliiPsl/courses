@@ -4,6 +4,7 @@
 <%@ page import="com.example.courses.DTO.CourseDTO" %>
 <%@ page import="com.example.courses.persistence.entity.Course" %>
 <%@ page import="com.example.courses.persistence.entity.Language" %>
+<%@ page import="com.example.courses.persistence.entity.Role" %>
 
 <%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
@@ -65,6 +66,26 @@
                     </span>
                     </div>
                 </div>
+
+                <%
+                    User user = (User) session.getAttribute("user");
+                    if (user != null && user.getRole().equals(Role.ADMIN)) {
+                %>
+                <div class="manage-box">
+                    <button class="manage-btn edit-btn">
+                        <a href="${pageContext.request.contextPath}/admin/course/edit?course_id=<%=course.getId()%>">
+                            Edit
+                        </a>
+                    </button>
+                    <button class="manage-btn delete-btn">
+                        <a href="${pageContext.request.contextPath}/admin/course/delete?course_id=<%=course.getId()%>">
+                            Delete
+                        </a>
+                    </button>
+                </div>
+                <%
+                    }
+                %>
             </div>
             <%
                 }
