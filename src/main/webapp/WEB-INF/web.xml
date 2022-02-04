@@ -9,4 +9,35 @@
         <resource-env-ref-type>javax.sql.DataSource</resource-env-ref-type>
     </resource-env-ref>
 
+    <!--FILTERS-->
+    <filter>
+        <filter-name>RequireLogin</filter-name>
+        <filter-class>com.example.courses.servlet.filter.RequireLogin</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>RequireLogin</filter-name>
+        <url-pattern>/admin/*</url-pattern>
+        <url-pattern>/teacher/*</url-pattern>
+        <url-pattern>/user_courses</url-pattern>
+        <url-pattern>/enroll</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>AdminFilter</filter-name>
+        <filter-class>com.example.courses.servlet.filter.AdminFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AdminFilter</filter-name>
+        <url-pattern>/admin/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>TeacherFilter</filter-name>
+        <filter-class>com.example.courses.servlet.filter.TeacherFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>TeacherFilter</filter-name>
+        <url-pattern>/teacher/*</url-pattern>
+    </filter-mapping>
+
 </web-app>
