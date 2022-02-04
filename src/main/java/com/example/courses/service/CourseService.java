@@ -116,6 +116,44 @@ public class CourseService {
         return courseList;
     }
 
+    public List<Course> getAll() throws SQLException {
+        List<Course> courseList = null;
+        Connection connection = null;
+
+        try{
+            connection = daoFactory.getConnection();
+            courseList = courseDao.findAll(connection);
+            connection.commit();
+        } catch (SQLException e) {
+            DAOFactory.rollback(connection);
+            System.out.println(e.getMessage());
+            throw e;
+        } finally {
+            DAOFactory.closeResource(connection);
+        }
+
+        return courseList;
+    }
+
+    public List<Course> getAvailable() throws SQLException {
+        List<Course> courseList = null;
+        Connection connection = null;
+
+        try{
+            connection = daoFactory.getConnection();
+            courseList = courseDao.findAvailable(connection);
+            connection.commit();
+        } catch (SQLException e) {
+            DAOFactory.rollback(connection);
+            System.out.println(e.getMessage());
+            throw e;
+        } finally {
+            DAOFactory.closeResource(connection);
+        }
+
+        return courseList;
+    }
+
     public List<Course> getCoursesBySearchQuery(String query) throws SQLException {
         List<Course> courseList = null;
         Connection connection = null;
