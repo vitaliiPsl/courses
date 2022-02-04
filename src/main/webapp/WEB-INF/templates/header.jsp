@@ -37,6 +37,15 @@
                         <li><a href="${pageContext.request.contextPath}/admin/new_user">New Account</a></li>
                         <li><a href="${pageContext.request.contextPath}/admin/students">Students</a></li>
                     <%
+                        } else if(user.getRole().equals(Role.TEACHER)){
+                    %>
+                        <li><a href="${pageContext.request.contextPath}/user_courses">My courses</a></li>
+                    <%
+                        } else if(user.getRole().equals(Role.STUDENT)){
+                    %>
+                        <li><a href="${pageContext.request.contextPath}/courses">Courses</a></li>
+                        <li><a href="${pageContext.request.contextPath}/user_courses">My courses</a></li>
+                    <%
                         }
                     %>
                         <div class="vr"></div>

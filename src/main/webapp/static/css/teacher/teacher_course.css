@@ -1,0 +1,88 @@
+.content{
+    width: 100%;
+    height: 100%;
+    padding: 48px 0;
+
+    display: flex;
+}
+
+.info-block{
+    width: 60%;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.course-name{
+    margin-bottom: 16px;
+    font-size: 48px;
+}
+
+.enroll-btn{
+    width: 150px;
+}
+
+.enroll-btn a{
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 8px;
+
+    text-align: center;
+
+    transition: 0.5s;
+    cursor: pointer;
+}
+
+.enroll-btn a:hover{
+    border-radius: 5px;
+    background: var(--main-color);
+    color: var(--background-color);
+}
+
+.image-block{
+    width: 40%;
+    display: flex;
+    justify-content: center;
+}
+
+.image-wrapper{
+    width: 200px;
+    height: 200px;
+    border-radius: 10px;
+
+    object-fit: contain;
+}
+
+.image-wrapper img{
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.students{
+    width: 60%;
+    display: flex;
+    justify-content: center;
+}
+
+.students form{
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.student{
+    width: 100%;
+    padding: 8px;
+
+    display: flex;
+    border-bottom: 1px solid var(--main-color);
+}
+
+.student .student_name{
+    width: 80%;
+}
