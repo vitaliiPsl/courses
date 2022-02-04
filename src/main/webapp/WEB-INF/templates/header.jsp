@@ -21,7 +21,7 @@
                     <%
                         if(user == null){
                     %>
-                        <li><a href="#">Courses</a></li>
+                        <li><a href="${pageContext.request.contextPath}/courses">Courses</a></li>
                         <div class="vr"></div>
                         <li><a href="${pageContext.request.contextPath}/auth/log_in">Log In</a></li>
                         <li><a href="${pageContext.request.contextPath}/auth/sign_up">Sign Up</a></li>
