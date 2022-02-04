@@ -304,7 +304,7 @@ public class PostgresCourseDAO implements CourseDAO {
                             COURSE_END_DATE + ", " +
                             COURSE_MAX_SCORE + ", " +
                             COURSE_IMAGE_URL +
-                        ") VALUES(?, ?, ?, ?, ?, ?, ?, ?);";
+                        ") VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
         static final String UPDATE_COURSE_BY_ID =
                 "UPDATE " + TABLE_COURSE + " " +
