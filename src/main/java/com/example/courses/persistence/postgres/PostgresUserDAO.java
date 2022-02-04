@@ -28,6 +28,7 @@ public class PostgresUserDAO implements UserDAO {
             userId = getGeneratedId(statement);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            e.printStackTrace();
             throw e;
         } finally {
             DAOFactory.closeResource(statement);
@@ -49,6 +50,7 @@ public class PostgresUserDAO implements UserDAO {
             }
         } catch (SQLException e){
             System.out.println(e.getMessage());
+            e.printStackTrace();
             throw e;
         } finally {
             DAOFactory.closeResource(generatedKeys);
@@ -67,6 +69,7 @@ public class PostgresUserDAO implements UserDAO {
             statement.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            e.printStackTrace();
             throw e;
         } finally {
             DAOFactory.closeResource(statement);
@@ -84,10 +87,9 @@ public class PostgresUserDAO implements UserDAO {
             statement.setLong(7, user.getId());
 
             statement.executeUpdate();
-
-            System.out.println(user.isBlocked());
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            e.printStackTrace();
             throw e;
         } finally {
             DAOFactory.closeResource(statement);
@@ -109,6 +111,7 @@ public class PostgresUserDAO implements UserDAO {
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            e.printStackTrace();
             throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
@@ -124,7 +127,7 @@ public class PostgresUserDAO implements UserDAO {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try{
-            statement = connection.prepareStatement(UserDAOConstants.SELECT_PERSON_BY_ID);
+            statement = connection.prepareStatement(UserDAOConstants.SELECT_PERSON_BY_EMAIL);
             statement.setString(1, email);
             resultSet = statement.executeQuery();
             if(resultSet.next()) {
@@ -132,6 +135,7 @@ public class PostgresUserDAO implements UserDAO {
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            e.printStackTrace();
             throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
@@ -156,6 +160,7 @@ public class PostgresUserDAO implements UserDAO {
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            e.printStackTrace();
             throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
@@ -181,6 +186,7 @@ public class PostgresUserDAO implements UserDAO {
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            e.printStackTrace();
             throw e;
         } finally {
             DAOFactory.closeResource(resultSet);

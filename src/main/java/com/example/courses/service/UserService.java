@@ -15,7 +15,7 @@ public class UserService {
     private final DAOFactory daoFactory;
     private final UserDAO userDAO;
 
-    UserService(){
+    public UserService(){
         daoFactory = DAOFactory.getDAOFactory(DAOFactory.FactoryType.POSTGRES);
         userDAO = daoFactory.getUserDao();
     }
@@ -36,7 +36,7 @@ public class UserService {
     }
 
     public long saveUser(User user) throws SQLException {
-        long userId = 0;
+        long userId;
         Connection connection = null;
 
         try{
@@ -106,7 +106,7 @@ public class UserService {
     }
 
     public User getUserByEmail(String email) throws SQLException {
-        User user = null;
+        User user;
         Connection connection = null;
 
         try{
