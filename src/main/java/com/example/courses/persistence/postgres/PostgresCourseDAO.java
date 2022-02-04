@@ -67,7 +67,7 @@ public class PostgresCourseDAO implements CourseDAO {
         try {
             statement = connection.prepareStatement(CourseDAOConstants.UPDATE_COURSE_BY_ID);
             setCourseProperties(course, statement);
-            statement.setLong(9, course.getId());
+            statement.setLong(10, course.getId());
             statement.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());

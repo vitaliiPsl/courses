@@ -77,7 +77,7 @@ public class CourseService {
             DAOFactory.closeResource(connection);
         }
     }
-    public Course getCourseById(long courseId){
+    public Course getCourseById(long courseId) throws SQLException {
         Course course = null;
         Connection connection = null;
 
@@ -88,6 +88,7 @@ public class CourseService {
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
             System.out.println(e.getMessage());
+            throw e;
         } finally {
             DAOFactory.closeResource(connection);
         }
