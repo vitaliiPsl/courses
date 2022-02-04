@@ -19,9 +19,9 @@
 <main class="background"
       style="background-image: url('${pageContext.request.contextPath}/static/images/2.jpg')">
 
-    <div class="container">
-        <jsp:include page="/WEB-INF/templates/error.jsp"/>
+    <jsp:include page="/WEB-INF/templates/error.jsp"/>
 
+    <div class="container">
         <div class="log-in-box">
             <h1>Sign Up</h1>
 
