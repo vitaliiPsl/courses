@@ -1,0 +1,76 @@
+
+header{
+    width: 100%;
+    border-bottom: 1px solid #393939;
+    padding-bottom: 8px;
+}
+
+header .content{
+    display: flex;
+    flex-direction: column;
+}
+
+header .nav-bar{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1{
+    font-size: 46px;
+    font-weight: 900;
+}
+
+.title{
+    display: flex;
+    align-items: center;
+}
+
+.title:hover{
+    cursor: pointer;
+}
+
+.nav{
+    width: 60%;
+
+    display: flex;
+    align-items: center;
+}
+
+.nav ul{
+    width: 100%;
+
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 16px;
+}
+
+.nav ul li{
+    flex: 1 1 0;
+}
+
+.nav ul li a{
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 8px;
+
+    text-align: center;
+
+    transition: 0.5s;
+    cursor: pointer;
+}
+
+.nav ul li a:hover{
+    border-radius: 5px;
+    background: var(--main-color);
+    color: var(--background-color);
+}
+
+.vr{
+    width: 1px;
+    height: 10px;
+    background-color: var(--main-color);
+}
