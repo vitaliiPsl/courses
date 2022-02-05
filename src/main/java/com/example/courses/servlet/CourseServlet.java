@@ -37,9 +37,22 @@ public class CourseServlet extends HttpServlet {
 
             if (user != null) {
                 if (user.getRole().equals(Role.STUDENT)) {
-                    getStudentEnrollmentInfo(request, courseId, user);
+                    StudentCourse studentCourse = studentCourseService.getStudentCourse(user.getId(), courseId);
+                    if(studentCourse != null){
+                        request.setAttribute("enrolled", true);
+                        int score = studentCourse.getScore();
+                        request.setAttribute("score", score);
+                    } else {
+                        request.setAttribute("enrolled", false);
+                    }
                 } else if (user.getRole().equals(Role.TEACHER)) {
-                    getTeacherCourse(request, courseId);
+                    List<StudentCourse> studentCourseList = studentCourseService.getStudentsByCourseId(courseId);
+
+                    List<User> studentList = getStudents(studentCourseList);
+                    Map<Long, Integer> studentsScores = getStudentsScores(studentCourseList);
+
+                    request.setAttribute("students", studentList);
+                    request.setAttribute("scores", studentsScores);
                 }
             }
         } catch (SQLException e) {
@@ -49,18 +62,12 @@ public class CourseServlet extends HttpServlet {
         request.getRequestDispatcher(COURSE_JSP).forward(request, response);
     }
 
-    private void getTeacherCourse(HttpServletRequest request, long courseId) throws SQLException {
-        List<StudentCourse> studentCourseList = studentCourseService.getStudentsByCourseId(courseId);
-        List<Long> studentIds = studentCourseList.stream().map(StudentCourse::getStudentId).collect(Collectors.toList());
-        Map<Long, Integer> studentsScores = studentCourseList.stream().collect(Collectors.toMap(StudentCourse::getStudentId, StudentCourse::getScore));
-        List<User> studentList = userService.getUsers(studentIds);
-
-        request.setAttribute("students", studentList);
-        request.setAttribute("scores", studentsScores);
+    private Map<Long, Integer> getStudentsScores(List<StudentCourse> studentCourseList) {
+        return studentCourseList.stream().collect(Collectors.toMap(StudentCourse::getStudentId, StudentCourse::getScore));
     }
 
-    private void getStudentEnrollmentInfo(HttpServletRequest request, long courseId, User user) throws SQLException {
-        StudentCourse studentCourse = studentCourseService.getStudentCourse(user.getId(), courseId);
-        request.setAttribute("enrolled", studentCourse != null);
+    private List<User> getStudents(List<StudentCourse> studentCourseList) throws SQLException {
+        List<Long> studentIds = studentCourseList.stream().map(StudentCourse::getStudentId).collect(Collectors.toList());
+        return userService.getUsers(studentIds);
     }
 }

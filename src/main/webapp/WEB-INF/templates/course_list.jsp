@@ -14,7 +14,7 @@
     <meta charset="UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Courses</title>
+    <title>Courses 👀</title>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/style.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/filter.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/courses/course_list.css">
@@ -38,16 +38,23 @@
                         String query = (String) request.getAttribute("query");
                         if (query != null) {
                     %>
-                    <input type="text" id="search-input" name="query" placeholder="What do you want to learn?" value="<%=query%>"
+                    <input type="text" id="search-input" name="query"
+                           data-request-url="${pageContext.request.contextPath}/courses/search?query="
+                           data-course-url="${pageContext.request.contextPath}/course?course_id="
+                           placeholder="What do you want to learn?" value="<%=query%>"
                            autocomplete="off"/>
                     <%
                     } else {
                     %>
-                    <input type="text" name="query" placeholder="What do you want to learn?" autocomplete="off"/>
+                    <input type="text" id="search-input" name="query"
+                           data-request-url="${pageContext.request.contextPath}/courses/search?query="
+                           data-course-url="${pageContext.request.contextPath}/course?course_id="
+                           placeholder="What do you want to learn?" autocomplete="off"/>
                     <%
                         }
                     %>
                     <button type="submit" class="search-btn">Search</button>
+                    <div class="hints-block"></div>
                 </div>
 
                 <div class="filter-row">
@@ -86,7 +93,8 @@
                                     <%
                                         }
                                     %>
-                                    <label><%=value%></label>
+                                    <label><%=value%>
+                                    </label>
                                 </div>
                                 <%
                                     }
@@ -117,7 +125,8 @@
                 <div class="info-box">
                     <div class="info-row">
                         <a href="${pageContext.request.contextPath}/course?course_id=<%=course.getId()%>">
-                            <h2><%=course.getTitle()%></h2>
+                            <h2><%=course.getTitle()%>
+                            </h2>
                         </a>
                     </div>
                     <div class="info-row">
@@ -172,5 +181,6 @@
 </footer>
 
 <script src="${pageContext.request.contextPath}/static/js/course_list.js"></script>
+<script src="${pageContext.request.contextPath}/static/js/course_search.js"></script>
 </body>
 </html>

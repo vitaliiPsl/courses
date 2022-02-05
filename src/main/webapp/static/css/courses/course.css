@@ -1,8 +1,14 @@
+main{
+    padding-bottom: 64px;
+}
+
+.content-block{
+    width: 100%;
+    padding: 24px 0;
+}
+
 .content{
     width: 100%;
-    height: 100%;
-    padding-top: 48px;
-    padding-bottom: 16px;
 
     display: flex;
     border-bottom: 1px solid var(--main-color);
@@ -53,15 +59,13 @@
 .image-wrapper{
     width: 200px;
     height: 200px;
-    border-radius: 10px;
-
-    object-fit: contain;
 }
 
 .image-wrapper img{
     width: 100%;
     height: 100%;
     border-radius: 50%;
+    object-fit: cover;
 }
 
 .students-block{
@@ -117,4 +121,76 @@
 
 .no-students h1{
     font-size: 75px;
+}
+
+.action-block{
+    width: 100%;
+    padding: 16px 0;
+
+    position: fixed;
+    bottom: 0;
+    background: var(--main-color);
+}
+
+.action-block .container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.status-box{
+    width: 20%;
+    padding: 8px;
+    align-self: flex-end;
+
+    background: var(--background-color);
+    border-radius: 5px;
+
+    display: flex;
+    justify-content: space-around;
+    gap: 16px;
+}
+.status-box h3{
+    color: var(--main-color);
+}
+
+.score-box{
+    width: 20%;
+    padding: 8px;
+    align-self: flex-end;
+
+    background: var(--background-color);
+    border-radius: 5px;
+
+    display: flex;
+    justify-content: space-around;
+    gap: 16px;
+}
+
+.score-box h3{
+    color: var(--main-color);
+}
+
+.manage-box{
+    width: 20%;
+
+    display: flex;
+    justify-content: space-between;
+}
+
+.manage-box button{
+    width: 40%;
+
+    background: var(--main-color);
+    border-color: var(--background-color);
+}
+
+.manage-box button a {
+    color: var(--background-color);
+}
+
+.manage-box button a:hover{
+    color: var(--main-color);
+    background: var(--background-color);
 }

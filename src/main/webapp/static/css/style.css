@@ -57,8 +57,8 @@ button{
     height: 40px;
     font-size: 1rem;
 
-    background: #fff;
-    border: 2px solid #393939;
+    background: var(--background-color);
+    border: 2px solid var(--main-color);
     border-radius: 5px;
 
     cursor: pointer;
