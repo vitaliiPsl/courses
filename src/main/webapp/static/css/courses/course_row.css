@@ -53,6 +53,22 @@
     color: var(--main-color);
 }
 
+.score-box{
+    width: 200px;
+    padding: 8px;
+    background: var(--main-color);
+    border-radius: 5px;
+
+    align-self: flex-end;
+    display: flex;
+    justify-content: space-around;
+    gap: 16px;
+}
+
+.score-box *{
+    color: #fff;
+}
+
 .manage-box{
     width: 200px;
 

@@ -1,6 +1,10 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.example.courses.persistence.entity.Course" %>
-<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ page import="com.example.courses.persistence.entity.User" %>
+<%@ page import="com.example.courses.persistence.entity.Role" %>
+<%@ page import="com.example.courses.persistence.entity.CourseStatus" %>
+<%@ page import="java.util.Map" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,7 +15,8 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/style.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/courses/course_list.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/courses/course_row.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/courses/user_courses.css">
+    <link rel="stylesheet" type="text/css"
+          href="${pageContext.request.contextPath}/static/css/courses/user_courses.css">
 </head>
 <body>
 <jsp:include page="/WEB-INF/templates/header.jsp"/>
@@ -19,6 +24,7 @@
 <main>
     <%
         List<Course> courseList = (List<Course>) request.getAttribute("courses");
+        User user = (User) session.getAttribute("user");
     %>
 
     <div class="status-filter-box">
@@ -44,7 +50,8 @@
                 <div class="info-box">
                     <div class="info-row">
                         <a href="${pageContext.request.contextPath}/course?course_id=<%=course.getId()%>">
-                            <h2><%=course.getTitle()%></h2>
+                            <h2><%=course.getTitle()%>
+                            </h2>
                         </a>
                     </div>
                     <div class="info-row">
@@ -58,6 +65,22 @@
                         </span>
                     </div>
                 </div>
+
+                <%
+                    if (user.getRole().equals(Role.STUDENT)) {
+                        Map<Long, Integer> scores = (Map<Long, Integer>) request.getAttribute("scores");
+                        if (course.getCourseStatus().equals(CourseStatus.COMPLETED)) {
+                %>
+                            <div class="score-box">
+                                <h3>Score: </h3>
+                                <h3>
+                                    <%=scores.getOrDefault(course.getId(), 0)%> / <%=course.getMaxScore()%>
+                                </h3>
+                            </div>
+                <%
+                        }
+                    }
+                %>
             </div>
             <%
                 }
