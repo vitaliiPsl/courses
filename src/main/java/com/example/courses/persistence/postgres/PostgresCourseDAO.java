@@ -180,6 +180,35 @@ public class PostgresCourseDAO implements CourseDAO {
     }
 
     @Override
+    public List<Course> findAvailableCoursesBySearchQuery(Connection connection, String query) throws SQLException {
+        List<Course> courseList = new ArrayList<>();
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        query = "%" + query + "%";
+
+        try {
+            statement = connection.prepareStatement(CourseDAOConstants.SELECT_AVAILABLE_COURSES_BY_SEARCH_REQUEST);
+            statement.setTimestamp(1, Timestamp.valueOf(LocalDateTime.now()));
+            statement.setString(2, query);
+            statement.setString(3, query);
+
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                courseList.add(parseCourse(resultSet));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            throw e;
+        } finally {
+            DAOFactory.closeResource(resultSet);
+            DAOFactory.closeResource(statement);
+        }
+
+        return courseList;
+    }
+
+    @Override
     public List<Course> findCoursesByTeacherId(Connection connection, long teacherId) throws SQLException {
         List<Course> courseList = new ArrayList<>();
         PreparedStatement statement = null;
@@ -349,6 +378,14 @@ public class PostgresCourseDAO implements CourseDAO {
                         "FROM " + TABLE_COURSE + " " +
                         "WHERE " + COURSE_TITLE + " ilike " + "? " +
                         "OR " + COURSE_SUBJECT + " ilike " + "?;";
+
+        static final String SELECT_AVAILABLE_COURSES_BY_SEARCH_REQUEST =
+                "SELECT " +
+                        SELECT_COURSE_PROPERTIES + " " +
+                        "FROM " + TABLE_COURSE + " " +
+                        "WHERE " + COURSE_START_DATE + " > ? " +
+                        "AND (" + COURSE_TITLE + " ilike " + "? " +
+                        "OR " + COURSE_SUBJECT + " ilike " + "?);";
 
         static final String SELECT_COURSES_BY_LANGUAGE =
                 "SELECT " +

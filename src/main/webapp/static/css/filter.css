@@ -24,6 +24,7 @@
     /*margin-bottom: 16px;*/
 
     display: flex;
+    position: relative;
 }
 
 .filter-box .search-row input{
@@ -42,6 +43,44 @@
     border: 2px solid var(--main-color);
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
+}
+
+.hints-block{
+    width: 90%;
+    position: absolute;
+    top: 40px;
+    left: 0;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.hint{
+    width: 100%;
+    padding: 8px;
+    color: var(--main-color);
+
+    border: 1px solid var(--main-color);
+    border-top: none;
+    background-color: var(--background-color);
+
+    transition: 0.2s;
+}
+
+.hint *{
+    color: inherit;
+}
+
+.hint a{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.hint:hover{
+    /*background: #ccd1d9;*/
+    background: var(--main-color);
+    color: var(--background-color);
 }
 
 .filter-box .filter-row{
@@ -81,14 +120,14 @@
 .filter-control .arrow{
     height: 12px;
     width: 12px;
-    background: url("/static/icons/arrow-down.png") no-repeat center;
+    background: url("../icons/arrow-down.png") no-repeat center;
     background-size: cover;
 }
 
 .filter-control .arrow.up{
     height: 12px;
     width: 12px;
-    background: url("/static/icons/arrow-up.png") no-repeat center;
+    background: url("../icons/arrow-up.png") no-repeat center;
     background-size: cover;
 }
 
@@ -100,8 +139,7 @@
 
     background-color: var(--background-color);
     border: 1px solid #ccd1d9;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
+    border-radius: 5px;
 
     display: flex;
     flex-direction: column;

@@ -16,6 +16,7 @@ public interface CourseDAO {
     List<Course> findAll(Connection connection) throws SQLException;
     List<Course> findAvailable(Connection connection) throws SQLException;
     List<Course> findCoursesBySearchQuery(Connection connection, String query) throws SQLException;
+    List<Course> findAvailableCoursesBySearchQuery(Connection connection, String query) throws SQLException;
     List<Course> findCoursesByTeacherId(Connection connection, long teacherId) throws SQLException;
     List<Course> findCoursesByLanguageId(Connection connection, long languageId) throws SQLException;
 }

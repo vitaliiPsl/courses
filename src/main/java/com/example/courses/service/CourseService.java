@@ -156,12 +156,31 @@ public class CourseService {
     }
 
     public List<Course> getCoursesBySearchQuery(String query) throws SQLException {
-        List<Course> courseList = null;
+        List<Course> courseList;
         Connection connection = null;
 
         try{
             connection = daoFactory.getConnection();
             courseList = courseDao.findCoursesBySearchQuery(connection, query);
+            connection.commit();
+        } catch (SQLException e) {
+            DAOFactory.rollback(connection);
+            System.out.println(e.getMessage());
+            throw e;
+        } finally {
+            DAOFactory.closeResource(connection);
+        }
+
+        return courseList;
+    }
+
+    public List<Course> getAvailableCoursesBySearchQuery(String query) throws SQLException {
+        List<Course> courseList;
+        Connection connection = null;
+
+        try{
+            connection = daoFactory.getConnection();
+            courseList = courseDao.findAvailableCoursesBySearchQuery(connection, query);
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
