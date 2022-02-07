@@ -2,6 +2,7 @@ package com.example.courses.servlet.auth;
 
 import com.example.courses.persistence.entity.User;
 import com.example.courses.service.UserService;
+import com.example.courses.servlet.Constants;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,13 +15,11 @@ import java.sql.SQLException;
 
 @WebServlet("/auth/log_in")
 public class LogIn extends HttpServlet {
-    private static final String LOG_IN_JSP = "/WEB-INF/templates/auth/log_in.jsp";
-
     private final UserService userService = new UserService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher(LOG_IN_JSP).forward(request, response);
+        request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.LOG_IN_JSP).forward(request, response);
     }
 
     @Override
@@ -38,10 +37,10 @@ public class LogIn extends HttpServlet {
 
         if(existing == null || !existing.getPassword().equals(password)){
             request.setAttribute("error", "Invalid email or password");
-            request.getRequestDispatcher(LOG_IN_JSP).forward(request, response);
+            request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.LOG_IN_JSP).forward(request, response);
         } else if(existing.isBlocked()){
             request.setAttribute("error", "Your account has been blocked");
-            request.getRequestDispatcher(LOG_IN_JSP).forward(request, response);
+            request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.LOG_IN_JSP).forward(request, response);
         } else{
             HttpSession session = request.getSession();
             session.setAttribute("user", existing);

@@ -3,6 +3,7 @@ package com.example.courses.servlet.admin;
 import com.example.courses.persistence.entity.Role;
 import com.example.courses.persistence.entity.User;
 import com.example.courses.service.UserService;
+import com.example.courses.servlet.Constants;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,7 +19,7 @@ public class NewUserServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("/WEB-INF/templates/admin/new_user.jsp").forward(request, response);
+        request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.NEW_USER_JSP).forward(request, response);
     }
 
     @Override
@@ -40,7 +41,7 @@ public class NewUserServlet extends HttpServlet {
             userService.registerUser(user);
         } catch (IllegalArgumentException e) {
             request.setAttribute("error", e.getMessage());
-            request.getRequestDispatcher("/WEB-INF/templates/admin/new_user.jsp").forward(request, response);
+            request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.NEW_USER_JSP).forward(request, response);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

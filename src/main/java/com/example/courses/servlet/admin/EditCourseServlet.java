@@ -7,6 +7,7 @@ import com.example.courses.persistence.entity.User;
 import com.example.courses.service.CourseService;
 import com.example.courses.service.LanguageService;
 import com.example.courses.service.UserService;
+import com.example.courses.servlet.Constants;
 import com.example.courses.utils.CourseUtils;
 
 import javax.servlet.ServletException;
@@ -20,8 +21,6 @@ import java.util.List;
 
 @WebServlet("/admin/course/edit")
 public class EditCourseServlet extends HttpServlet {
-    private static final String EDIT_COURSE_JSP = "/WEB-INF/templates/admin/edit_course.jsp";
-
     private static final UserService userService = new UserService();
     private static final LanguageService languageService = new LanguageService();
     private static final CourseService courseService = new CourseService();
@@ -47,7 +46,7 @@ public class EditCourseServlet extends HttpServlet {
             request.setAttribute("course", course);
             request.setAttribute("teachers", teachers);
             request.setAttribute("languages", languages);
-            request.getRequestDispatcher(EDIT_COURSE_JSP).forward(request, response);
+            request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.EDIT_COURSE_JSP).forward(request, response);
         } else {
             response.sendRedirect(request.getContextPath() + "/courses");
         }

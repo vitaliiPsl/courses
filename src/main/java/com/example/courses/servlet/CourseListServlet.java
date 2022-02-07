@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -56,6 +55,6 @@ public class CourseListServlet extends HttpServlet {
         request.setAttribute("filters", availableFilters);
         request.setAttribute("applied_filters", requestFilters);
 
-        request.getRequestDispatcher("/WEB-INF/templates/course_list.jsp").forward(request, response);
+        request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.COURSE_LIST_JSP).forward(request, response);
     }
 }

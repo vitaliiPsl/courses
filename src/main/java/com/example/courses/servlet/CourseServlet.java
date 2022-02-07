@@ -8,7 +8,6 @@ import com.example.courses.persistence.postgres.StudentCourse;
 import com.example.courses.service.CourseDTOService;
 import com.example.courses.service.CourseService;
 import com.example.courses.service.StudentCourseService;
-import com.example.courses.service.UserService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,7 +22,6 @@ import java.util.stream.Collectors;
 
 @WebServlet("/course")
 public class CourseServlet extends HttpServlet {
-    private static final String COURSE_JSP = "/WEB-INF/templates/course.jsp";
     private static final CourseService courseService = new CourseService();
     private static final CourseDTOService courseDTOService = new CourseDTOService();
     private static final StudentCourseService studentCourseService = new StudentCourseService();
@@ -41,7 +39,7 @@ public class CourseServlet extends HttpServlet {
 
             Course course = courseService.getCourseById(courseId);
             if (course == null) {
-                request.getRequestDispatcher("/WEB-INF/templates/error_pages/not_found.jsp").forward(request, response);
+                request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.COURSE_JSP).forward(request, response);
             }
             courseDTO = courseDTOService.getCourseDTO(course);
 
@@ -60,7 +58,7 @@ public class CourseServlet extends HttpServlet {
         request.setAttribute("student_course", studentCourse);
         request.setAttribute("scores", studentsScores);
 
-        request.getRequestDispatcher(COURSE_JSP).forward(request, response);
+        request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.COURSE_JSP).forward(request, response);
     }
 
     private Map<Long, Integer> getStudentsScores(long courseId) throws SQLException {

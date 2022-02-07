@@ -124,7 +124,7 @@ public class UserService {
         return user;
     }
 
-    public List<User> getUsers(List<Long> ids){
+    public List<User> getUsers(List<Long> ids) throws SQLException {
         List<User> userList = new ArrayList<>();
         Connection connection = null;
 
@@ -137,6 +137,7 @@ public class UserService {
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
             System.out.println(e.getMessage());
+            throw e;
         } finally {
             DAOFactory.closeResource(connection);
         }
@@ -144,7 +145,7 @@ public class UserService {
         return userList;
     }
 
-    public List<User> getUsersByRole(Role role){
+    public List<User> getUsersByRole(Role role) throws SQLException {
         List<User> userList = null;
         Connection connection = null;
 
@@ -155,6 +156,7 @@ public class UserService {
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
             System.out.println(e.getMessage());
+            throw e;
         } finally {
             DAOFactory.closeResource(connection);
         }
@@ -162,13 +164,19 @@ public class UserService {
         return userList;
     }
 
-    public void blockUser(User user) throws SQLException {
-        user.setBlocked(true);
-        updateUser(user);
+    public void blockUserById(long id) throws SQLException {
+        User user = getUserById(id);
+        if(user != null) {
+            user.setBlocked(true);
+            updateUser(user);
+        }
     }
 
-    public void unblockUser(User user) throws SQLException {
-        user.setBlocked(false);
-        updateUser(user);
+    public void unblockUserById(long id) throws SQLException {
+        User user = getUserById(id);
+        if(user != null) {
+            user.setBlocked(false);
+            updateUser(user);
+        }
     }
 }

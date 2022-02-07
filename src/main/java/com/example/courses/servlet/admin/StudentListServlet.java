@@ -3,6 +3,7 @@ package com.example.courses.servlet.admin;
 import com.example.courses.persistence.entity.Role;
 import com.example.courses.persistence.entity.User;
 import com.example.courses.service.UserService;
+import com.example.courses.servlet.Constants;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -28,6 +29,6 @@ public class StudentListServlet extends HttpServlet {
         }
 
         request.setAttribute("students", studentList);
-        request.getRequestDispatcher("/WEB-INF/templates/admin/student_list.jsp").forward(request, response);
+        request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.STUDENT_LIST_JSP).forward(request, response);
     }
 }

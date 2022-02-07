@@ -7,6 +7,7 @@ import com.example.courses.persistence.entity.User;
 import com.example.courses.service.CourseService;
 import com.example.courses.service.LanguageService;
 import com.example.courses.service.UserService;
+import com.example.courses.servlet.Constants;
 import com.example.courses.utils.CourseUtils;
 
 import javax.servlet.ServletException;
@@ -38,7 +39,7 @@ public class NewCourseServlet extends HttpServlet {
 
         request.setAttribute("teachers", teachers);
         request.setAttribute("languages", languages);
-        request.getRequestDispatcher("/WEB-INF/templates/admin/new_course.jsp").forward(request, response);
+        request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.NEW_COURSE_JSP).forward(request, response);
     }
 
     @Override
