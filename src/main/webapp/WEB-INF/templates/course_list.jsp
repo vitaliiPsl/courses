@@ -59,7 +59,6 @@
 
                 <div class="filter-row">
                     <span class="filter-by-span">Filter By</span>
-
                     <div class="filters">
                         <%
                             Map<String, List<String>> filters = (Map<String, List<String>>) request.getAttribute("filters");
@@ -93,8 +92,7 @@
                                     <%
                                         }
                                     %>
-                                    <label><%=value%>
-                                    </label>
+                                    <label><%=value%></label>
                                 </div>
                                 <%
                                     }
@@ -117,35 +115,48 @@
                     Course course = courseDTO.getCourse();
                     Language language = courseDTO.getLanguage();
                     User teacher = courseDTO.getTeacher();
+                    List<User> students = courseDTO.getStudents();
             %>
             <div class="course">
                 <div class="img-box">
                     <img src="${pageContext.request.contextPath}/static/images/default.jpeg" alt=""/>
                 </div>
                 <div class="info-box">
-                    <div class="info-row">
+                    <div class="title-row">
                         <a href="${pageContext.request.contextPath}/course?course_id=<%=course.getId()%>">
                             <h2><%=course.getTitle()%>
                             </h2>
                         </a>
                     </div>
                     <div class="info-row">
-                        <p class="subject-row">Subject:</p>
-                        <span class="subject"><%=course.getSubject()%></span>
+                        <div class="info">
+                            <p class="subject-row">Subject:</p>
+                            <span class="subject"><%=course.getSubject()%></span>
+                        </div>
                     </div>
                     <div class="info-row">
-                        <p class="teacher-row">Teacher:</p>
-                        <span class="teacher"><%=teacher.getFullName()%></span>
+                        <div class="info">
+                            <p class="teacher-row">Teacher:</p>
+                            <span class="teacher"><%=teacher.getFullName()%></span>
+                        </div>
+                        <div class="info">
+                            <p class="language-row">Language:</p>
+                            <span class="language"><%=language.getName()%></span>
+                        </div>
                     </div>
                     <div class="info-row">
-                        <p class="language-row">Language:</p>
-                        <span class="language"><%=language.getName()%></span>
+                        <div class="info">
+                            <p class="duration-row">Duration:</p>
+                            <span class="duration">
+                                    <%= TimeUtils.calculateDuration(course.getStartDate(), course.getEndDate())%>
+                            </span>
+                        </div>
+                        <div class="info">
+                            <p class="number-of-students-row">Students:</p>
+                            <span class="number_of_students"><%=students.size()%></span>
+                        </div>
                     </div>
                     <div class="info-row">
-                        <p class="duration-row">Duration:</p>
-                        <span class="duration">
-                        <%= TimeUtils.calculateDuration(course.getStartDate(), course.getEndDate())%>
-                    </span>
                     </div>
                 </div>
 

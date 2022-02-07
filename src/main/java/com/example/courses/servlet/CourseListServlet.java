@@ -4,9 +4,7 @@ import com.example.courses.DTO.CourseDTO;
 import com.example.courses.persistence.entity.Course;
 import com.example.courses.persistence.entity.Role;
 import com.example.courses.persistence.entity.User;
-import com.example.courses.service.CourseDTOService;
-import com.example.courses.service.CourseFilterService;
-import com.example.courses.service.CourseService;
+import com.example.courses.service.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
