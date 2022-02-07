@@ -1,10 +1,11 @@
 <%@ page import="java.util.List" %>
-<%@ page import="java.util.Arrays" %>
 <%@ page import="com.example.courses.persistence.entity.Course" %>
 <%@ page import="com.example.courses.persistence.entity.User" %>
 <%@ page import="com.example.courses.persistence.entity.Role" %>
 <%@ page import="java.util.Map" %>
 <%@ page import="com.example.courses.persistence.entity.CourseStatus" %>
+<%@ page import="com.example.courses.persistence.postgres.StudentCourse" %>
+<%@ page import="com.example.courses.DTO.CourseDTO" %>
 
 <%@ page contentType="text/html;charset=UTF-8" %>
 
@@ -18,8 +19,6 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/style.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/courses/course.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/table.css">
-    <link rel="stylesheet" type="text/css"
-          href="${pageContext.request.contextPath}/static/css/teacher/teacher_course.css">
 </head>
 <body>
 <jsp:include page="/WEB-INF/templates/header.jsp"/>
@@ -27,8 +26,12 @@
 <main>
     <%
         User user = (User) session.getAttribute("user");
-        Course course = (Course) request.getAttribute("course");
-        List<User> studentList = (List<User>) request.getAttribute("students");
+        CourseDTO courseDTO = (CourseDTO) request.getAttribute("course");
+        StudentCourse studentCourse = (StudentCourse) request.getAttribute("student_course");
+        Map<Long, Integer> scores = (Map<Long, Integer>) request.getAttribute("scores");
+        Course course = courseDTO.getCourse();
+        User teacher = courseDTO.getTeacher();
+        List<User> studentList = courseDTO.getStudents();
     %>
 
     <div class="content-block">
@@ -42,24 +45,40 @@
                     <p class="course-description">
                         <%= course.getDescription()%>
                     </p>
-                    <p class="start-date">Starts:
-                        <span>
-                        <%=course.getStartDate()%>
-                    </span>
+                    <p class="teacher">Teacher:
+                        <span><%=teacher.getFullName()%></span>
                     </p>
 
                     <%
-                        if (user != null && user.getRole().equals(Role.STUDENT)) {
-                            if (!(Boolean) request.getAttribute("enrolled")) {
+                        if (user == null || user.getRole().equals(Role.STUDENT)) {
                     %>
-                    <div class="enroll-block">
-                        <form action="${pageContext.request.contextPath}/enroll?course_id=<%=course.getId()%>"
-                              method="post">
-                            <button type="submit" class="enroll-btn">Enroll</button>
-                        </form>
-                    </div>
+                        <div class="enroll-block">
+                            <%
+                                if(studentCourse == null){
+                            %>
+                            <form action="${pageContext.request.contextPath}/enroll?course_id=<%=course.getId()%>"
+                                  method="post">
+                                <button type="submit" class="enroll-btn">
+                                    <span>Enroll</span>
+                                    <span>Starts: <%=course.getStartDate().toLocalDate()%></span>
+                                </button>
+                            </form>
+
+                            <%
+                                } else {
+                            %>
+                                <div class="enrolled">
+                                    <span>Enrolled</span>
+                                </div>
+                            <%
+                                }
+                            %>
+                            <div class="enrolled-count">
+                                <span class="enrolled-span">Number of students: </span>
+                                <span> <%=studentList.size()%> </span>
+                            </div>
+                        </div>
                     <%
-                            }
                         }
                     %>
                 </div>
@@ -73,7 +92,6 @@
 
             <%
                 if (user != null && user.getRole().equals(Role.TEACHER)) {
-                    Map<Long, Integer> scores = (Map<Long, Integer>) request.getAttribute("scores");
             %>
             <div class="students-block">
                 <h1>Students</h1>
@@ -129,6 +147,9 @@
         </div>
     </div>
 
+    <%
+        if (user != null) {
+    %>
     <div class="action-block">
         <div class="container">
             <div class="status-box">
@@ -136,17 +157,12 @@
                 <h3><%=course.getCourseStatus().getStatus()%>
                 </h3>
             </div>
-
-            <%
-                if (user != null) {
-            %>
             <%
                 if (user.getRole().equals(Role.STUDENT) && course.getCourseStatus().equals(CourseStatus.COMPLETED)) {
-                    int score = (int) request.getAttribute("score");
             %>
             <div class="score-box">
                 <h3>Score: </h3>
-                <h3><%=score%>/<%=course.getMaxScore()%></h3>
+                <h3><%=studentCourse.getScore()%>/<%=course.getMaxScore()%></h3>
             </div>
             <%
             } else if (user.getRole().equals(Role.ADMIN)) {
@@ -165,10 +181,12 @@
             </div>
             <%
                     }
-                }
             %>
         </div>
     </div>
+    <%
+        }
+    %>
 </main>
 </body>
 </html>
