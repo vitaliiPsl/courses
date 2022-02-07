@@ -1,13 +1,11 @@
 package com.example.courses.service;
 
 import com.example.courses.DTO.CourseDTO;
-import com.example.courses.persistence.CourseDAO;
-import com.example.courses.persistence.DAOFactory;
-import com.example.courses.persistence.LanguageDAO;
-import com.example.courses.persistence.UserDAO;
+import com.example.courses.persistence.*;
 import com.example.courses.persistence.entity.Course;
 import com.example.courses.persistence.entity.Language;
 import com.example.courses.persistence.entity.User;
+import com.example.courses.persistence.postgres.StudentCourse;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -18,11 +16,13 @@ public class CourseDTOService {
     private DAOFactory daoFactory;
     private LanguageDAO languageDAO;
     private UserDAO userDAO;
+    private StudentCourseDAO studentCourseDAO;
 
     public CourseDTOService() {
         daoFactory = DAOFactory.getDAOFactory(DAOFactory.FactoryType.POSTGRES);
         languageDAO = daoFactory.getLanguageDao();
         userDAO = daoFactory.getUserDao();
+        studentCourseDAO = daoFactory.getStudentCourseDao();
     }
 
     public CourseDTO getCourseDTO(Course course) throws SQLException {
@@ -69,11 +69,23 @@ public class CourseDTOService {
         Language language = languageDAO.findLanguageById(connection, course.getLanguageId());
         User teacher = userDAO.findUser(connection, course.getTeacherId());
 
+        List<User> students = getStudents(connection, course);
+
         CourseDTO courseDTO = new CourseDTO();
         courseDTO.setCourse(course);
         courseDTO.setLanguage(language);
         courseDTO.setTeacher(teacher);
+        courseDTO.setStudents(students);
 
         return courseDTO;
+    }
+
+    private List<User> getStudents(Connection connection, Course course) throws SQLException {
+        List<User> students = new ArrayList<>();
+        List<StudentCourse> studentCourseList = studentCourseDAO.findByCourseId(connection, course.getId());
+        for(StudentCourse studentCourse: studentCourseList){
+            students.add(userDAO.findUser(connection, studentCourse.getStudentId()));
+        }
+        return students;
     }
 }
