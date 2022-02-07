@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 
 @WebServlet("/user_courses")
 public class UserCoursesServlet extends HttpServlet {
-    private static final String USER_COURSES_JSP = "/WEB-INF/templates/user_courses.jsp";
     private static final StudentCourseService studentCourseService = new StudentCourseService();
     private static final CourseService courseService = new CourseService();
 
@@ -47,7 +46,7 @@ public class UserCoursesServlet extends HttpServlet {
             e.printStackTrace();
         }
 
-        request.getRequestDispatcher(USER_COURSES_JSP).forward(request, response);
+        request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.USER_COURSES_JSP).forward(request, response);
     }
 
     private Map<Long, Integer> getScores(List<StudentCourse> studentCourseList) {
