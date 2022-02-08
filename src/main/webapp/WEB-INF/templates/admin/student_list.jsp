@@ -1,9 +1,5 @@
-<%@ page import="java.util.List" %>
-<%@ page import="java.util.Arrays" %>
-<%@ page import="com.example.courses.persistence.entity.User" %>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
-<% List<String> images = Arrays.asList("/static/img/coffee2.jpeg", "/static/img/python.jpeg", "/static/img/france.jpeg");%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,10 +17,6 @@
 <jsp:include page="/WEB-INF/templates/header.jsp"/>
 
 <main>
-    <%
-        List<User> studentList = (List<User>) request.getAttribute("students");
-    %>
-
     <div class="title-box">
         <div class="container">
             <div class="title-row">
@@ -43,61 +35,48 @@
 
     <div class="container">
         <div class="students-block">
-            <%
-                if (!studentList.isEmpty()) {
-            %>
-            <table class="students-table">
-                <tr>
-                    <th class="first-name-header">First Name</th>
-                    <th class="last-name-header">Last Name</th>
-                    <th class="email-header">Email</th>
-                    <th class="block-header">Block</th>
-                </tr>
+            <c:if test="${requestScope.students != null && !requestScope.students.isEmpty()}">
+                <table>
+                    <tr>
+                        <th class="first-name-header">First Name</th>
+                        <th class="last-name-header">Last Name</th>
+                        <th class="email-header">Email</th>
+                        <th class="block-header">Block</th>
+                    </tr>
 
-                <%
-                    for (User student : studentList) {
-                %>
-                <tr class="student-row">
-                    <td class="first-name">
-                        <%= student.getFirstName()%>
-                    </td>
-                    <td class="last-name">
-                        <%= student.getLastName()%>
-                    </td>
-                    <td class="email">
-                        <%= student.getEmail()%>
-                    </td>
-                    <td class="block">
-                        <%
-                            if (student.isBlocked()) {
-                        %>
-                        <button class="block-button">
-                            <a href="${pageContext.request.contextPath}/admin/unblock?student_id=<%=student.getId()%>">Unblock</a>
-                        </button>
-                        <%
-                        } else {
-                        %>
-                        <button class="block-button">
-                            <a href="${pageContext.request.contextPath}/admin/block?student_id=<%=student.getId()%>">Block</a>
-                        </button>
-                        <%
-                            }
-                        %>
-                    </td>
-                </tr>
-                <%
-                    }
-                %>
-            </table>
-            <%
-            } else {
-            %>
-            <div class="no-students">
-                <h3>There are no students</h3>
-            </div>
-            <%
-                }
-            %>
+                    <c:forEach var="student" items="${requestScope.students}">
+                        <tr class="student-row">
+                            <td class="first-name">
+                                    ${student.getFirstName()}
+                            </td>
+                            <td class="last-name">
+                                    ${student.getLastName()}
+                            </td>
+                            <td class="email">
+                                    ${student.getEmail()}
+                            </td>
+                            <td class="block">
+                                <c:if test="${student.isBlocked()}">
+                                    <button class="block-button">
+                                        <a href="${pageContext.request.contextPath}/admin/unblock?student_id=${student.getId()}">Unblock</a>
+                                    </button>
+                                </c:if>
+                                <c:if test="${!student.isBlocked()}">
+                                    <button class="block-button">
+                                        <a href="${pageContext.request.contextPath}/admin/block?student_id=${student.getId()}">Block</a>
+                                    </button>
+                                </c:if>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </table>
+            </c:if>
+
+            <c:if test="${requestScope.students == null || requestScope.students.isEmpty()}}">
+                <div class="no-students">
+                    <h3>There are no students</h3>
+                </div>
+            </c:if>
         </div>
     </div>
 </main>

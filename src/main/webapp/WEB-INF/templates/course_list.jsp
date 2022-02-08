@@ -1,11 +1,7 @@
-<%@ page import="java.util.*" %>
-<%@ page import="com.example.courses.persistence.entity.User" %>
 <%@ page import="com.example.courses.utils.TimeUtils" %>
-<%@ page import="com.example.courses.DTO.CourseDTO" %>
-<%@ page import="com.example.courses.persistence.entity.Course" %>
-<%@ page import="com.example.courses.persistence.entity.Language" %>
 <%@ page import="com.example.courses.persistence.entity.Role" %>
 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,34 +21,15 @@
 <jsp:include page="/WEB-INF/templates/header.jsp"/>
 
 <main>
-    <%
-        List<CourseDTO> courseDTOList = (List<CourseDTO>) request.getAttribute("courses");
-    %>
-
     <div class="filter-box">
         <div class="container">
             <form action="${pageContext.request.contextPath}/courses">
-
                 <div class="search-row">
-                    <%
-                        String query = (String) request.getAttribute("query");
-                        if (query != null) {
-                    %>
                     <input type="text" id="search-input" name="query"
                            data-request-url="${pageContext.request.contextPath}/courses/search?query="
                            data-course-url="${pageContext.request.contextPath}/course?course_id="
-                           placeholder="What do you want to learn?" value="<%=query%>"
+                           placeholder="What do you want to learn?" value="${requestScope.query}"
                            autocomplete="off"/>
-                    <%
-                    } else {
-                    %>
-                    <input type="text" id="search-input" name="query"
-                           data-request-url="${pageContext.request.contextPath}/courses/search?query="
-                           data-course-url="${pageContext.request.contextPath}/course?course_id="
-                           placeholder="What do you want to learn?" autocomplete="off"/>
-                    <%
-                        }
-                    %>
                     <button type="submit" class="search-btn">Search</button>
                     <div class="hints-block"></div>
                 </div>
@@ -60,48 +37,29 @@
                 <div class="filter-row">
                     <span class="filter-by-span">Filter By</span>
                     <div class="filters">
-                        <%
-                            Map<String, List<String>> filters = (Map<String, List<String>>) request.getAttribute("filters");
-                            Map<String, List<String>> appliedFilters = (Map<String, List<String>>) request.getAttribute("applied_filters");
-
-                            for (Map.Entry<String, List<String>> filter : filters.entrySet()) {
-                                List<String> applied = appliedFilters.getOrDefault(filter.getKey(), new ArrayList<>());
-                        %>
-
-                        <div class="filter">
-                            <div class="filter-control">
-                                <h5><%=filter.getKey()%>
-                                </h5>
-                                <div class="arrow"></div>
-                            </div>
-                            <div class="filter-menu hidden">
-                                <%
-                                    for (String value : filter.getValue()) {
-                                %>
-                                <div class="option">
-                                    <%
-                                        if (applied.contains(value)) {
-                                    %>
-                                    <input class="filter-checkbox" type="checkbox" name="<%=filter.getKey()%>"
-                                           value="<%=value%>" checked/>
-                                    <%
-                                    } else {
-                                    %>
-                                    <input class="filter-checkbox" type="checkbox" name="<%=filter.getKey()%>"
-                                           value="<%=value%>"/>
-                                    <%
-                                        }
-                                    %>
-                                    <label><%=value%></label>
+                        <c:forEach var="filter" items="${requestScope.filters.entrySet()}">
+                            <div class="filter">
+                                <div class="filter-control">
+                                    <h5>${filter.getKey()}</h5>
+                                    <div class="arrow"></div>
                                 </div>
-                                <%
-                                    }
-                                %>
+                                <div class="filter-menu hidden">
+                                    <c:forEach var="value" items="${filter.getValue()}">
+                                        <div class="option">
+                                            <c:if test="${requestScope.applied_filters.get(filter.getKey()).contains(value)}">
+                                                <input class="filter-checkbox" type="checkbox" name="${filter.getKey()}"
+                                                       value="${value}" checked/>
+                                            </c:if>
+                                            <c:if test="${!requestScope.applied_filters.get(filter.getKey()).contains(value)}">
+                                                <input class="filter-checkbox" type="checkbox" name="${filter.getKey()}"
+                                                       value="${value}"/>
+                                            </c:if>
+                                            <label>${value}</label>
+                                        </div>
+                                    </c:forEach>
+                                </div>
                             </div>
-                        </div>
-                        <%
-                            }
-                        %>
+                        </c:forEach>
                     </div>
                 </div>
             </form>
@@ -110,79 +68,70 @@
 
     <div class="content-box">
         <div class="container">
-            <%
-                for (CourseDTO courseDTO : courseDTOList) {
-                    Course course = courseDTO.getCourse();
-                    Language language = courseDTO.getLanguage();
-                    User teacher = courseDTO.getTeacher();
-                    List<User> students = courseDTO.getStudents();
-            %>
-            <div class="course">
-                <div class="img-box">
-                    <img src="${pageContext.request.contextPath}/static/images/default.jpeg" alt=""/>
-                </div>
-                <div class="info-box">
-                    <div class="title-row">
-                        <a href="${pageContext.request.contextPath}/course?course_id=<%=course.getId()%>">
-                            <h2><%=course.getTitle()%>
-                            </h2>
-                        </a>
-                    </div>
-                    <div class="info-row">
-                        <div class="info">
-                            <p class="subject-row">Subject:</p>
-                            <span class="subject"><%=course.getSubject()%></span>
-                        </div>
-                    </div>
-                    <div class="info-row">
-                        <div class="info">
-                            <p class="teacher-row">Teacher:</p>
-                            <span class="teacher"><%=teacher.getFullName()%></span>
-                        </div>
-                        <div class="info">
-                            <p class="language-row">Language:</p>
-                            <span class="language"><%=language.getName()%></span>
-                        </div>
-                    </div>
-                    <div class="info-row">
-                        <div class="info">
-                            <p class="duration-row">Duration:</p>
-                            <span class="duration">
-                                    <%= TimeUtils.calculateDuration(course.getStartDate(), course.getEndDate())%>
-                            </span>
-                        </div>
-                        <div class="info">
-                            <p class="number-of-students-row">Students:</p>
-                            <span class="number_of_students"><%=students.size()%></span>
-                        </div>
-                    </div>
-                    <div class="info-row">
-                    </div>
-                </div>
+            <c:forEach var="courseDTO" items="${requestScope.courses}">
+                <c:set var="course" value="${courseDTO.getCourse()}"/>
+                <c:set var="language" value="${courseDTO.getLanguage()}"/>
+                <c:set var="teacher" value="${courseDTO.getTeacher()}"/>
+                <c:set var="students" value="${courseDTO.getStudents()}"/>
 
-                <%
-                    User user = (User) session.getAttribute("user");
-                    if (user != null && user.getRole().equals(Role.ADMIN)) {
-                %>
-                <div class="manage-box">
-                    <button class="manage-btn edit-btn">
-                        <a href="${pageContext.request.contextPath}/admin/course/edit?course_id=<%=course.getId()%>">
-                            Edit
-                        </a>
-                    </button>
-                    <button class="manage-btn delete-btn">
-                        <a href="${pageContext.request.contextPath}/admin/course/delete?course_id=<%=course.getId()%>">
-                            Delete
-                        </a>
-                    </button>
+                <div class="course">
+                    <div class="img-box">
+                        <img src="${pageContext.request.contextPath}/static/images/default.jpeg" alt=""/>
+                    </div>
+                    <div class="info-box">
+                        <div class="title-row">
+                            <a href="${pageContext.request.contextPath}/course?course_id=${course.getId()}">
+                                <h2>${course.getTitle()}</h2>
+                            </a>
+                        </div>
+                        <div class="info-row">
+                            <div class="info">
+                                <p class="subject-row">Subject:</p>
+                                <span class="subject">${course.getSubject()}</span>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info">
+                                <p class="teacher-row">Teacher:</p>
+                                <span class="teacher">${teacher.getFullName()}</span>
+                            </div>
+                            <div class="info">
+                                <p class="language-row">Language:</p>
+                                <span class="language">${language.getName()}</span>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info">
+                                <p class="duration-row">Duration:</p>
+                                <span class="duration">
+                                    ${TimeUtils.calculateDuration(course.getStartDate(), course.getEndDate())}
+                            </span>
+                            </div>
+                            <div class="info">
+                                <p class="number-of-students-row">Students:</p>
+                                <span class="number_of_students">${students.size()}</span>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                        </div>
+                    </div>
+
+                    <c:if test="${sessionScope.user.getRole().equals(Role.ADMIN)}">
+                        <div class="manage-box">
+                            <button class="manage-btn edit-btn">
+                                <a href="${pageContext.request.contextPath}/admin/course/edit?course_id=${course.getId()}">
+                                    Edit
+                                </a>
+                            </button>
+                            <button class="manage-btn delete-btn">
+                                <a href="${pageContext.request.contextPath}/admin/course/delete?course_id=${course.getId()}">
+                                    Delete
+                                </a>
+                            </button>
+                        </div>
+                    </c:if>
                 </div>
-                <%
-                    }
-                %>
-            </div>
-            <%
-                }
-            %>
+            </c:forEach>
         </div>
     </div>
 </main>

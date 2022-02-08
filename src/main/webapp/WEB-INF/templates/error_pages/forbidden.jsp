@@ -9,13 +9,11 @@
 <body>
 <jsp:include page="/WEB-INF/templates/header.jsp"/>
     <main>
-
         <div class="container">
                 <span class="code">403</span>
                 <h1 class="message">You don't have access to this resource</h1>
                 <a href="${pageContext.request.contextPath}/" class="home_link">Home page</a>
         </div>
-
     </main>
 </body>
 </html>

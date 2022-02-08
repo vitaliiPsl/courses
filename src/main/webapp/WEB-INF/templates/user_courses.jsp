@@ -1,9 +1,7 @@
-<%@ page import="java.util.List" %>
-<%@ page import="com.example.courses.persistence.entity.Course" %>
-<%@ page import="com.example.courses.persistence.entity.User" %>
 <%@ page import="com.example.courses.persistence.entity.Role" %>
 <%@ page import="com.example.courses.persistence.entity.CourseStatus" %>
-<%@ page import="java.util.Map" %>
+
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,11 +20,6 @@
 <jsp:include page="/WEB-INF/templates/header.jsp"/>
 
 <main>
-    <%
-        List<Course> courseList = (List<Course>) request.getAttribute("courses");
-        User user = (User) session.getAttribute("user");
-    %>
-
     <div class="status-filter-box">
         <div class="container">
             <div class="status-filters">
@@ -40,57 +33,44 @@
 
     <div class="content-box">
         <div class="container">
-            <%
-                for (Course course : courseList) {
-            %>
-            <div class="course" data-status="<%=course.getCourseStatus().getStatus()%>">
-                <div class="img-box">
-                    <img src="${pageContext.request.contextPath}/static/images/default.jpeg" alt=""/>
-                </div>
-                <div class="info-box">
-                    <div class="info-row">
-                        <a href="${pageContext.request.contextPath}/course?course_id=<%=course.getId()%>">
-                            <h2><%=course.getTitle()%>
-                            </h2>
-                        </a>
+            <c:forEach var="course" items="${requestScope.courses}">
+                <div class="course" data-status="${course.getCourseStatus().getStatus()}">
+                    <div class="img-box">
+                        <img src="${pageContext.request.contextPath}/static/images/default.jpeg" alt=""/>
                     </div>
-                    <div class="info-row">
-                        <p class="subject-row">Subject:</p>
-                        <span class="subject"><%=course.getSubject()%></span>
+                    <div class="info-box">
+                        <div class="info-row">
+                            <a href="${pageContext.request.contextPath}/course?course_id=${course.getId()}">
+                                <h2>${course.getTitle()}</h2>
+                            </a>
+                        </div>
+                        <div class="info-row">
+                            <p class="subject-row">Subject:</p>
+                            <span class="subject">${course.getSubject()}</span>
+                        </div>
+                        <div class="info-row">
+                            <p class="status-row">Status:</p>
+                            <span class="status">${course.getCourseStatus().getStatus()}</span>
+                        </div>
                     </div>
-                    <div class="info-row">
-                        <p class="status-row">Status:</p>
-                        <span class="status">
-                            <%=course.getCourseStatus().getStatus()%>
-                        </span>
-                    </div>
-                </div>
 
-                <%
-                    if (user.getRole().equals(Role.STUDENT)) {
-                        Map<Long, Integer> scores = (Map<Long, Integer>) request.getAttribute("scores");
-                        if (course.getCourseStatus().equals(CourseStatus.COMPLETED)) {
-                %>
-                            <div class="score-box">
-                                <h3>Score: </h3>
-                                <h3>
-                                    <%=scores.getOrDefault(course.getId(), 0)%> / <%=course.getMaxScore()%>
-                                </h3>
-                            </div>
-                <%
-                        }
-                    }
-                %>
-            </div>
-            <%
-                }
-            %>
+                    <c:if test="${sessionScope.user.getRole().equals(Role.STUDENT)}">
+                        <c:if test="${course.getCourseStatus().equals(CourseStatus.COMPLETED)}">
+                    <div class="score-box">
+                        <h3>Score: </h3>
+                        <h3>
+                            ${requestScope.scores.getOrDefault(course.getId(), 0)} / ${course.getMaxScore()}
+                        </h3>
+                    </div>
+                        </c:if>
+                    </c:if>
+                </div>
+            </c:forEach>
         </div>
     </div>
 </main>
 
 <footer>
-    <div class="container"></div>
 </footer>
 
 <script src="${pageContext.request.contextPath}/static/js/user_courses.js"></script>

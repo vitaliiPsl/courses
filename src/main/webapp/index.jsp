@@ -4,6 +4,12 @@
 <head>
     <title>Title</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/style.css">
+    <style>
+        main{
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
 </head>
 <body>
 <jsp:include page="/WEB-INF/templates/header.jsp"/>

@@ -17,7 +17,7 @@
 <jsp:include page="/WEB-INF/templates/header.jsp"/>
 
 <main class="background"
-      style="background-image: url('${pageContext.request.contextPath}/static/images/2.jpg')">
+      style="background-image: url('${pageContext.request.contextPath}/static/images/1.jpg')">
 
     <jsp:include page="/WEB-INF/templates/error.jsp"/>
 
