@@ -1,5 +1,6 @@
 <%@ page import="com.example.courses.utils.TimeUtils" %>
 <%@ page import="com.example.courses.persistence.entity.Role" %>
+<%@ page import="com.example.courses.service.CourseSortingService" %>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
@@ -35,31 +36,73 @@
                 </div>
 
                 <div class="filter-row">
-                    <span class="filter-by-span">Filter By</span>
-                    <div class="filters">
-                        <c:forEach var="filter" items="${requestScope.filters.entrySet()}">
-                            <div class="filter">
-                                <div class="filter-control">
-                                    <h5>${filter.getKey()}</h5>
+                    <div class="filter-block">
+                        <span class="filter-by-span">Filter By</span>
+                        <div class="filters">
+                            <c:forEach var="filter" items="${requestScope.filters.entrySet()}">
+                                <div class="filter">
+                                    <div class="filter-control">
+                                        <h5>${filter.getKey()}</h5>
+                                        <div class="arrow"></div>
+                                    </div>
+                                    <div class="filter-menu hidden">
+                                        <c:forEach var="value" items="${filter.getValue()}">
+                                            <c:set var="checked" value="${requestScope.applied_filters.get(filter.getKey()).contains(value)}"/>
+                                            <div class="option">
+                                                <input class="filter-checkbox" type="checkbox" name="${filter.getKey()}"
+                                                       value="${value}"
+                                                    ${checked ? 'checked' : ''}/>
+                                                <label>${value}</label>
+                                            </div>
+                                        </c:forEach>
+                                    </div>
+                                </div>
+                            </c:forEach>
+                        </div>
+                    </div>
+                    <div class="sorting-block">
+                        <span class="sort-by-span">Sort By</span>
+                        <div class="sorting">
+
+                            <div class="filter sort">
+                                <div class="filter-control sort">
+                                    <h5>Sort By</h5>
                                     <div class="arrow"></div>
                                 </div>
-                                <div class="filter-menu hidden">
-                                    <c:forEach var="value" items="${filter.getValue()}">
-                                        <div class="option">
-                                            <c:if test="${requestScope.applied_filters.get(filter.getKey()).contains(value)}">
-                                                <input class="filter-checkbox" type="checkbox" name="${filter.getKey()}"
-                                                       value="${value}" checked/>
-                                            </c:if>
-                                            <c:if test="${!requestScope.applied_filters.get(filter.getKey()).contains(value)}">
-                                                <input class="filter-checkbox" type="checkbox" name="${filter.getKey()}"
-                                                       value="${value}"/>
-                                            </c:if>
-                                            <label>${value}</label>
+                                <div class="sort-menu hidden">
+                                    <c:forEach var="option" items="${requestScope.sorting_options}">
+                                        <c:set var="selected" value="${option.equals(requestScope.applied_sorting)}"/>
+                                        <div class="option sort-option ${selected ? 'selected' : ''}">
+                                            <input class="filter-checkbox" type="checkbox"
+                                                   name="<%=CourseSortingService.REQUEST_PARAMETER_SORTING%>"
+                                                   value="${option}" ${selected ? 'checked' : ''}
+                                                   hidden
+                                            >
+                                            <label>${option}</label>
                                         </div>
                                     </c:forEach>
                                 </div>
                             </div>
-                        </c:forEach>
+
+                            <div class="filter order">
+                                <div class="filter-control">
+                                    <h5>Order</h5>
+                                    <div class="arrow"></div>
+                                </div>
+                                <div class="sort-menu hidden">
+                                    <c:forEach var="option" items="${requestScope.sorting_order_options}">
+                                        <c:set var="selected" value="${option.equals(requestScope.applied_sorting_order)}"/>
+                                        <div class="option order-option ${selected ? 'selected' : ''}">
+                                            <input class="filter-checkbox" type="checkbox"
+                                                   name="<%=CourseSortingService.REQUEST_PARAMETER_ORDER%>"
+                                                   value="${option}" ${selected ? 'checked' : ''}
+                                                   hidden>
+                                            <label>${option}</label>
+                                        </div>
+                                    </c:forEach>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -104,8 +147,8 @@
                             <div class="info">
                                 <p class="duration-row">Duration:</p>
                                 <span class="duration">
-                                    ${TimeUtils.calculateDuration(course.getStartDate(), course.getEndDate())}
-                            </span>
+                                        ${TimeUtils.calculateDuration(course.getStartDate(), course.getEndDate())}
+                                </span>
                             </div>
                             <div class="info">
                                 <p class="number-of-students-row">Students:</p>

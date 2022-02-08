@@ -29,7 +29,7 @@ public class CourseFilterService {
     public Map<String, List<String>> getAvailableFilters() throws SQLException {
         Map<String, List<String>> filters = new HashMap<>();
 
-        List<Course> courseList = courseService.getAll();
+        List<Course> courseList = courseService.getAvailable();
         List<CourseDTO> courseDTOList = courseDTOService.getCourseDTOList(courseList);
 
         List<String> languages = getLanguages(courseDTOList);

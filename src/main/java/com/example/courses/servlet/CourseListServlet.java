@@ -21,6 +21,7 @@ public class CourseListServlet extends HttpServlet {
     private static final CourseService courseService = new CourseService();
     private static final CourseDTOService courseDTOService = new CourseDTOService();
     private static final CourseFilterService courseFilterService = new CourseFilterService();
+    private static final CourseSortingService courseSortingService = new CourseSortingService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -28,6 +29,8 @@ public class CourseListServlet extends HttpServlet {
         List<CourseDTO> courseDTOList = null;
         Map<String, List<String>> availableFilters = null;
         Map<String, List<String>> requestFilters = null;
+        String requestSorting = null;
+        String requestSortingOrder = null;
 
         try {
             List<Course> courseList;
@@ -47,6 +50,10 @@ public class CourseListServlet extends HttpServlet {
             availableFilters = courseFilterService.getAvailableFilters();
             requestFilters = courseFilterService.getRequestFilters(request);
             courseFilterService.applyFilters(courseDTOList, requestFilters);
+
+            requestSorting = courseSortingService.getRequestSorting(request);
+            requestSortingOrder = courseSortingService.getRequestSortingOrder(request);
+            courseSortingService.applySoring(courseDTOList, requestSorting, requestSortingOrder);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -54,6 +61,10 @@ public class CourseListServlet extends HttpServlet {
         request.setAttribute("courses", courseDTOList);
         request.setAttribute("filters", availableFilters);
         request.setAttribute("applied_filters", requestFilters);
+        request.setAttribute("sorting_options", courseSortingService.getSortingOptions());
+        request.setAttribute("applied_sorting", requestSorting);
+        request.setAttribute("sorting_order_options", courseSortingService.getSortingOrderOptions());
+        request.setAttribute("applied_sorting_order", requestSortingOrder);
 
         request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.COURSE_LIST_JSP).forward(request, response);
     }
