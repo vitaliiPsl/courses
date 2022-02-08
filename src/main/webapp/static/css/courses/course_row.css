@@ -69,6 +69,7 @@
     display: flex;
     justify-content: space-around;
     gap: 16px;
+    margin-left: auto;
 }
 
 .score-box *{
@@ -77,6 +78,7 @@
 
 .manage-box{
     width: 200px;
+    margin-left: auto;
 
     display: flex;
     flex-direction: column;
