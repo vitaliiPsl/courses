@@ -5,7 +5,7 @@ import com.example.courses.persistence.*;
 import com.example.courses.persistence.entity.Course;
 import com.example.courses.persistence.entity.Language;
 import com.example.courses.persistence.entity.User;
-import com.example.courses.persistence.postgres.StudentCourse;
+import com.example.courses.persistence.entity.StudentCourse;
 
 import java.sql.Connection;
 import java.sql.SQLException;

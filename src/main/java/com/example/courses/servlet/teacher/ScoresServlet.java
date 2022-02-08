@@ -1,6 +1,6 @@
 package com.example.courses.servlet.teacher;
 
-import com.example.courses.persistence.postgres.StudentCourse;
+import com.example.courses.persistence.entity.StudentCourse;
 import com.example.courses.service.StudentCourseService;
 
 import javax.servlet.ServletException;

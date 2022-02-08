@@ -2,6 +2,7 @@ package com.example.courses.persistence.postgres;
 
 import com.example.courses.persistence.DAOFactory;
 import com.example.courses.persistence.StudentCourseDAO;
+import com.example.courses.persistence.entity.StudentCourse;
 
 import java.sql.*;
 import java.util.ArrayList;

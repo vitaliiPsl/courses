@@ -2,7 +2,7 @@ package com.example.courses.service;
 
 import com.example.courses.persistence.DAOFactory;
 import com.example.courses.persistence.StudentCourseDAO;
-import com.example.courses.persistence.postgres.StudentCourse;
+import com.example.courses.persistence.entity.StudentCourse;
 
 import java.sql.Connection;
 import java.sql.SQLException;

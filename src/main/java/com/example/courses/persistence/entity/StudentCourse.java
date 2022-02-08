@@ -1,4 +1,4 @@
-package com.example.courses.persistence.postgres;
+package com.example.courses.persistence.entity;
 
 import java.time.LocalDateTime;
 

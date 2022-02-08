@@ -4,7 +4,7 @@ import com.example.courses.exception.ForbiddenException;
 import com.example.courses.persistence.entity.Course;
 import com.example.courses.persistence.entity.Role;
 import com.example.courses.persistence.entity.User;
-import com.example.courses.persistence.postgres.StudentCourse;
+import com.example.courses.persistence.entity.StudentCourse;
 import com.example.courses.service.CourseService;
 import com.example.courses.service.StudentCourseService;
 
