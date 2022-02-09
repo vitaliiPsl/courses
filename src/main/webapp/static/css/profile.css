@@ -1,0 +1,103 @@
+main .container{
+    padding-top: 24px;
+    padding-bottom: 24px;
+
+    gap: 24px;
+}
+
+.info-block{
+    width: 80%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.info-block > div{
+    background: #fff;
+    border-radius: 10px;
+}
+
+.image-block{
+    padding: 16px;
+    width: 30%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.image-block img{
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.data-block{
+    width: 100%;
+    padding: 16px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.data-row{
+    padding-bottom: 4px;
+
+    display: flex;
+    gap: 8px;
+
+    border-bottom: 1px solid var(--main-color);
+}
+
+.data-row span{
+    display: flex;
+    min-width: 150px;
+
+    font-size: 20px;
+    margin-right: 8px;
+}
+
+.description-span{
+    font-weight: 700;
+}
+
+.action-row{
+    width: 100%;
+    margin-top: auto;
+
+    align-self: flex-end;
+    display: flex;
+    justify-content: space-around;
+    gap: 16px;
+}
+
+.action-row button{
+    min-width: 150px;
+    padding: 0 8px;
+}
+
+.courses-block{
+    width: 80%;
+    padding: 16px;
+
+    background: #fff;
+    border-radius: 10px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.courses-title-block{
+    width: 100%;
+    padding: 8px;
+
+    display: flex;
+    justify-content: center;
+
+    border-bottom: 1px solid var(--main-color);
+}

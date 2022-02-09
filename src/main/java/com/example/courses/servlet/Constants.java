@@ -13,5 +13,6 @@ public class Constants {
         public static final String SIGN_UP_JSP = "/WEB-INF/templates/auth/sign_up.jsp";
         public static final String COURSE_JSP = "/WEB-INF/templates/course.jsp";
         public static final String USER_COURSES_JSP = "/WEB-INF/templates/user_courses.jsp";
+        public static final String USER_PROFILE = "/WEB-INF/templates/profile.jsp";
     }
 }
