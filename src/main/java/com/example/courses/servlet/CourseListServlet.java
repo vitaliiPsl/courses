@@ -4,7 +4,10 @@ import com.example.courses.DTO.CourseDTO;
 import com.example.courses.persistence.entity.Course;
 import com.example.courses.persistence.entity.Role;
 import com.example.courses.persistence.entity.User;
-import com.example.courses.service.*;
+import com.example.courses.service.CourseDTOService;
+import com.example.courses.service.CourseFilterService;
+import com.example.courses.service.CourseService;
+import com.example.courses.service.CourseSortingService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,6 +21,8 @@ import java.util.Map;
 
 @WebServlet("/courses")
 public class CourseListServlet extends HttpServlet {
+    private static final int RECORDS_PER_PAGE = 5;
+
     private static final CourseService courseService = new CourseService();
     private static final CourseDTOService courseDTOService = new CourseDTOService();
     private static final CourseFilterService courseFilterService = new CourseFilterService();
@@ -54,6 +59,8 @@ public class CourseListServlet extends HttpServlet {
             requestSorting = courseSortingService.getRequestSorting(request);
             requestSortingOrder = courseSortingService.getRequestSortingOrder(request);
             courseSortingService.applySoring(courseDTOList, requestSorting, requestSortingOrder);
+
+            courseDTOList = pagination(courseDTOList, request);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -67,5 +74,26 @@ public class CourseListServlet extends HttpServlet {
         request.setAttribute("applied_sorting_order", requestSortingOrder);
 
         request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.COURSE_LIST_JSP).forward(request, response);
+    }
+
+    private List<CourseDTO> pagination(List<CourseDTO> courseDTOList, HttpServletRequest request) {
+        String pageStr = request.getParameter("page");
+        int page = 1;
+        if (pageStr != null) {
+            page = Integer.parseInt(pageStr);
+        }
+
+        int numberOfPages = courseDTOList.size() / RECORDS_PER_PAGE;
+        if (courseDTOList.size() % RECORDS_PER_PAGE > 0) {
+            numberOfPages++;
+        }
+
+        request.setAttribute("page", page);
+        request.setAttribute("number_of_pages", numberOfPages);
+
+        int start = page * RECORDS_PER_PAGE - RECORDS_PER_PAGE;
+        int end = Math.min(start + RECORDS_PER_PAGE, courseDTOList.size());
+
+        return courseDTOList.subList(start, end);
     }
 }

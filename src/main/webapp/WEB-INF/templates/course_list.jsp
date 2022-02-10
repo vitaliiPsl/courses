@@ -175,6 +175,17 @@
                     </c:if>
                 </div>
             </c:forEach>
+
+            <div class="pages-box">
+                <c:set var="page" value="${requestScope.page}"/>
+                <c:forEach var="page_number" begin="1" end="${requestScope.number_of_pages}">
+                    <div class="page-number ${page == page_number ? 'selected' : ''}">
+                        <a href="${pageContext.request.contextPath}/courses?page=${page_number}">
+                            <h5>${page_number}</h5>
+                        </a>
+                    </div>
+                </c:forEach>
+            </div>
         </div>
     </div>
 </main>
