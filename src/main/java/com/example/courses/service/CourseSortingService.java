@@ -1,6 +1,7 @@
 package com.example.courses.service;
 
 import com.example.courses.DTO.CourseDTO;
+import com.example.courses.DTO.SortingDTO;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.Duration;
@@ -19,6 +20,28 @@ public class CourseSortingService {
     public static final String REQUEST_PARAMETER_SORTING = "sorting";
     public static final String REQUEST_PARAMETER_ORDER = "order";
 
+    private SortingDTO sortingDTO;
+
+    public SortingDTO sort(List<CourseDTO> courseDTOList, HttpServletRequest request){
+        sortingDTO = (SortingDTO) request.getSession().getAttribute("sortingDTO");
+        if(sortingDTO == null){
+            sortingDTO = new SortingDTO();
+        }
+
+        sortingDTO.setSortingOptions(getSortingOptions());
+        sortingDTO.setSortingOrderOptions(getSortingOrderOptions());
+
+        String requestSorting = getRequestSorting(request);
+        String requestSortingOrder = getRequestSortingOrder(request);
+        applySoring(courseDTOList, requestSorting, requestSortingOrder);
+        sortingDTO.setAppliedSorting(requestSorting);
+        sortingDTO.setAppliedSortingOrder(requestSortingOrder);
+
+        System.out.println(sortingDTO);
+
+        return sortingDTO;
+    }
+
     public List<String> getSortingOptions() {
         return Arrays.asList(
                 SORT_BY_TITLE,
@@ -34,13 +57,33 @@ public class CourseSortingService {
     }
 
     public String getRequestSorting(HttpServletRequest request){
-        return request.getParameter(REQUEST_PARAMETER_SORTING);
+        String sorting = null;
+        String requestSorting = request.getParameter(REQUEST_PARAMETER_SORTING);
+
+        if(requestSorting != null){
+            sorting = requestSorting;
+        } else if(sortingDTO.getAppliedSorting() != null){
+            sorting = sortingDTO.getAppliedSorting();
+        } else {
+            sorting = SORT_BY_TITLE;
+        }
+
+        return sorting;
     }
 
     public String getRequestSortingOrder(HttpServletRequest request){
-        String order = request.getParameter(REQUEST_PARAMETER_ORDER);
+        String sortingOrder;
+        String requestSortingOrder = request.getParameter(REQUEST_PARAMETER_ORDER);
 
-        return order != null ? order : SORT_ORDER_ASCENDING;
+        if(requestSortingOrder != null){
+            sortingOrder = requestSortingOrder;
+        } else if(sortingDTO.getAppliedSortingOrder() != null){
+            sortingOrder = sortingDTO.getAppliedSortingOrder();
+        } else {
+            sortingOrder = SORT_ORDER_ASCENDING;
+        }
+
+        return sortingOrder;
     }
 
     public void applySoring(List<CourseDTO> courseDTOList, String sorting, String order){

@@ -1,6 +1,7 @@
 package com.example.courses.servlet;
 
 import com.example.courses.DTO.CourseDTO;
+import com.example.courses.DTO.SortingDTO;
 import com.example.courses.persistence.entity.Course;
 import com.example.courses.persistence.entity.Role;
 import com.example.courses.persistence.entity.User;
@@ -14,6 +15,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -30,12 +32,12 @@ public class CourseListServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        User user = (User) request.getSession().getAttribute("user");
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+
         List<CourseDTO> courseDTOList = null;
         Map<String, List<String>> availableFilters = null;
         Map<String, List<String>> requestFilters = null;
-        String requestSorting = null;
-        String requestSortingOrder = null;
 
         try {
             List<Course> courseList;
@@ -56,9 +58,8 @@ public class CourseListServlet extends HttpServlet {
             requestFilters = courseFilterService.getRequestFilters(request);
             courseFilterService.applyFilters(courseDTOList, requestFilters);
 
-            requestSorting = courseSortingService.getRequestSorting(request);
-            requestSortingOrder = courseSortingService.getRequestSortingOrder(request);
-            courseSortingService.applySoring(courseDTOList, requestSorting, requestSortingOrder);
+            SortingDTO sortingDTO = courseSortingService.sort(courseDTOList, request);
+            session.setAttribute("sortingDTO", sortingDTO);
 
             courseDTOList = pagination(courseDTOList, request);
         } catch (SQLException e) {
@@ -68,10 +69,6 @@ public class CourseListServlet extends HttpServlet {
         request.setAttribute("courses", courseDTOList);
         request.setAttribute("filters", availableFilters);
         request.setAttribute("applied_filters", requestFilters);
-        request.setAttribute("sorting_options", courseSortingService.getSortingOptions());
-        request.setAttribute("applied_sorting", requestSorting);
-        request.setAttribute("sorting_order_options", courseSortingService.getSortingOrderOptions());
-        request.setAttribute("applied_sorting_order", requestSortingOrder);
 
         request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.COURSE_LIST_JSP).forward(request, response);
     }

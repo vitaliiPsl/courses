@@ -63,15 +63,15 @@
                     <div class="sorting-block">
                         <span class="sort-by-span">Sort By</span>
                         <div class="sorting">
-
                             <div class="filter sort">
                                 <div class="filter-control sort">
                                     <h5>Sort By</h5>
                                     <div class="arrow"></div>
                                 </div>
                                 <div class="sort-menu hidden">
-                                    <c:forEach var="option" items="${requestScope.sorting_options}">
-                                        <c:set var="selected" value="${option.equals(requestScope.applied_sorting)}"/>
+                                    <c:set var="sortingDTO" value="${sessionScope.sortingDTO}"/>
+                                    <c:forEach var="option" items="${sortingDTO.getSortingOptions()}">
+                                        <c:set var="selected" value="${option.equals(sortingDTO.getAppliedSorting())}"/>
                                         <div class="option sort-option ${selected ? 'selected' : ''}">
                                             <input class="filter-checkbox" type="checkbox"
                                                    name="<%=CourseSortingService.REQUEST_PARAMETER_SORTING%>"
@@ -90,8 +90,9 @@
                                     <div class="arrow"></div>
                                 </div>
                                 <div class="sort-menu hidden">
-                                    <c:forEach var="option" items="${requestScope.sorting_order_options}">
-                                        <c:set var="selected" value="${option.equals(requestScope.applied_sorting_order)}"/>
+                                    <c:set var="sortingDTO" value="${sessionScope.sortingDTO}"/>
+                                    <c:forEach var="option" items="${sortingDTO.getSortingOrderOptions()}">
+                                        <c:set var="selected" value="${option.equals(sortingDTO.getAppliedSortingOrder())}"/>
                                         <div class="option order-option ${selected ? 'selected' : ''}">
                                             <input class="filter-checkbox" type="checkbox"
                                                    name="<%=CourseSortingService.REQUEST_PARAMETER_ORDER%>"
