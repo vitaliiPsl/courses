@@ -30,10 +30,12 @@
                     <h1 class="course-name">${course.getTitle()}</h1>
                     <h3 class="course-subject">${course.getSubject()}</h3>
                     <p class="course-description">
-                            ${course.getDescription()}
+                        ${course.getDescription()}
                     </p>
                     <p class="teacher">Teacher:
-                        <span>${teacher.getFullName()}</span>
+                        <a href="${pageContext.request.contextPath}/user?user_id=${teacher.getId()}">
+                            <span>${teacher.getFullName()}</span>
+                        </a>
                     </p>
 
                     <c:if test="${sessionScope.user == null || sessionScope.user.getRole().equals(Role.STUDENT)}">
@@ -71,20 +73,34 @@
                 <div class="students-block">
                     <h1>Students</h1>
                     <c:if test="${!students.isEmpty()}">
-                        <form action="${pageContext.request.contextPath}/teacher/course/score?course_id=${course.getId()}" method="post">
+                        <form action="${pageContext.request.contextPath}/teacher/course/score?course_id=${course.getId()}"
+                              method="post">
 
                             <table class="students-table">
-
                                 <tr>
                                     <th class="first-name-header">First name</th>
                                     <th class="last-name-header">Last name</th>
+                                    <th class="email-header">Email</th>
                                     <th class="score-header">Score</th>
                                 </tr>
-
                                 <c:forEach var="student" items="${students}">
                                     <tr>
-                                        <td class="first-name">${student.getFirstName()}</td>
-                                        <td class="last-name">${student.getLastName()}</td>
+                                        <td class="first-name">
+                                            <a href="${pageContext.request.contextPath}/user?user_id=${student.getId()}">
+                                                    ${student.getFirstName()}
+                                            </a>
+                                        </td>
+                                        <td class="last-name">
+                                            <a href="${pageContext.request.contextPath}/user?user_id=${student.getId()}">
+                                                    ${student.getLastName()}
+                                            </a>
+                                        </td>
+                                        <td class="email">
+                                            <a href="${pageContext.request.contextPath}/user?user_id=${student.getId()}">
+                                                    ${student.getEmail()}
+                                            </a>
+                                        </td>
+
                                         <td class="student-score">
                                             <input type="number" min="0" max="${course.getMaxScore()}"
                                                    placeholder="${requestScope.scores.getOrDefault(student.getId(), 0)}"
@@ -93,7 +109,6 @@
                                     </tr>
                                 </c:forEach>
                             </table>
-
                             <button class="btn" type="submit">Save scores</button>
                         </form>
                     </c:if>

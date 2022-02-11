@@ -47,13 +47,19 @@
                     <c:forEach var="student" items="${requestScope.students}">
                         <tr class="student-row">
                             <td class="first-name">
-                                    ${student.getFirstName()}
+                                <a href="${pageContext.request.contextPath}/user?user_id=${student.getId()}">
+                                        ${student.getFirstName()}
+                                </a>
                             </td>
                             <td class="last-name">
-                                    ${student.getLastName()}
+                                <a href="${pageContext.request.contextPath}/user?user_id=${student.getId()}">
+                                        ${student.getLastName()()}
+                                </a>
                             </td>
                             <td class="email">
-                                    ${student.getEmail()}
+                                <a href="${pageContext.request.contextPath}/user?user_id=${student.getId()}">
+                                        ${student.getEmail()}
+                                </a>
                             </td>
                             <td class="block">
                                 <c:if test="${student.isBlocked()}">
