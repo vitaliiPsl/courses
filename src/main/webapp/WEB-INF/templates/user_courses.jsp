@@ -2,9 +2,14 @@
 <%@ page import="com.example.courses.persistence.entity.CourseStatus" %>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <%@ page contentType="text/html;charset=UTF-8" %>
+<fmt:setLocale value="${cookie['lang'].value}"/>
+<fmt:setBundle basename="i18n/user_courses/user_courses"/>
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="${cookie['lang'].value}">
 <head>
     <meta charset="UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -23,10 +28,18 @@
     <div class="status-filter-box">
         <div class="container">
             <div class="status-filters">
-                <button data-status="" class="status-filter selected">All courses</button>
-                <button data-status="not started" class="status-filter">Not started yet</button>
-                <button data-status="in progress" class="status-filter">In progress</button>
-                <button data-status="completed" class="status-filter">Completed</button>
+                <button data-status="" class="status-filter selected">
+                    <fmt:message key="label.status_all"/>
+                </button>
+                <button data-status="not started" class="status-filter">
+                    <fmt:message key="label.status_not_started"/>
+                </button>
+                <button data-status="in progress" class="status-filter">
+                    <fmt:message key="label.status_in_progress"/>
+                </button>
+                <button data-status="completed" class="status-filter">
+                    <fmt:message key="label.status_completed"/>
+                </button>
             </div>
         </div>
     </div>
@@ -45,11 +58,15 @@
                             </a>
                         </div>
                         <div class="info-row">
-                            <p class="subject-row">Subject:</p>
+                            <p class="subject-row">
+                                <fmt:message key="label.subject"/>
+                            </p>
                             <span class="subject">${course.getSubject()}</span>
                         </div>
                         <div class="info-row">
-                            <p class="status-row">Status:</p>
+                            <p class="status-row">
+                                <fmt:message key="label.status"/>
+                            </p>
                             <span class="status">${course.getCourseStatus().getStatus()}</span>
                         </div>
                     </div>
@@ -57,7 +74,9 @@
                     <c:if test="${sessionScope.user.getRole().equals(Role.STUDENT)}">
                         <c:if test="${course.getCourseStatus().equals(CourseStatus.COMPLETED)}">
                     <div class="score-box">
-                        <h3>Score: </h3>
+                        <h3>
+                            <fmt:message key="label.score"/>
+                        </h3>
                         <h3>
                             ${requestScope.scores.getOrDefault(course.getId(), 0)} / ${course.getMaxScore()}
                         </h3>

@@ -1,15 +1,19 @@
 <%@ page import="com.example.courses.persistence.entity.Role" %>
 <%@ page import="com.example.courses.persistence.entity.CourseStatus" %>
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <%@ page contentType="text/html;charset=UTF-8" %>
+<fmt:setLocale value="${cookie['lang'].value}"/>
+<fmt:setBundle basename="i18n/course/course"/>
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="${cookie['lang'].value}">
 <head>
     <meta charset="UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Title</title>
+    <title><fmt:message key="label.title"/></title>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/style.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/courses/course.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/table.css">
@@ -32,7 +36,7 @@
                     <p class="course-description">
                         ${course.getDescription()}
                     </p>
-                    <p class="teacher">Teacher:
+                    <p class="teacher"><fmt:message key="label.teacher"/>
                         <a href="${pageContext.request.contextPath}/user?user_id=${teacher.getId()}">
                             <span>${teacher.getFullName()}</span>
                         </a>
@@ -44,18 +48,19 @@
                                 <form action="${pageContext.request.contextPath}/enroll?course_id=${course.getId()}"
                                       method="post">
                                     <button type="submit" class="enroll-btn">
-                                        <span>Enroll</span>
-                                        <span>Starts:${course.getStartDate().toLocalDate()}</span>
+                                        <span><fmt:message key="label.enroll_btn_enroll"/></span>
+                                        <span><fmt:message
+                                                key="label.enroll_btn_starts"/> ${course.getStartDate().toLocalDate()}</span>
                                     </button>
                                 </form>
                             </c:if>
                             <c:if test="${requestScope.student_course != null}">
                                 <div class="enrolled">
-                                    <span>Enrolled</span>
+                                    <span><fmt:message key="label.enroll_status_enrolled"/></span>
                                 </div>
                             </c:if>
                             <div class="enrolled-count">
-                                <span class="enrolled-span">Number of students: </span>
+                                <span class="enrolled-span"><fmt:message key="label.enroll_number_of_students"/></span>
                                 <span>${students.size()}</span>
                             </div>
                         </div>
@@ -78,10 +83,18 @@
 
                             <table class="students-table">
                                 <tr>
-                                    <th class="first-name-header">First name</th>
-                                    <th class="last-name-header">Last name</th>
-                                    <th class="email-header">Email</th>
-                                    <th class="score-header">Score</th>
+                                    <th class="first-name-header">
+                                        <fmt:message key="label.table_first_name"/>
+                                    </th>
+                                    <th class="last-name-header">
+                                        <fmt:message key="label.last_name"/>
+                                    </th>
+                                    <th class="email-header">
+                                        <fmt:message key="label.email"/>
+                                    </th>
+                                    <th class="score-header">
+                                        <fmt:message key="label.table_score"/>
+                                    </th>
                                 </tr>
                                 <c:forEach var="student" items="${students}">
                                     <tr>
@@ -109,12 +122,13 @@
                                     </tr>
                                 </c:forEach>
                             </table>
-                            <button class="btn" type="submit">Save scores</button>
+                            <button class="btn" type="submit">
+                                <fmt:message key="label.table_save_btn"/>
+                            </button>
                         </form>
                     </c:if>
                     <c:if test="${students.isEmpty()}">
                         <div class="no-students">
-                            <h3>No one takes this course</h3>
                         </div>
                     </c:if>
                 </div>
@@ -122,17 +136,19 @@
         </div>
     </div>
 
-    <c:if test="${sessionScope.user != null && requestScope.student_course != null}">
+    <c:if test="${sessionScope.user != null}">
         <div class="action-block">
             <div class="container">
                 <div class="status-box">
-                    <h3>Status:</h3>
+                    <h3>
+                        <fmt:message key="label.action_row_status"/>
+                    </h3>
                     <h3>${course.getCourseStatus().getStatus()}</h3>
                 </div>
 
                 <c:if test="${sessionScope.user.getRole().equals(Role.STUDENT) && course.getCourseStatus().equals(CourseStatus.COMPLETED)}">
                     <div class="score-box">
-                        <h3>Score: </h3>
+                        <h3><fmt:message key="label.action_row_score"/></h3>
                         <h3>${requestScope.student_course.getScore()}/${course.getMaxScore()}</h3>
                     </div>
                 </c:if>
@@ -140,10 +156,14 @@
                 <c:if test="${sessionScope.user.getRole().equals(Role.ADMIN)}">
                     <div class="manage-box">
                         <button class="manage-btn edit-btn">
-                            <a href="${pageContext.request.contextPath}/admin/course/edit?course_id=${course.getId()}">Edit</a>
+                            <a href="${pageContext.request.contextPath}/admin/course/edit?course_id=${course.getId()}">
+                                <fmt:message key="label.action_row_edit_btn"/>
+                            </a>
                         </button>
                         <button class="manage-btn delete-btn">
-                            <a href="${pageContext.request.contextPath}/admin/course/delete?course_id=${course.getId()}">Delete</a>
+                            <a href="${pageContext.request.contextPath}/admin/course/delete?course_id=${course.getId()}">
+                                <fmt:message key="label.action_row_delete_btn"/>
+                            </a>
                         </button>
                     </div>
                 </c:if>

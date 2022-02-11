@@ -1,7 +1,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<%@ page contentType="text/html;charset=UTF-8" %>
+<fmt:setLocale value="${cookie['lang'].value}"/>
+<fmt:setBundle basename="i18n/auth/auth"/>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="${cookie['lang'].value}">
 <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -21,23 +26,25 @@
 
     <div class="container">
         <div class="log-in-box">
-            <h1>Log In</h1>
+            <h1><fmt:message key="label.log_in"/></h1>
 
             <form action="${pageContext.request.contextPath}/auth/log_in" method="post">
 
                 <div class="form-row">
-                    <input type="email" name="email" placeholder="Email" class="form-input" required/>
+                    <input type="email" name="email" placeholder="<fmt:message key="label.email"/>" class="form-input" required/>
                 </div>
 
                 <div class="form-row">
-                    <input type="password" name="password" placeholder="Password" class="form-input" required/>
+                    <input type="password" name="password" placeholder="<fmt:message key="label.password"/>" class="form-input" required/>
                 </div>
 
-                <button class="form-submit">Log In</button>
+                <button class="form-submit"><fmt:message key="label.log_in"/></button>
             </form>
 
             <div class="question-block">
-                <a class="question" href="${pageContext.request.contextPath}/auth/sign_up">Don't have an account?</a>
+                <a class="question" href="${pageContext.request.contextPath}/auth/sign_up">
+                    <fmt:message key="label.do_not_have_account"/>
+                </a>
             </div>
         </div>
     </div>

@@ -1,7 +1,11 @@
-<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<%@ page contentType="text/html;charset=UTF-8" %>
+<fmt:setLocale value="${cookie['lang'].value}"/>
+<fmt:setBundle basename="i18n/auth/auth"/>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="${cookie['lang'].value}">
 <head>
     <meta charset="UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -23,31 +27,33 @@
 
     <div class="container">
         <div class="log-in-box">
-            <h1>Sign Up</h1>
+            <h1><fmt:message key="label.sign_up"/></h1>
 
             <form action="${pageContext.request.contextPath}/auth/sign_up" method="post">
 
                 <div class="form-group">
-                    <input type="text" name="first_name" placeholder="First Name" class="form-input" required/>
-                    <input type="text" name="last_name" placeholder="Last Name" class="form-input" required/>
+                    <input type="text" name="first_name" placeholder="<fmt:message key="label.first_name"/>" class="form-input" required/>
+                    <input type="text" name="last_name" placeholder="<fmt:message key="label.last_name"/>" class="form-input" required/>
                 </div>
 
                 <div class="form-row">
-                    <input type="email" name="email" placeholder="E-mail" class="form-input" required/>
+                    <input type="email" name="email" placeholder="<fmt:message key="label.email"/>" class="form-input" required/>
                 </div>
 
                 <div class="form-row">
-                    <input type="password" name="password" placeholder="Password" class="form-input" required/>
+                    <input type="password" name="password" placeholder="<fmt:message key="label.password"/>" class="form-input" required/>
                 </div>
                 <div class="form-row">
-                    <input type="password" placeholder="Repeat Password" class="form-input" required/>
+                    <input type="password" placeholder="<fmt:message key="label.repeat_password"/>" class="form-input" required/>
                 </div>
 
-                <button class="form-submit">Sign Up</button>
+                <button class="form-submit"><fmt:message key="label.sign_up"/></button>
             </form>
 
             <div class="question-block">
-                <a class="question" href="${pageContext.request.contextPath}/auth/log_in">Already have an account?</a>
+                <a class="question" href="${pageContext.request.contextPath}/auth/log_in">
+                    <fmt:message key="label.already_have_account"/>
+                </a>
             </div>
         </div>
     </div>
