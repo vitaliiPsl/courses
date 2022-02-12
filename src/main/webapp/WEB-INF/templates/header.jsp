@@ -67,14 +67,31 @@
                         </c:choose>
 
                         <div class="vr"></div>
-                        <li><a href="${pageContext.request.contextPath}/auth/log_out">
-                            <fmt:message key="label.log_out"/>
-                        </a></li>
+                        <li class="account-dropdown">
+                            <div class="account-dropdown-control">
+                                <div class="profile-img">
+                                    <img src="${pageContext.request.contextPath}/static/images/default.jpeg" alt="">
+                                </div>
+                                <span class="user">${sessionScope.user.getFullName()}</span>
+                                <div class="arrow"></div>
+                            </div>
+                            <div class="account-dropdown-menu hidden">
+                                <a href="${pageContext.request.contextPath}/user?user_id=${sessionScope.user.getId()}"><fmt:message key="label.dropdown.my_profile"/></a>
+                                <a href="${pageContext.request.contextPath}/auth/log_out">
+                                    <fmt:message key="label.log_out"/>
+                                </a>
+                                <div class="language-switch">
+                                    <a href="${pageContext.request.requestURL}?lang=en" class="${cookie['lang'].value == "en" ? 'selected' : ''}"><fmt:message key="label.dropdown.lang_english"/></a>
+                                    <a href="${pageContext.request.requestURL}?lang=uk" class="${cookie['lang'].value == "uk" ? 'selected' : ''}"><fmt:message key="label.dropdown.lang_ukrainian"/></a>
+                                </div>
+                            </div>
+                        </li>
                     </c:if>
                 </ul>
             </div>
         </div>
     </div>
+    <script src="${pageContext.request.contextPath}/static/js/header.js"></script>
 </header>
 </body>
 </html>
