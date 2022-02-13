@@ -130,7 +130,7 @@ public class PostgresSubjectDAO implements SubjectDAO {
             statement = connection.prepareStatement(SubjectDAOConstants.SELECT_ALL);
             statement.setLong(1, languageId);
             resultSet = statement.executeQuery();
-            if(resultSet.next()) {
+            while(resultSet.next()) {
                 subjectList.add(parseSubjectDescription(resultSet));
             }
         } catch (SQLException e){
