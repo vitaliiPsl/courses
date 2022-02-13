@@ -3,6 +3,7 @@ package com.example.courses.servlet.auth;
 import com.example.courses.persistence.entity.User;
 import com.example.courses.service.UserService;
 import com.example.courses.servlet.Constants;
+import com.example.courses.utils.HashingUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -35,7 +36,7 @@ public class LogIn extends HttpServlet {
             System.out.println(e.getMessage());
         }
 
-        if(existing == null || !existing.getPassword().equals(password)){
+        if(existing == null || !HashingUtils.checkPassword(password, existing.getPassword())){
             request.setAttribute("error", "Invalid email or password");
             request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.LOG_IN_JSP).forward(request, response);
         } else if(existing.isBlocked()){

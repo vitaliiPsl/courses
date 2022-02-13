@@ -4,6 +4,7 @@ import com.example.courses.persistence.DAOFactory;
 import com.example.courses.persistence.UserDAO;
 import com.example.courses.persistence.entity.Role;
 import com.example.courses.persistence.entity.User;
+import com.example.courses.utils.HashingUtils;
 import com.example.courses.utils.UserValidation;
 
 import java.sql.Connection;
@@ -27,10 +28,11 @@ public class UserService {
 
         User existing = getUserByEmail(user.getEmail());
         if(existing != null){
-            throw new IllegalArgumentException(
-                    "User with email " + user.getEmail() + " already exists"
-            );
+            throw new IllegalArgumentException("User with email " + user.getEmail() + " already exists");
         }
+
+        String hashedPassword = HashingUtils.hashPassword(user.getPassword());
+        user.setPassword(hashedPassword);
 
         saveUser(user);
     }
