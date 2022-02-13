@@ -2,10 +2,7 @@ package com.example.courses.service;
 
 import com.example.courses.DTO.CourseDTO;
 import com.example.courses.persistence.*;
-import com.example.courses.persistence.entity.Course;
-import com.example.courses.persistence.entity.Language;
-import com.example.courses.persistence.entity.User;
-import com.example.courses.persistence.entity.StudentCourse;
+import com.example.courses.persistence.entity.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -16,22 +13,24 @@ public class CourseDTOService {
     private DAOFactory daoFactory;
     private LanguageDAO languageDAO;
     private UserDAO userDAO;
+    private SubjectDAO subjectDAO;
     private StudentCourseDAO studentCourseDAO;
 
     public CourseDTOService() {
         daoFactory = DAOFactory.getDAOFactory(DAOFactory.FactoryType.POSTGRES);
         languageDAO = daoFactory.getLanguageDao();
         userDAO = daoFactory.getUserDao();
+        subjectDAO = daoFactory.getSubjectDao();
         studentCourseDAO = daoFactory.getStudentCourseDao();
     }
 
-    public CourseDTO getCourseDTO(Course course) throws SQLException {
+    public CourseDTO getCourseDTO(Course course, String languageCode) throws SQLException {
         CourseDTO courseDTO;
         Connection connection = null;
 
         try{
             connection = daoFactory.getConnection();
-            courseDTO = makeCourseDTO(connection, course);
+            courseDTO = makeCourseDTO(connection, course, languageCode);
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
@@ -44,14 +43,14 @@ public class CourseDTOService {
         return courseDTO;
     }
 
-    public List<CourseDTO> getCourseDTOList(List<Course> courseList) throws SQLException {
+    public List<CourseDTO> getCourseDTOList(List<Course> courseList, String languageCode) throws SQLException {
         List<CourseDTO> courseDTOList = new ArrayList<>();
         Connection connection = null;
 
         try{
             connection = daoFactory.getConnection();
             for(Course course : courseList) {
-                courseDTOList.add(makeCourseDTO(connection, course));
+                courseDTOList.add(makeCourseDTO(connection, course, languageCode));
             }
             connection.commit();
         } catch (SQLException e) {
@@ -65,15 +64,19 @@ public class CourseDTOService {
         return courseDTOList;
     }
 
-    private CourseDTO makeCourseDTO(Connection connection, Course course) throws SQLException {
-        Language language = languageDAO.findLanguageById(connection, course.getLanguageId());
-        User teacher = userDAO.findUser(connection, course.getTeacherId());
+    private CourseDTO makeCourseDTO(Connection connection, Course course, String languageCode) throws SQLException {
+        Language courseLanguage = languageDAO.findLanguageById(connection, course.getLanguageId());
+        Language locale = languageDAO.findLanguageByCode(connection, languageCode);
+        System.out.println(languageCode);
+        Subject subject = subjectDAO.findSubject(connection, course.getSubjectId(), locale.getId());
 
+        User teacher = userDAO.findUser(connection, course.getTeacherId());
         List<User> students = getStudents(connection, course);
 
         CourseDTO courseDTO = new CourseDTO();
         courseDTO.setCourse(course);
-        courseDTO.setLanguage(language);
+        courseDTO.setSubject(subject);
+        courseDTO.setLanguage(courseLanguage);
         courseDTO.setTeacher(teacher);
         courseDTO.setStudents(students);
 

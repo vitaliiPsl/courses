@@ -52,4 +52,9 @@ public class PostgresDAOFactory implements DAOFactory {
     public StudentCourseDAO getStudentCourseDao() {
         return new PostgresStudentCourseDAO();
     }
+
+    @Override
+    public SubjectDAO getSubjectDao() {
+        return new PostgresSubjectDAO();
+    }
 }

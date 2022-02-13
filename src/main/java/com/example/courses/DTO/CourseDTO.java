@@ -2,6 +2,7 @@ package com.example.courses.DTO;
 
 import com.example.courses.persistence.entity.Course;
 import com.example.courses.persistence.entity.Language;
+import com.example.courses.persistence.entity.Subject;
 import com.example.courses.persistence.entity.User;
 
 import java.util.List;
@@ -10,14 +11,16 @@ public class CourseDTO {
     Course course;
     Language language;
     User teacher;
+    Subject subject;
     List<User> students;
 
     public CourseDTO(){}
 
-    public CourseDTO(Course course, Language language, User teacher, List<User> students) {
+    public CourseDTO(Course course, Language language, User teacher, Subject subject, List<User> students) {
         this.course = course;
         this.language = language;
         this.teacher = teacher;
+        this.subject = subject;
         this.students = students;
     }
 
@@ -45,6 +48,14 @@ public class CourseDTO {
         this.teacher = teacher;
     }
 
+    public Subject getSubject() {
+        return subject;
+    }
+
+    public void setSubject(Subject subject) {
+        this.subject = subject;
+    }
+
     public List<User> getStudents() {
         return students;
     }
@@ -59,6 +70,8 @@ public class CourseDTO {
                 "course=" + course +
                 ", language=" + language +
                 ", teacher=" + teacher +
+                ", subject=" + subject +
+                ", students=" + students +
                 '}';
     }
 }

@@ -129,13 +129,12 @@ public class PostgresCourseDAO implements CourseDAO {
     @Override
     public List<Course> findAvailable(Connection connection) throws SQLException {
         List<Course> courseList = new ArrayList<>();
-        PreparedStatement statement = null;
+        Statement statement = null;
         ResultSet resultSet = null;
 
         try {
-            statement = connection.prepareStatement(CourseDAOConstants.SELECT_AVAILABLE);
-            statement.setTimestamp(1, Timestamp.valueOf(LocalDateTime.now()));
-            resultSet = statement.executeQuery();
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(CourseDAOConstants.SELECT_AVAILABLE);
 
             while (resultSet.next()) {
                 courseList.add(parseCourse(resultSet));
@@ -261,8 +260,8 @@ public class PostgresCourseDAO implements CourseDAO {
     private void setCourseProperties(Course course, PreparedStatement statement) throws SQLException {
         statement.setLong(1, course.getTeacherId());
         statement.setLong(2, course.getLanguageId());
-        statement.setString(3, course.getTitle());
-        statement.setString(4, course.getSubject());
+        statement.setLong(3, course.getSubjectId());
+        statement.setString(4, course.getTitle());
         statement.setString(5, course.getDescription());
         statement.setTimestamp(6, Timestamp.valueOf(course.getStartDate()));
         statement.setTimestamp(7, Timestamp.valueOf(course.getEndDate()));
@@ -277,7 +276,7 @@ public class PostgresCourseDAO implements CourseDAO {
         course.setTeacherId(resultSet.getLong(CourseDAOConstants.COURSE_TEACHER_ID));
         course.setLanguageId(resultSet.getLong(CourseDAOConstants.COURSE_LANGUAGE_ID));
         course.setTitle(resultSet.getString(CourseDAOConstants.COURSE_TITLE));
-        course.setSubject(resultSet.getString(CourseDAOConstants.COURSE_SUBJECT));
+        course.setSubjectId(resultSet.getLong(CourseDAOConstants.COURSE_SUBJECT_ID));
         course.setDescription(resultSet.getString(CourseDAOConstants.COURSE_DESCRIPTION));
 
         LocalDateTime startDate = resultSet.getTimestamp(CourseDAOConstants.COURSE_START_DATE).toLocalDateTime();
@@ -313,12 +312,16 @@ public class PostgresCourseDAO implements CourseDAO {
         static final String COURSE_TEACHER_ID = "teacher_id";
         static final String COURSE_LANGUAGE_ID = "language_id";
         static final String COURSE_TITLE = "title";
-        static final String COURSE_SUBJECT = "subject";
+        static final String COURSE_SUBJECT_ID = "subject_id";
         static final String COURSE_DESCRIPTION = "description";
         static final String COURSE_START_DATE = "start_date";
         static final String COURSE_END_DATE = "end_date";
         static final String COURSE_MAX_SCORE = "max_score";
         static final String COURSE_IMAGE_URL = "image_url";
+
+        static final String TABLE_SUBJECT_DESCRIPTION = "subject_description";
+        static final String SUBJECT_DESCRIPTION_SUBJECT_ID = "subject_id";
+        static final String SUBJECT_DESCRIPTION_SUBJECT_NAME = "name";
 
         static final String INSERT_COURSE =
                 "INSERT INTO " +
@@ -326,8 +329,8 @@ public class PostgresCourseDAO implements CourseDAO {
                         "(" +
                             COURSE_TEACHER_ID + ", " +
                             COURSE_LANGUAGE_ID + ", " +
+                            COURSE_SUBJECT_ID + ", " +
                             COURSE_TITLE + ", " +
-                            COURSE_SUBJECT + ", " +
                             COURSE_DESCRIPTION + ", " +
                             COURSE_START_DATE + ", " +
                             COURSE_END_DATE + ", " +
@@ -340,8 +343,8 @@ public class PostgresCourseDAO implements CourseDAO {
                         "SET " +
                         COURSE_TEACHER_ID + " = ?, " +
                         COURSE_LANGUAGE_ID + " = ?, " +
+                        COURSE_SUBJECT_ID + " = ?, " +
                         COURSE_TITLE + " = ?, " +
-                        COURSE_SUBJECT + " = ?, " +
                         COURSE_DESCRIPTION + " = ?, " +
                         COURSE_START_DATE + " = ?, " +
                         COURSE_END_DATE + " = ?, " +
@@ -358,8 +361,8 @@ public class PostgresCourseDAO implements CourseDAO {
                 COURSE_ID + ", " +
                         COURSE_TEACHER_ID + ", " +
                         COURSE_LANGUAGE_ID + ", " +
+                        COURSE_SUBJECT_ID + ", " +
                         COURSE_TITLE + ", " +
-                        COURSE_SUBJECT + ", " +
                         COURSE_DESCRIPTION + ", " +
                         COURSE_START_DATE + ", " +
                         COURSE_END_DATE + ", " +
@@ -375,17 +378,23 @@ public class PostgresCourseDAO implements CourseDAO {
         static final String SELECT_COURSES_BY_SEARCH_REQUEST =
                 "SELECT " +
                         SELECT_COURSE_PROPERTIES + " " +
-                        "FROM " + TABLE_COURSE + " " +
-                        "WHERE " + COURSE_TITLE + " ilike " + "? " +
-                        "OR " + COURSE_SUBJECT + " ilike " + "?;";
+                "FROM " + TABLE_COURSE + " c" +
+                "JOIN " + TABLE_SUBJECT_DESCRIPTION + " s" +
+                    "ON c." + COURSE_SUBJECT_ID + " = s." + SUBJECT_DESCRIPTION_SUBJECT_ID + " " +
+                "WHERE " + COURSE_TITLE + " ilike " + "? " +
+                    "OR " + SUBJECT_DESCRIPTION_SUBJECT_NAME + " ilike " + "?;";
 
         static final String SELECT_AVAILABLE_COURSES_BY_SEARCH_REQUEST =
                 "SELECT " +
                         SELECT_COURSE_PROPERTIES + " " +
-                        "FROM " + TABLE_COURSE + " " +
-                        "WHERE " + COURSE_START_DATE + " > ? " +
-                        "AND (" + COURSE_TITLE + " ilike " + "? " +
-                        "OR " + COURSE_SUBJECT + " ilike " + "?);";
+                "FROM " + TABLE_COURSE + " c" +
+                "JOIN " + TABLE_SUBJECT_DESCRIPTION + " s" +
+                        "ON c." + COURSE_SUBJECT_ID + " = s." + SUBJECT_DESCRIPTION_SUBJECT_ID + " " +
+                "WHERE " + COURSE_START_DATE + " > NOW() " +
+                        "AND (" +
+                            COURSE_TITLE + " ilike " + "? " +
+                            "OR " + SUBJECT_DESCRIPTION_SUBJECT_NAME + " ilike " + "?" +
+                        ");";
 
         static final String SELECT_COURSES_BY_LANGUAGE =
                 "SELECT " +
@@ -408,6 +417,6 @@ public class PostgresCourseDAO implements CourseDAO {
                 "SELECT " +
                         SELECT_COURSE_PROPERTIES + " " +
                         "FROM " + TABLE_COURSE + " " +
-                        "WHERE " + COURSE_START_DATE + " > ?;";
+                        "WHERE " + COURSE_START_DATE + " > NOW()";
     }
 }

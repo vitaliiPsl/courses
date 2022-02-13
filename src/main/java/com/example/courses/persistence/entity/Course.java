@@ -7,8 +7,8 @@ public class Course {
     long id;
     long teacherId;
     long languageId;
+    long subjectId;
     String title;
-    String subject;
     String description;
     int maxScore;
     LocalDateTime startDate;
@@ -18,12 +18,12 @@ public class Course {
 
     public Course() {}
 
-    public Course(long id, long teacherId, long languageId, String title, String subject, String description, int maxScore, LocalDateTime startDate, LocalDateTime endDate, String imageUrl, CourseStatus courseStatus) {
+    public Course(long id, long teacherId, long languageId, long subjectId, String title, String description, int maxScore, LocalDateTime startDate, LocalDateTime endDate, String imageUrl, CourseStatus courseStatus) {
         this.id = id;
         this.teacherId = teacherId;
         this.languageId = languageId;
         this.title = title;
-        this.subject = subject;
+        this.subjectId = subjectId;
         this.description = description;
         this.maxScore = maxScore;
         this.startDate = startDate;
@@ -56,20 +56,20 @@ public class Course {
         this.languageId = languageId;
     }
 
+    public long getSubjectId() {
+        return subjectId;
+    }
+
+    public void setSubjectId(long subjectId) {
+        this.subjectId = subjectId;
+    }
+
     public String getTitle() {
         return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getSubject() {
-        return subject;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
     }
 
     public String getDescription() {
@@ -139,8 +139,8 @@ public class Course {
                 "id=" + id +
                 ", teacherId=" + teacherId +
                 ", languageId=" + languageId +
+                ", subjectId='" + subjectId + '\'' +
                 ", title='" + title + '\'' +
-                ", subject='" + subject + '\'' +
                 ", description='" + description + '\'' +
                 ", maxScore=" + maxScore +
                 ", startDate=" + startDate +
