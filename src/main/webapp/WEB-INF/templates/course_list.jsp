@@ -114,6 +114,7 @@
         <div class="container">
             <c:forEach var="courseDTO" items="${requestScope.courses}">
                 <c:set var="course" value="${courseDTO.getCourse()}"/>
+                <c:set var="subject" value="${courseDTO.getSubject()}"/>
                 <c:set var="language" value="${courseDTO.getLanguage()}"/>
                 <c:set var="teacher" value="${courseDTO.getTeacher()}"/>
                 <c:set var="students" value="${courseDTO.getStudents()}"/>
@@ -131,7 +132,7 @@
                         <div class="info-row">
                             <div class="info">
                                 <p class="subject-row">Subject:</p>
-                                <span class="subject">${course.getSubject()}</span>
+                                <span class="subject">${subject.getSubject()}</span>
                             </div>
                         </div>
                         <div class="info-row">

@@ -26,9 +26,12 @@ function fetchData(query) {
         .then(response => response.json())
         .then(data => courses.push(...data))
         .then(() => {
-            courses.forEach(course => {
-                console.log(course);
-                addHint(course.id, course.title, course.subject);
+            courses.forEach(courseDTO => {
+                console.log("courseDTO");
+                console.log(courseDTO);
+                console.log(courseDTO.course);
+                console.log(courseDTO.subject);
+                addHint(courseDTO.course.id, courseDTO.course.title, courseDTO.subject.subject);
             });
         });
 }

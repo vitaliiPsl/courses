@@ -161,7 +161,6 @@ public class PostgresCourseDAO implements CourseDAO {
         try {
             statement = connection.prepareStatement(CourseDAOConstants.SELECT_COURSES_BY_SEARCH_REQUEST);
             statement.setString(1, query);
-            statement.setString(2, query);
 
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -188,9 +187,7 @@ public class PostgresCourseDAO implements CourseDAO {
 
         try {
             statement = connection.prepareStatement(CourseDAOConstants.SELECT_AVAILABLE_COURSES_BY_SEARCH_REQUEST);
-            statement.setTimestamp(1, Timestamp.valueOf(LocalDateTime.now()));
-            statement.setString(2, query);
-            statement.setString(3, query);
+            statement.setString(1, query);
 
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -319,10 +316,6 @@ public class PostgresCourseDAO implements CourseDAO {
         static final String COURSE_MAX_SCORE = "max_score";
         static final String COURSE_IMAGE_URL = "image_url";
 
-        static final String TABLE_SUBJECT_DESCRIPTION = "subject_description";
-        static final String SUBJECT_DESCRIPTION_SUBJECT_ID = "subject_id";
-        static final String SUBJECT_DESCRIPTION_SUBJECT_NAME = "name";
-
         static final String INSERT_COURSE =
                 "INSERT INTO " +
                         TABLE_COURSE +
@@ -359,64 +352,56 @@ public class PostgresCourseDAO implements CourseDAO {
 
         static final String SELECT_COURSE_PROPERTIES =
                 COURSE_ID + ", " +
-                        COURSE_TEACHER_ID + ", " +
-                        COURSE_LANGUAGE_ID + ", " +
-                        COURSE_SUBJECT_ID + ", " +
-                        COURSE_TITLE + ", " +
-                        COURSE_DESCRIPTION + ", " +
-                        COURSE_START_DATE + ", " +
-                        COURSE_END_DATE + ", " +
-                        COURSE_MAX_SCORE + ", " +
-                        COURSE_IMAGE_URL;
+                        "c." + COURSE_TEACHER_ID + ", " +
+                        "c." + COURSE_LANGUAGE_ID + ", " +
+                        "c." + COURSE_SUBJECT_ID + ", " +
+                        "c." + COURSE_TITLE + ", " +
+                        "c." + COURSE_DESCRIPTION + ", " +
+                        "c." + COURSE_START_DATE + ", " +
+                        "c." + COURSE_END_DATE + ", " +
+                        "c." + COURSE_MAX_SCORE + ", " +
+                        "c." + COURSE_IMAGE_URL;
 
         static final String SELECT_COURSE_BY_ID =
                 "SELECT " +
                         SELECT_COURSE_PROPERTIES + " " +
-                        "FROM " + TABLE_COURSE + " " +
+                        "FROM " + TABLE_COURSE + " AS c " +
                         "WHERE " + COURSE_ID + " = ?;";
 
         static final String SELECT_COURSES_BY_SEARCH_REQUEST =
                 "SELECT " +
                         SELECT_COURSE_PROPERTIES + " " +
-                "FROM " + TABLE_COURSE + " c" +
-                "JOIN " + TABLE_SUBJECT_DESCRIPTION + " s" +
-                    "ON c." + COURSE_SUBJECT_ID + " = s." + SUBJECT_DESCRIPTION_SUBJECT_ID + " " +
-                "WHERE " + COURSE_TITLE + " ilike " + "? " +
-                    "OR " + SUBJECT_DESCRIPTION_SUBJECT_NAME + " ilike " + "?;";
+                "FROM " + TABLE_COURSE + " AS c " +
+                "WHERE " + COURSE_TITLE + " ilike " + "?;";
 
         static final String SELECT_AVAILABLE_COURSES_BY_SEARCH_REQUEST =
                 "SELECT " +
                         SELECT_COURSE_PROPERTIES + " " +
-                "FROM " + TABLE_COURSE + " c" +
-                "JOIN " + TABLE_SUBJECT_DESCRIPTION + " s" +
-                        "ON c." + COURSE_SUBJECT_ID + " = s." + SUBJECT_DESCRIPTION_SUBJECT_ID + " " +
+                "FROM " + TABLE_COURSE + " AS c " +
                 "WHERE " + COURSE_START_DATE + " > NOW() " +
-                        "AND (" +
-                            COURSE_TITLE + " ilike " + "? " +
-                            "OR " + SUBJECT_DESCRIPTION_SUBJECT_NAME + " ilike " + "?" +
-                        ");";
+                "AND " + COURSE_TITLE + " ilike " + "?;";
 
         static final String SELECT_COURSES_BY_LANGUAGE =
                 "SELECT " +
                         SELECT_COURSE_PROPERTIES + " " +
-                        "FROM " + TABLE_COURSE + " " +
+                        "FROM " + TABLE_COURSE + " AS c " +
                         "WHERE " + COURSE_LANGUAGE_ID + " = " + "?;";
 
         static final String SELECT_COURSES_BY_TEACHER =
                 "SELECT " +
                         SELECT_COURSE_PROPERTIES + " " +
-                        "FROM " + TABLE_COURSE + " " +
+                        "FROM " + TABLE_COURSE + " AS c " +
                         "WHERE " + COURSE_TEACHER_ID + " = " + "?;";
 
         static final String SELECT_ALL =
                 "SELECT " +
                         SELECT_COURSE_PROPERTIES + " " +
-                        "FROM " + TABLE_COURSE + ";";
+                        "FROM " + TABLE_COURSE + " AS c;";
 
         static final String SELECT_AVAILABLE =
                 "SELECT " +
                         SELECT_COURSE_PROPERTIES + " " +
-                        "FROM " + TABLE_COURSE + " " +
+                        "FROM " + TABLE_COURSE + " AS c " +
                         "WHERE " + COURSE_START_DATE + " > NOW()";
     }
 }

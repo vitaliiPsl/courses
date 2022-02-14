@@ -12,10 +12,7 @@ import com.example.courses.service.CourseSortingService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -34,6 +31,7 @@ public class CourseListServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
+        String lang = (String) session.getAttribute("lang");
 
         List<CourseDTO> courseDTOList = null;
         Map<String, List<String>> availableFilters = null;
@@ -42,6 +40,7 @@ public class CourseListServlet extends HttpServlet {
         try {
             List<Course> courseList;
             String query = request.getParameter("query");
+
             if (query != null && !query.trim().isEmpty()) {
                 courseList = courseService.getCoursesBySearchQuery(query);
                 request.setAttribute("query", query);
@@ -52,9 +51,10 @@ public class CourseListServlet extends HttpServlet {
                     courseList = courseService.getAll();
                 }
             }
-            courseDTOList = courseDTOService.getCourseDTOList(courseList);
 
-            availableFilters = courseFilterService.getAvailableFilters();
+            courseDTOList = courseDTOService.getCourseDTOList(courseList, lang);
+
+            availableFilters = courseFilterService.getAvailableFilters(lang);
             requestFilters = courseFilterService.getRequestFilters(request);
             courseFilterService.applyFilters(courseDTOList, requestFilters);
 
