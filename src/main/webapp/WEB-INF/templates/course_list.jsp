@@ -34,79 +34,110 @@
                     <button type="submit" class="search-btn">Search</button>
                     <div class="hints-block"></div>
                 </div>
+            </form>
+            <div class="filter-row">
+                <div class="filter-block">
+                    <span class="filter-by-span">Filter By</span>
+                    <div class="filters">
 
-                <div class="filter-row">
-                    <div class="filter-block">
-                        <span class="filter-by-span">Filter By</span>
-                        <div class="filters">
-                            <c:forEach var="filter" items="${requestScope.filters.entrySet()}">
-                                <div class="filter">
-                                    <div class="filter-control">
-                                        <h5>${filter.getKey()}</h5>
-                                        <div class="arrow"></div>
-                                    </div>
-                                    <div class="filter-menu hidden">
-                                        <c:forEach var="value" items="${filter.getValue()}">
-                                            <c:set var="checked" value="${requestScope.applied_filters.get(filter.getKey()).contains(value)}"/>
-                                            <div class="option">
-                                                <input class="filter-checkbox" type="checkbox" name="${filter.getKey()}"
-                                                       value="${value}"
-                                                    ${checked ? 'checked' : ''}/>
-                                                <label>${value}</label>
-                                            </div>
-                                        </c:forEach>
-                                    </div>
-                                </div>
-                            </c:forEach>
-                        </div>
-                    </div>
-                    <div class="sorting-block">
-                        <span class="sort-by-span">Sort By</span>
-                        <div class="sorting">
-                            <div class="filter sort">
-                                <div class="filter-control sort">
-                                    <h5>Sort By</h5>
-                                    <div class="arrow"></div>
-                                </div>
-                                <div class="sort-menu hidden">
-                                    <c:set var="sortingDTO" value="${sessionScope.sortingDTO}"/>
-                                    <c:forEach var="option" items="${sortingDTO.getSortingOptions()}">
-                                        <c:set var="selected" value="${option.equals(sortingDTO.getAppliedSorting())}"/>
-                                        <div class="option sort-option ${selected ? 'selected' : ''}">
-                                            <input class="filter-checkbox" type="checkbox"
-                                                   name="<%=CourseSortingService.REQUEST_PARAMETER_SORTING%>"
-                                                   value="${option}" ${selected ? 'checked' : ''}
-                                                   hidden
-                                            >
-                                            <label>${option}</label>
-                                        </div>
-                                    </c:forEach>
-                                </div>
+                        <c:set var="filter" value="${requestScope.filters.get('subject')}"/>
+                        <div class="filter dropdown-element">
+                            <div class="dropdown-control filter-control">
+                                <h5>Subject</h5>
+                                <div class="arrow"></div>
                             </div>
+                            <div class="dropdown-menu filter-menu hidden">
+                                <c:forEach var="value" items="${filter}">
+                                    <c:set var="checked"
+                                           value="${sessionScope.applied_filters.get('subject').contains(value)}"/>
+                                    <div class="filter-option option">
+                                        <form class="option-form"
+                                              action="${pageContext.request.contextPath}/courses/filter" method="post">
+                                            <input class="filter-checkbox" type="checkbox" name="subject"
+                                                   value="${value}"
+                                                ${checked ? 'checked' : ''}/>
+                                            <label>${value}</label>
+                                        </form>
+                                    </div>
+                                </c:forEach>
+                            </div>
+                        </div>
 
-                            <div class="filter order">
-                                <div class="filter-control">
-                                    <h5>Order</h5>
-                                    <div class="arrow"></div>
-                                </div>
-                                <div class="sort-menu hidden">
-                                    <c:set var="sortingDTO" value="${sessionScope.sortingDTO}"/>
-                                    <c:forEach var="option" items="${sortingDTO.getSortingOrderOptions()}">
-                                        <c:set var="selected" value="${option.equals(sortingDTO.getAppliedSortingOrder())}"/>
-                                        <div class="option order-option ${selected ? 'selected' : ''}">
+                        <c:set var="filter" value="${requestScope.filters.get('teacher')}"/>
+                        <div class="filter dropdown-element">
+                            <div class="dropdown-control filter-control">
+                                <h5>Teacher</h5>
+                                <div class="arrow"></div>
+                            </div>
+                            <div class="dropdown-menu filter-menu hidden">
+                                <c:forEach var="value" items="${filter}">
+                                    <c:set var="checked"
+                                           value="${sessionScope.applied_filters.get('teacher').contains(value)}"/>
+                                    <div class="filter-option option">
+                                        <form class="option-form"
+                                              action="${pageContext.request.contextPath}/courses/filter" method="post">
+                                            <input class="filter-checkbox" type="checkbox" name="teacher"
+                                                   value="${value}"
+                                                ${checked ? 'checked' : ''}/>
+                                            <label>${value}</label>
+                                        </form>
+                                    </div>
+                                </c:forEach>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="sorting-block">
+                    <span class="sort-by-span">Sort By</span>
+                    <div class="sorting">
+
+                        <div class="filter sort dropdown-element">
+                            <div class="dropdown-control filter-control sort">
+                                <h5>Sort By</h5>
+                                <div class="arrow"></div>
+                            </div>
+                            <div class="dropdown-menu sort-menu hidden">
+                                <c:set var="appliedSorting" value="${sessionScope.sorting}"/>
+                                <c:forEach var="option" items="${requestScope.sorting_options}">
+                                    <c:set var="selected" value="${option.equals(appliedSorting)}"/>
+                                    <div class="option sort-option ${selected ? 'selected' : ''}">
+                                        <form class="option-form"
+                                              action="${pageContext.request.contextPath}/courses/sort" method="post">
                                             <input class="filter-checkbox" type="checkbox"
-                                                   name="<%=CourseSortingService.REQUEST_PARAMETER_ORDER%>"
-                                                   value="${option}" ${selected ? 'checked' : ''}
-                                                   hidden>
+                                                   name="sorting" value="${option}" ${selected ? 'checked' : ''} hidden>
                                             <label>${option}</label>
-                                        </div>
-                                    </c:forEach>
-                                </div>
+                                        </form>
+                                    </div>
+                                </c:forEach>
+                            </div>
+                        </div>
+
+                        <div class="filter sort dropdown-element">
+                            <div class="dropdown-control filter-control">
+                                <h5>Order</h5>
+                                <div class="arrow"></div>
+                            </div>
+                            <div class="dropdown-menu sort-menu hidden">
+                                <c:set var="appliedOrder" value="${sessionScope.sorting_order}"/>
+                                <c:forEach var="option" items="${requestScope.sorting_order_options}">
+                                    <c:set var="selected"
+                                           value="${option.equals(appliedOrder)}"/>
+                                    <div class="option sort-option ${selected ? 'selected' : ''}">
+                                        <form class="option-form"
+                                              action="${pageContext.request.contextPath}/courses/sort" method="post">
+                                            <input class="filter-checkbox" type="checkbox" name="sorting_order"
+                                                   value="${option}" ${selected ? 'checked' : ''} hidden>
+                                            <label>${option}</label>
+                                        </form>
+                                    </div>
+                                </c:forEach>
                             </div>
                         </div>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 
@@ -197,6 +228,8 @@
 </footer>
 
 <script src="${pageContext.request.contextPath}/static/js/course_list.js"></script>
+<script src="${pageContext.request.contextPath}/static/js/course_list_filter.js"></script>
+<script src="${pageContext.request.contextPath}/static/js/course_list_sorting.js"></script>
 <script src="${pageContext.request.contextPath}/static/js/course_search.js"></script>
 </body>
 </html>

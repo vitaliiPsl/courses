@@ -88,10 +88,10 @@
                                         <fmt:message key="label.table_first_name"/>
                                     </th>
                                     <th class="last-name-header">
-                                        <fmt:message key="label.last_name"/>
+                                        <fmt:message key="label.table_last_name"/>
                                     </th>
                                     <th class="email-header">
-                                        <fmt:message key="label.email"/>
+                                        <fmt:message key="label.table_email"/>
                                     </th>
                                     <th class="score-header">
                                         <fmt:message key="label.table_score"/>

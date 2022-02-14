@@ -36,6 +36,8 @@ public class CourseListServlet extends HttpServlet {
         List<CourseDTO> courseDTOList = null;
         Map<String, List<String>> availableFilters = null;
         Map<String, List<String>> requestFilters = null;
+        List<String> sortingOptions = null;
+        List<String> sortingOrderOptions = null;
 
         try {
             List<Course> courseList;
@@ -55,11 +57,16 @@ public class CourseListServlet extends HttpServlet {
             courseDTOList = courseDTOService.getCourseDTOList(courseList, lang);
 
             availableFilters = courseFilterService.getAvailableFilters(lang);
-            requestFilters = courseFilterService.getRequestFilters(request);
+            requestFilters = (Map<String, List<String>>) session.getAttribute("filters");
             courseFilterService.applyFilters(courseDTOList, requestFilters);
 
-            SortingDTO sortingDTO = courseSortingService.sort(courseDTOList, request);
-            session.setAttribute("sortingDTO", sortingDTO);
+            sortingOptions = courseSortingService.getSortingOptions();
+            sortingOrderOptions = courseSortingService.getSortingOrderOptions();
+            String sessionSorting = (String) session.getAttribute("sorting");
+            String sessionSortingOrder = (String) session.getAttribute("sorting_order");
+            System.out.println(sessionSorting);
+            System.out.println(sessionSortingOrder);
+            courseSortingService.applySoring(courseDTOList, sessionSorting, sessionSortingOrder);
 
             courseDTOList = pagination(courseDTOList, request);
         } catch (SQLException e) {
@@ -69,6 +76,8 @@ public class CourseListServlet extends HttpServlet {
         request.setAttribute("courses", courseDTOList);
         request.setAttribute("filters", availableFilters);
         request.setAttribute("applied_filters", requestFilters);
+        request.setAttribute("sorting_options", sortingOptions);
+        request.setAttribute("sorting_order_options", sortingOrderOptions);
 
         request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.COURSE_LIST_JSP).forward(request, response);
     }

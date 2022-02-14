@@ -67,7 +67,6 @@ public class CourseDTOService {
     private CourseDTO makeCourseDTO(Connection connection, Course course, String languageCode) throws SQLException {
         Language courseLanguage = languageDAO.findLanguageById(connection, course.getLanguageId());
         Language locale = languageDAO.findLanguageByCode(connection, languageCode);
-        System.out.println(languageCode);
         Subject subject = subjectDAO.findSubject(connection, course.getSubjectId(), locale.getId());
 
         User teacher = userDAO.findUser(connection, course.getTeacherId());

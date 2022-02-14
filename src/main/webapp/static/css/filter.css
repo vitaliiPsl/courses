@@ -4,12 +4,16 @@
     padding: 24px 0;
 
     background-color: #f8f8f8;
-
-    display: flex;
-    flex-direction: column;
 }
 
-.filter-box form{
+.filter-box .container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.filter-box .container > form{
     height: 100%;
     width: 100%;
 
