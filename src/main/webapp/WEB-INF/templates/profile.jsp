@@ -84,17 +84,17 @@
                 </h2>
             </div>
 
-            <c:forEach var="course" items="${requestScope.courses}">
+            <c:forEach var="courseDTO" items="${requestScope.courses}">
                 <div class="course">
                     <div class="info-box">
                         <div class="info-row">
-                            <a href="${pageContext.request.contextPath}/course?course_id=${course.getId()}">
-                                <h2>${course.getTitle()}</h2>
+                            <a href="${pageContext.request.contextPath}/course?course_id=${courseDTO.getCourse().getId()}">
+                                <h2>${courseDTO.getCourse().getTitle()}</h2>
                             </a>
                         </div>
                         <div class="info-row">
                             <p class="subject-row"><fmt:message key="label.course_subject"/></p>
-                            <span class="subject">${course.getSubject()}</span>
+                            <span class="subject">${courseDTO.getSubject().getSubject()}</span>
                         </div>
                     </div>
                 </div>

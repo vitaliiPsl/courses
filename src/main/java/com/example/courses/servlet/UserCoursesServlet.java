@@ -1,10 +1,12 @@
 package com.example.courses.servlet;
 
+import com.example.courses.DTO.CourseDTO;
 import com.example.courses.exception.ForbiddenException;
 import com.example.courses.persistence.entity.Course;
 import com.example.courses.persistence.entity.Role;
 import com.example.courses.persistence.entity.User;
 import com.example.courses.persistence.entity.StudentCourse;
+import com.example.courses.service.CourseDTOService;
 import com.example.courses.service.CourseService;
 import com.example.courses.service.StudentCourseService;
 
@@ -13,6 +15,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -23,22 +26,29 @@ import java.util.stream.Collectors;
 public class UserCoursesServlet extends HttpServlet {
     private static final StudentCourseService studentCourseService = new StudentCourseService();
     private static final CourseService courseService = new CourseService();
+    private static final CourseDTOService courseDTOService = new CourseDTOService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        User user = (User) request.getSession().getAttribute("user");
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        String lang = (String) session.getAttribute("lang");
+
         try {
             if (user.getRole().equals(Role.STUDENT)) {
                 List<StudentCourse> studentCourseList = studentCourseService.getCoursesByStudentId(user.getId());
 
                 Map<Long, Integer> scores = getScores(studentCourseList);
                 List<Course> courseList = getStudentCourses(studentCourseList);
+                List<CourseDTO> courseDTOList = courseDTOService.getCourseDTOList(courseList, lang);
 
-                request.setAttribute("courses", courseList);
+                request.setAttribute("courses", courseDTOList);
                 request.setAttribute("scores", scores);
             } else if (user.getRole().equals(Role.TEACHER)) {
-                List<Course> teacherCourses = courseService.getCoursesByTeacherId(user.getId());
-                request.setAttribute("courses", teacherCourses);
+                List<Course> courseList = courseService.getCoursesByTeacherId(user.getId());
+                List<CourseDTO> courseDTOList = courseDTOService.getCourseDTOList(courseList, lang);
+
+                request.setAttribute("courses", courseDTOList);
             } else {
                 throw new ForbiddenException();
             }

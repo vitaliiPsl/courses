@@ -36,13 +36,13 @@ public class LanguageService {
         return language;
     }
 
-    public Language getLanguageByName(String name) throws SQLException {
+    public Language getLanguageByCode(String code) throws SQLException {
         Language language = null;
         Connection connection = null;
 
         try{
             connection = daoFactory.getConnection();
-            language = languageDAO.findLanguageByName(connection, name);
+            language = languageDAO.findLanguageByCode(connection, code);
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);

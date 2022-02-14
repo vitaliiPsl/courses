@@ -14,6 +14,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -28,7 +29,9 @@ public class CourseServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        User user = (User) request.getSession().getAttribute("user");
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        String lang = (String) session.getAttribute("lang");
 
         CourseDTO courseDTO = null;
         StudentCourse studentCourse = null;
@@ -41,7 +44,7 @@ public class CourseServlet extends HttpServlet {
             if (course == null) {
                 request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.COURSE_JSP).forward(request, response);
             }
-            courseDTO = courseDTOService.getCourseDTO(course);
+            courseDTO = courseDTOService.getCourseDTO(course, lang);
 
             if (user != null) {
                 if (user.getRole().equals(Role.STUDENT)) {

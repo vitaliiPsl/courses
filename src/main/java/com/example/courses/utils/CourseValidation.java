@@ -12,7 +12,6 @@ public class CourseValidation {
     public static boolean isCourseValid(Course course){
         return course != null
                 && isTitleValid(course.getTitle())
-                && isSubjectValid(course.getSubject())
                 && isDescriptionValid(course.getDescription());
     }
 

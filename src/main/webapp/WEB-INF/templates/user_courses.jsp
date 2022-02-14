@@ -46,7 +46,8 @@
 
     <div class="content-box">
         <div class="container">
-            <c:forEach var="course" items="${requestScope.courses}">
+            <c:forEach var="courseDTO" items="${requestScope.courses}">
+                <c:set var="course" value="${courseDTO.getCourse()}"/>
                 <div class="course" data-status="${course.getCourseStatus().getStatus()}">
                     <div class="img-box">
                         <img src="${pageContext.request.contextPath}/static/images/default.jpeg" alt=""/>
@@ -61,7 +62,7 @@
                             <p class="subject-row">
                                 <fmt:message key="label.subject"/>
                             </p>
-                            <span class="subject">${course.getSubject()}</span>
+                            <span class="subject">${courseDTO.getSubject().getSubject()}</span>
                         </div>
                         <div class="info-row">
                             <p class="status-row">

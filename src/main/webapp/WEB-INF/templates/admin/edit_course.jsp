@@ -34,14 +34,19 @@
         <form action="${pageContext.request.contextPath}/admin/course/edit?course_id=${course.getId()}" method="post">
             <input class="form-input" type="text" name="course_title" value="${course.getTitle()}" placeholder="<fmt:message key="label.course_title"/>"
                    autocomplete="off" required>
-            <input class="form-input" type="text" name="course_subject" value="${course.getSubject()}"
-                   placeholder="<fmt:message key="label.course_subject"/>" autocomplete="off"
-                   required>
 
             <textarea class="form-input"
                       name="course_description"
                       placeholder="<fmt:message key="label.course_description"/>"
                       autocomplete="off">${course.getDescription()}</textarea>
+
+            <select name="subject_id">
+                <option value="" selected disabled hidden><fmt:message key="label.course_choose_subject"/></option>
+
+                <c:forEach var="subject" items="${requestScope.subjects}">
+                    <option value="${subject.getId()}" ${subject.getId() == course.getSubjectId() ? 'selected' : ''}>${subject.getSubject()}</option>
+                </c:forEach>
+            </select>
 
             <select name="teacher_id" required>
                 <option value="" disabled hidden>

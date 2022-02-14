@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebFilter({"/*"})
-public class CookieLocaleFilter implements Filter {
+public class LocaleFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -16,9 +16,13 @@ public class CookieLocaleFilter implements Filter {
         HttpServletResponse res = (HttpServletResponse) servletResponse;
 
         if (req.getParameter("lang") != null) {
-            Cookie cookie = new Cookie("lang", req.getParameter("lang"));
+            String lang = req.getParameter("lang");
+
+            Cookie cookie = new Cookie("lang", lang);
             cookie.setMaxAge(60 * 60 * 24 * 7);
             res.addCookie(cookie);
+
+            req.getSession().setAttribute("lang", lang);
         }
 
         filterChain.doFilter(servletRequest, servletResponse);

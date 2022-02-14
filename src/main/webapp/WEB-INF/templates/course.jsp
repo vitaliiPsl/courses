@@ -24,6 +24,7 @@
 <main>
     <c:set var="courseDTO" value="${requestScope.course}"/>
     <c:set var="course" value="${courseDTO.getCourse()}"/>
+    <c:set var="subject" value="${courseDTO.getSubject()}"/>
     <c:set var="teacher" value="${courseDTO.getTeacher()}"/>
     <c:set var="students" value="${courseDTO.getStudents()}"/>
 
@@ -32,7 +33,7 @@
             <div class="content">
                 <div class="info-block">
                     <h1 class="course-name">${course.getTitle()}</h1>
-                    <h3 class="course-subject">${course.getSubject()}</h3>
+                    <h3 class="course-subject">${subject.getSubject()}</h3>
                     <p class="course-description">
                         ${course.getDescription()}
                     </p>

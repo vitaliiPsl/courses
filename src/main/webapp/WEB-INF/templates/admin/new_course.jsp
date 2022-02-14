@@ -30,14 +30,25 @@
     <div class="container">
         <form action="${pageContext.request.contextPath}/admin/course/new" method="post">
             <input class="form-input" type="text" name="course_title" placeholder="<fmt:message key="label.course_title"/>" autocomplete="off" required>
-            <input class="form-input" type="text" name="course_subject" placeholder="<fmt:message key="label.course_subject"/>" autocomplete="off"
-                   required>
 
             <textarea class="form-input"
                       name="course_description"
                       placeholder="<fmt:message key="label.course_description"/>"
                       autocomplete="off"
             ></textarea>
+
+            <select name="subject_id">
+                <option value="" selected disabled hidden><fmt:message key="label.course_choose_subject"/></option>
+
+                <c:forEach var="subject" items="${requestScope.subjects}">
+                    <option value="${subject.getId()}">${subject.getSubject()}</option>
+                </c:forEach>
+            </select>
+
+<%--            <div class="form-group">--%>
+<%--                <input type="text" name="new_subject_en" placeholder="<fmt:message key="label.new_subject_en"/>" class="form-input"/>--%>
+<%--                <input type="text" name="new_subject_uk" placeholder="<fmt:message key="label.new_subject_uk"/>" class="form-input"/>--%>
+<%--            </div>--%>
 
             <select name="teacher_id" required>
                 <option value="" selected disabled hidden><fmt:message key="label.course_choose_teacher"/></option>

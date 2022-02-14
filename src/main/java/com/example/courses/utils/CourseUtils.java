@@ -12,7 +12,7 @@ public class CourseUtils {
     public static Course buildCourse(HttpServletRequest request) {
         String name = request.getParameter("course_title");
         String description = request.getParameter("course_description");
-        long subjectId = Long.parseLong(request.getParameter("course_subject"));
+        long subjectId = Long.parseLong(request.getParameter("subject_id"));
         long teacherId = Long.parseLong(request.getParameter("teacher_id"));
         long languageId = Long.parseLong(request.getParameter("language_id"));
         int maxScore = Integer.parseInt(request.getParameter("max_score"));

@@ -1,11 +1,9 @@
 package com.example.courses.servlet.admin;
 
-import com.example.courses.persistence.entity.Course;
-import com.example.courses.persistence.entity.Language;
-import com.example.courses.persistence.entity.Role;
-import com.example.courses.persistence.entity.User;
+import com.example.courses.persistence.entity.*;
 import com.example.courses.service.CourseService;
 import com.example.courses.service.LanguageService;
+import com.example.courses.service.SubjectService;
 import com.example.courses.service.UserService;
 import com.example.courses.servlet.Constants;
 import com.example.courses.utils.CourseUtils;
@@ -15,6 +13,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -23,22 +22,29 @@ import java.util.List;
 public class EditCourseServlet extends HttpServlet {
     private static final UserService userService = new UserService();
     private static final LanguageService languageService = new LanguageService();
+    private static final SubjectService subjectService = new SubjectService();
     private static final CourseService courseService = new CourseService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        String lang = (String) session.getAttribute("lang");
+
         String courseId = request.getParameter("course_id");
 
         if (courseId != null) {
             Course course = null;
             List<User> teachers = null;
             List<Language> languages = null;
+            List<Subject> subjects = null;
 
             try {
                 long id = Long.parseLong(courseId);
                 course = courseService.getCourseById(id);
                 teachers = userService.getUsersByRole(Role.TEACHER);
                 languages = languageService.getAllLanguages();
+                Language locale = languageService.getLanguageByCode(lang);
+                subjects = subjectService.getAll(locale.getId());
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
@@ -46,6 +52,7 @@ public class EditCourseServlet extends HttpServlet {
             request.setAttribute("course", course);
             request.setAttribute("teachers", teachers);
             request.setAttribute("languages", languages);
+            request.setAttribute("subjects", subjects);
             request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.EDIT_COURSE_JSP).forward(request, response);
         } else {
             response.sendRedirect(request.getContextPath() + "/courses");
