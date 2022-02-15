@@ -14,5 +14,9 @@ public class Constants {
         public static final String COURSE_JSP = "/WEB-INF/templates/course.jsp";
         public static final String USER_COURSES_JSP = "/WEB-INF/templates/user_courses.jsp";
         public static final String USER_PROFILE = "/WEB-INF/templates/profile.jsp";
+
+        public static final String ERROR_403 = "/WEB_INF/templates/error_pages/forbidden.jsp";
+        public static final String ERROR_404 = "/WEB-INF/templates/error_pages/not_found.jsp";
+        public static final String ERROR_500 = "/WEB_INF/templates/error_pages/server_error.jsp";
     }
 }
