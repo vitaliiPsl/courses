@@ -3,6 +3,8 @@ package com.example.courses.service;
 import com.example.courses.persistence.DAOFactory;
 import com.example.courses.persistence.LanguageDAO;
 import com.example.courses.persistence.entity.Language;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -12,13 +14,17 @@ public class LanguageService {
     private final DAOFactory daoFactory;
     private final LanguageDAO languageDAO;
 
+    private static final Logger logger = LogManager.getLogger(LanguageService.class.getName());
+
     public LanguageService() {
         daoFactory = DAOFactory.getDAOFactory(DAOFactory.FactoryType.POSTGRES);
         languageDAO = daoFactory.getLanguageDao();
     }
 
     public Language getLanguageById(long languageId) throws SQLException {
-        Language language = null;
+        logger.trace("Get language by id: " + languageId);
+
+        Language language;
         Connection connection = null;
 
         try{
@@ -26,8 +32,7 @@ public class LanguageService {
             language = languageDAO.findLanguageById(connection, languageId);
             connection.commit();
         } catch (SQLException e) {
-            DAOFactory.rollback(connection);
-            System.out.println(e.getMessage());
+            logger.error("SQLException while retrieving language by id", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -37,7 +42,9 @@ public class LanguageService {
     }
 
     public Language getLanguageByCode(String code) throws SQLException {
-        Language language = null;
+        logger.trace("Get language by code: " + code);
+
+        Language language;
         Connection connection = null;
 
         try{
@@ -46,7 +53,7 @@ public class LanguageService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            System.out.println(e.getMessage());
+            logger.error("SQLException while retrieving language by code", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -56,7 +63,9 @@ public class LanguageService {
     }
 
     public List<Language> getAllLanguages() throws SQLException {
-        List<Language> languageList = null;
+        logger.trace("Get all languages");
+
+        List<Language> languageList;
         Connection connection = null;
 
         try{
@@ -66,7 +75,7 @@ public class LanguageService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            System.out.println(e.getMessage());
+            logger.error("SQLException while retrieving all languages", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);

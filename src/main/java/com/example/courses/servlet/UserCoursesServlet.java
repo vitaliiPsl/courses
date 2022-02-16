@@ -9,6 +9,8 @@ import com.example.courses.persistence.entity.StudentCourse;
 import com.example.courses.service.CourseDTOService;
 import com.example.courses.service.CourseService;
 import com.example.courses.service.StudentCourseService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -28,32 +30,39 @@ public class UserCoursesServlet extends HttpServlet {
     private static final CourseService courseService = new CourseService();
     private static final CourseDTOService courseDTOService = new CourseDTOService();
 
+    private static final Logger logger = LogManager.getLogger(UserCoursesServlet.class.getName());
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        logger.trace("User's courses: get");
+
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         String lang = (String) session.getAttribute("lang");
 
         try {
+            List<Course> courseList;
+            List<CourseDTO> courseDTOList;
+
             if (user.getRole().equals(Role.STUDENT)) {
                 List<StudentCourse> studentCourseList = studentCourseService.getCoursesByStudentId(user.getId());
 
                 Map<Long, Integer> scores = getScores(studentCourseList);
-                List<Course> courseList = getStudentCourses(studentCourseList);
-                List<CourseDTO> courseDTOList = courseDTOService.getCourseDTOList(courseList, lang);
+                courseList = getStudentCourses(studentCourseList);
 
-                request.setAttribute("courses", courseDTOList);
                 request.setAttribute("scores", scores);
             } else if (user.getRole().equals(Role.TEACHER)) {
-                List<Course> courseList = courseService.getCoursesByTeacherId(user.getId());
-                List<CourseDTO> courseDTOList = courseDTOService.getCourseDTOList(courseList, lang);
-
-                request.setAttribute("courses", courseDTOList);
+                courseList = courseService.getCoursesByTeacherId(user.getId());
             } else {
                 throw new ForbiddenException();
             }
+
+            courseDTOList = courseDTOService.getCourseDTOList(courseList, lang);
+            request.setAttribute("courses", courseDTOList);
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("SQLException: " + e.getMessage(), e);
+            response.sendRedirect(request.getContextPath() + "/error_handler?type=500");
+            return;
         }
 
         request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.USER_COURSES_JSP).forward(request, response);

@@ -4,6 +4,8 @@ import com.example.courses.persistence.entity.Role;
 import com.example.courses.persistence.entity.User;
 import com.example.courses.service.UserService;
 import com.example.courses.servlet.Constants;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,14 +20,20 @@ import java.util.List;
 public class StudentListServlet extends HttpServlet {
     private static final UserService userService = new UserService();
 
+    private static final Logger logger = LogManager.getLogger(StudentListServlet.class.getName());
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        logger.trace("students: get");
+
         List<User> studentList = null;
 
         try{
             studentList = userService.getUsersByRole(Role.STUDENT);
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("SQLException while retrieving students", e);
+            response.sendRedirect(request.getContextPath() + "/error_handler?type=404");
+            return;
         }
 
         request.setAttribute("students", studentList);

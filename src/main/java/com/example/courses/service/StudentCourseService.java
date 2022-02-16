@@ -3,6 +3,8 @@ package com.example.courses.service;
 import com.example.courses.persistence.DAOFactory;
 import com.example.courses.persistence.StudentCourseDAO;
 import com.example.courses.persistence.entity.StudentCourse;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -12,12 +14,16 @@ public class StudentCourseService {
     private final DAOFactory daoFactory;
     private final StudentCourseDAO studentCourseDAO;
 
+    private static final Logger logger = LogManager.getLogger(StudentCourseService.class.getName());
+
     public StudentCourseService() {
         daoFactory = DAOFactory.getDAOFactory(DAOFactory.FactoryType.POSTGRES);
         studentCourseDAO = daoFactory.getStudentCourseDao();
     }
 
-    public void registerStudentForCourse(long studentId, long courseId) throws SQLException {
+    public void registerStudentForCourse(long studentId, long courseId) throws SQLException {logger.info("Initializing daoFactory and subjectDao");
+        logger.trace(String.format("Register student %d for course %d", studentId, courseId));
+
         StudentCourse studentCourse = new StudentCourse();
         studentCourse.setStudentId(studentId);
         studentCourse.setCourseId(courseId);
@@ -29,24 +35,27 @@ public class StudentCourseService {
             studentCourseDAO.saveStudentCourse(connection, studentCourse);
             connection.commit();
         } catch (SQLException e) {
-            DAOFactory.rollback(connection);
-            System.out.println(e.getMessage());
+            logger.error("SQLException while saving studentCourse", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
         }
     }
 
-    public void updateStudentCourse(List<StudentCourse> studentCourseList) throws SQLException {
+    public void updateStudentCourses(List<StudentCourse> studentCourseList) throws SQLException {
+        logger.trace("Update studentCourseS: " + studentCourseList);
+
         Connection connection = null;
 
         try{
             connection = daoFactory.getConnection();
-            studentCourseDAO.updateStudentCourse(connection, studentCourseList);
+            for(StudentCourse studentCourse: studentCourseList) {
+                studentCourseDAO.updateStudentCourse(connection, studentCourse);
+            }
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.closeResource(connection);
-            System.out.println(e.getMessage());
+            logger.error("SQLException while updating studentCourse", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -54,7 +63,9 @@ public class StudentCourseService {
     }
 
     public StudentCourse getStudentCourse(long studentId, long courseId) throws SQLException {
-        StudentCourse studentCourse = null;
+        logger.trace(String.format("Get student course by student id: %d and course id: %d", studentId, courseId));
+
+        StudentCourse studentCourse;
         Connection connection = null;
 
         try{
@@ -63,7 +74,7 @@ public class StudentCourseService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.closeResource(connection);
-            System.out.println(e.getMessage());
+            logger.error("SQLException while retrieving studentCourse", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -73,7 +84,9 @@ public class StudentCourseService {
     }
 
     public List<StudentCourse> getStudentsByCourseId(long courseId) throws SQLException {
-        List<StudentCourse> studentCourseList = null;
+        logger.trace(String.format("Get students by course id: %d", courseId));
+
+        List<StudentCourse> studentCourseList;
         Connection connection = null;
 
         try{
@@ -82,7 +95,7 @@ public class StudentCourseService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            System.out.println(e.getMessage());
+            logger.error("SQLException while retrieving course students (studentCourse)", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -92,7 +105,9 @@ public class StudentCourseService {
     }
 
     public List<StudentCourse> getCoursesByStudentId(long studentId) throws SQLException {
-        List<StudentCourse> studentCourseList = null;
+        logger.trace(String.format("Get courses by student id: %d", studentId));
+
+        List<StudentCourse> studentCourseList;
         Connection connection = null;
 
         try{
@@ -101,7 +116,7 @@ public class StudentCourseService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            System.out.println(e.getMessage());
+            logger.error("SQLException while retrieving student's courses", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);

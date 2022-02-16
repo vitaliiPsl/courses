@@ -8,6 +8,8 @@ import com.example.courses.persistence.entity.StudentCourse;
 import com.example.courses.service.CourseDTOService;
 import com.example.courses.service.CourseService;
 import com.example.courses.service.StudentCourseService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -27,6 +29,8 @@ public class CourseServlet extends HttpServlet {
     private static final CourseDTOService courseDTOService = new CourseDTOService();
     private static final StudentCourseService studentCourseService = new StudentCourseService();
 
+    private static final Logger logger = LogManager.getLogger(CourseServlet.class.getName());
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
@@ -37,24 +41,37 @@ public class CourseServlet extends HttpServlet {
         StudentCourse studentCourse = null;
         Map<Long, Integer> studentsScores = null;
 
+        String courseId = request.getParameter("course_id");
         try {
-            long courseId = Long.parseLong(request.getParameter("course_id"));
+            long id = Long.parseLong(courseId);
+            logger.trace("Get course by id: " + id);
 
-            Course course = courseService.getCourseById(courseId);
+            Course course = courseService.getCourseById(id);
+
+            // Redirect to 'not found' if course is null
             if (course == null) {
-                request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.COURSE_JSP).forward(request, response);
+                logger.trace("Course not found");
+                response.sendRedirect(request.getContextPath() + "/error_handler?type=404");
+                return;
             }
+
             courseDTO = courseDTOService.getCourseDTO(course, lang);
 
             if (user != null) {
                 if (user.getRole().equals(Role.STUDENT)) {
-                    studentCourse = studentCourseService.getStudentCourse(user.getId(), courseId);
+                    studentCourse = studentCourseService.getStudentCourse(user.getId(), id);
                 } else if (user.getRole().equals(Role.TEACHER)) {
-                    studentsScores = getStudentsScores(courseId);
+                    studentsScores = getStudentsScores(id);
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("SQLException: " + e.getMessage(), e);
+            response.sendRedirect(request.getContextPath() + "/error_handler?type=500");
+            return;
+        } catch (NumberFormatException e) {
+            logger.error("Invalid course id: " + courseDTO, e);
+            response.sendRedirect(request.getContextPath() + "/error_handler?type=404");
+            return;
         }
 
         request.setAttribute("course", courseDTO);

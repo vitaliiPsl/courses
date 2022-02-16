@@ -4,15 +4,21 @@ import com.example.courses.persistence.DAOFactory;
 import com.example.courses.persistence.UserDAO;
 import com.example.courses.persistence.entity.Role;
 import com.example.courses.persistence.entity.User;
+import com.example.courses.utils.DAOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PostgresUserDAO implements UserDAO {
+    private static final Logger logger = LogManager.getLogger(PostgresUserDAO.class.getName());
 
     @Override
     public long saveUser(Connection connection, User user) throws SQLException {
+        logger.info("Saving new user:" + user);
+
         long userId;
         PreparedStatement statement = null;
 
@@ -25,10 +31,9 @@ public class PostgresUserDAO implements UserDAO {
             setUserProperties(user, statement);
             statement.executeUpdate();
 
-            userId = getGeneratedId(statement);
+            userId = DAOUtils.getGeneratedId(statement);
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+            logger.error("SQLException while saving user", e);
             throw e;
         } finally {
             DAOFactory.closeResource(statement);
@@ -37,30 +42,10 @@ public class PostgresUserDAO implements UserDAO {
         return userId;
     }
 
-    private long getGeneratedId(PreparedStatement statement) throws SQLException {
-        long generatedId;
-        ResultSet generatedKeys = null;
-
-        try {
-            generatedKeys = statement.getGeneratedKeys();
-            if(generatedKeys.next()){
-                generatedId = generatedKeys.getLong(1);
-            } else {
-                throw new SQLException();
-            }
-        } catch (SQLException e){
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            throw e;
-        } finally {
-            DAOFactory.closeResource(generatedKeys);
-        }
-
-        return generatedId;
-    }
-
     @Override
     public void deleteUserById(Connection connection, long id) throws SQLException {
+        logger.trace("Deleting user by id: " + id);
+
         PreparedStatement statement = null;
 
         try {
@@ -68,8 +53,7 @@ public class PostgresUserDAO implements UserDAO {
             statement.setLong(1, id);
             statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+            logger.error("SQLException while deleting by user id", e);
             throw e;
         } finally {
             DAOFactory.closeResource(statement);
@@ -78,6 +62,7 @@ public class PostgresUserDAO implements UserDAO {
 
     @Override
     public void updateUser(Connection connection, User user) throws SQLException {
+        logger.trace("Updating user: " + user);
         PreparedStatement statement = null;
 
         try {
@@ -88,8 +73,7 @@ public class PostgresUserDAO implements UserDAO {
 
             statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+            logger.error("SQLException while updating user", e);
             throw e;
         } finally {
             DAOFactory.closeResource(statement);
@@ -98,6 +82,8 @@ public class PostgresUserDAO implements UserDAO {
 
     @Override
     public User findUser(Connection connection, long id) throws SQLException {
+        logger.trace("Selecting user by id: " + id);
+
         User user = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -110,8 +96,7 @@ public class PostgresUserDAO implements UserDAO {
                 user = parsePerson(resultSet);
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+            logger.error("SQLException while selecting user by id", e);
             throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
@@ -123,19 +108,21 @@ public class PostgresUserDAO implements UserDAO {
 
     @Override
     public User findUser(Connection connection, String email) throws SQLException {
+        logger.trace("Selecting user by email: " + email);
+
         User user = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try{
             statement = connection.prepareStatement(UserDAOConstants.SELECT_PERSON_BY_EMAIL);
+            System.out.println(statement);
             statement.setString(1, email);
             resultSet = statement.executeQuery();
             if(resultSet.next()) {
                 user = parsePerson(resultSet);
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+            logger.error("SQLException while selecting user by email", e);
             throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
@@ -147,6 +134,8 @@ public class PostgresUserDAO implements UserDAO {
 
     @Override
     public List<User> findAll(Connection connection) throws SQLException {
+        logger.trace("Selecting all users");
+
         List<User> userList = new ArrayList<>();
         Statement statement = null;
         ResultSet resultSet = null;
@@ -159,8 +148,7 @@ public class PostgresUserDAO implements UserDAO {
                 userList.add(parsePerson(resultSet));
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+            logger.error("SQLException while selecting all users", e);
             throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
@@ -172,6 +160,8 @@ public class PostgresUserDAO implements UserDAO {
 
     @Override
     public List<User> findAllByRole(Connection connection, Role role) throws SQLException {
+        logger.trace("Selecting users with role: " + role.getRole());
+
         List<User> userList = new ArrayList<>();
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -185,8 +175,7 @@ public class PostgresUserDAO implements UserDAO {
                 userList.add(parsePerson(resultSet));
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+            logger.error("SQLException while selecting users by role: " + role.getRole(), e);
             throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
@@ -197,24 +186,36 @@ public class PostgresUserDAO implements UserDAO {
     }
 
     private void setUserProperties(User user, PreparedStatement statement) throws SQLException {
-        statement.setString(1, user.getFirstName());
-        statement.setString(2, user.getLastName());
-        statement.setString(3, user.getEmail());
-        statement.setString(4, user.getPassword());
-        statement.setBoolean(5, user.isBlocked());
-        statement.setInt(6, user.getRole().ordinal()+1);
+        try {
+            statement.setString(1, user.getFirstName());
+            statement.setString(2, user.getLastName());
+            statement.setString(3, user.getEmail());
+            statement.setString(4, user.getPassword());
+            statement.setBoolean(5, user.isBlocked());
+            statement.setInt(6, user.getRole().ordinal() + 1);
+        } catch (SQLException e){
+            logger.error("SQLException while setting user's properties", e);
+            throw e;
+        }
     }
 
     private User parsePerson(ResultSet resultSet) throws SQLException {
+        logger.trace("Parsing user");
+
         User user = new User();
 
-        user.setId(resultSet.getLong(UserDAOConstants.PERSON_ID));
-        user.setFirstName(resultSet.getString(UserDAOConstants.PERSON_FIRST_NAME));
-        user.setLastName(resultSet.getString(UserDAOConstants.PERSON_LAST_NAME));
-        user.setEmail(resultSet.getString(UserDAOConstants.PERSON_EMAIL));
-        user.setPassword(resultSet.getString(UserDAOConstants.PERSON_PASSWORD));
-        user.setBlocked(resultSet.getBoolean(UserDAOConstants.PERSON_IS_BLOCKED));
-        user.setRole(parseRole(resultSet.getString(UserDAOConstants.ROLE_NAME)));
+        try {
+            user.setId(resultSet.getLong(UserDAOConstants.PERSON_ID));
+            user.setFirstName(resultSet.getString(UserDAOConstants.PERSON_FIRST_NAME));
+            user.setLastName(resultSet.getString(UserDAOConstants.PERSON_LAST_NAME));
+            user.setEmail(resultSet.getString(UserDAOConstants.PERSON_EMAIL));
+            user.setPassword(resultSet.getString(UserDAOConstants.PERSON_PASSWORD));
+            user.setBlocked(resultSet.getBoolean(UserDAOConstants.PERSON_IS_BLOCKED));
+            user.setRole(parseRole(resultSet.getString(UserDAOConstants.ROLE_NAME)));
+        } catch (SQLException e){
+            logger.error("SQLException while building users", e);
+            throw e;
+        }
 
         return user;
     }
@@ -233,6 +234,7 @@ public class PostgresUserDAO implements UserDAO {
                 role = Role.STUDENT;
                 break;
             default:
+                logger.warn("Unknown role:" + roleStr);
                 throw new SQLException("Unknown role: " + roleStr);
         }
 

@@ -6,6 +6,8 @@ import com.example.courses.persistence.entity.Role;
 import com.example.courses.persistence.entity.User;
 import com.example.courses.utils.HashingUtils;
 import com.example.courses.utils.UserValidation;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -16,18 +18,24 @@ public class UserService {
     private final DAOFactory daoFactory;
     private final UserDAO userDAO;
 
+    private static final Logger logger = LogManager.getLogger(UserService.class.getName());
+
     public UserService(){
         daoFactory = DAOFactory.getDAOFactory(DAOFactory.FactoryType.POSTGRES);
         userDAO = daoFactory.getUserDao();
     }
 
     public void registerUser(User user) throws SQLException {
+        logger.trace("Register user: " + user);
+
         if(!UserValidation.isUserValid(user)){
+            logger.warn("User's properties are invalid: " + user);
             throw new IllegalArgumentException("You have to provide valid data");
         }
 
         User existing = getUserByEmail(user.getEmail());
         if(existing != null){
+            logger.warn("User's with email: " + user.getEmail() + " already exists");
             throw new IllegalArgumentException("User with email " + user.getEmail() + " already exists");
         }
 
@@ -38,6 +46,8 @@ public class UserService {
     }
 
     public long saveUser(User user) throws SQLException {
+        logger.trace("Save user: " + user);
+
         long userId;
         Connection connection = null;
 
@@ -47,7 +57,7 @@ public class UserService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            System.out.println(e.getMessage());
+            logger.error("SQLException while saving user", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -57,6 +67,8 @@ public class UserService {
     }
 
     public void deleteUser(User user) throws SQLException{
+        logger.trace("Delete user: " + user);
+
         Connection connection = null;
 
         try{
@@ -65,7 +77,7 @@ public class UserService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            System.out.println(e.getMessage());
+            logger.error("SQLException while deleting user", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -73,6 +85,8 @@ public class UserService {
     }
 
     public void updateUser(User user) throws SQLException{
+        logger.trace("Update user: " + user);
+
         Connection connection = null;
 
         try{
@@ -81,7 +95,7 @@ public class UserService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            System.out.println(e.getMessage());
+            logger.error("SQLException while updating user", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -89,6 +103,8 @@ public class UserService {
     }
 
     public User getUserById(long id) throws SQLException {
+        logger.trace("Get user by id: " + id);
+
         User user;
         Connection connection = null;
 
@@ -98,7 +114,7 @@ public class UserService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            System.out.println(e.getMessage());
+            logger.error("SQLException while retrieving user by id", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -108,6 +124,8 @@ public class UserService {
     }
 
     public User getUserByEmail(String email) throws SQLException {
+        logger.trace("Get user by email: " + email);
+
         User user;
         Connection connection = null;
 
@@ -117,7 +135,7 @@ public class UserService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            System.out.println(e.getMessage());
+            logger.error("SQLException while retrieving user by email", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -127,6 +145,8 @@ public class UserService {
     }
 
     public List<User> getUsers(List<Long> ids) throws SQLException {
+        logger.trace("Get list of users by ids: " + ids);
+
         List<User> userList = new ArrayList<>();
         Connection connection = null;
 
@@ -138,7 +158,7 @@ public class UserService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            System.out.println(e.getMessage());
+            logger.trace("SQLException while getting users by list of ids", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -148,6 +168,8 @@ public class UserService {
     }
 
     public List<User> getUsersByRole(Role role) throws SQLException {
+        logger.trace("Get list of users by role: " + role.getRole());
+
         List<User> userList = null;
         Connection connection = null;
 
@@ -157,7 +179,7 @@ public class UserService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            System.out.println(e.getMessage());
+            logger.trace("SQLException while getting users role", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -167,18 +189,24 @@ public class UserService {
     }
 
     public void blockUserById(long id) throws SQLException {
+        logger.trace("Block user by id: " + id);
+
         User user = getUserById(id);
         if(user != null) {
             user.setBlocked(true);
             updateUser(user);
+            logger.info("User with id: " + id + " is now blocked");
         }
     }
 
     public void unblockUserById(long id) throws SQLException {
+        logger.trace("Unblock user by id: " + id);
+
         User user = getUserById(id);
         if(user != null) {
             user.setBlocked(false);
             updateUser(user);
+            logger.info("User with id: " + id + " is now unblocked");
         }
     }
 }

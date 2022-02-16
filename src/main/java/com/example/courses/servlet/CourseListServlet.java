@@ -1,7 +1,6 @@
 package com.example.courses.servlet;
 
 import com.example.courses.DTO.CourseDTO;
-import com.example.courses.DTO.SortingDTO;
 import com.example.courses.persistence.entity.Course;
 import com.example.courses.persistence.entity.Role;
 import com.example.courses.persistence.entity.User;
@@ -9,6 +8,8 @@ import com.example.courses.service.CourseDTOService;
 import com.example.courses.service.CourseFilterService;
 import com.example.courses.service.CourseService;
 import com.example.courses.service.CourseSortingService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -27,18 +28,16 @@ public class CourseListServlet extends HttpServlet {
     private static final CourseFilterService courseFilterService = new CourseFilterService();
     private static final CourseSortingService courseSortingService = new CourseSortingService();
 
+    private static final Logger logger = LogManager.getLogger(CourseListServlet.class.getName()); 
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         String lang = (String) session.getAttribute("lang");
 
-        List<CourseDTO> courseDTOList = null;
-        Map<String, List<String>> availableFilters = null;
-        Map<String, List<String>> requestFilters = null;
-        List<String> sortingOptions = null;
-        List<String> sortingOrderOptions = null;
-
+        List<CourseDTO> courseDTOList;
+        
         try {
             List<Course> courseList;
             String query = request.getParameter("query");
@@ -56,48 +55,77 @@ public class CourseListServlet extends HttpServlet {
 
             courseDTOList = courseDTOService.getCourseDTOList(courseList, lang);
 
-            availableFilters = courseFilterService.getAvailableFilters(lang);
-            requestFilters = (Map<String, List<String>>) session.getAttribute("filters");
-            courseFilterService.applyFilters(courseDTOList, requestFilters);
+            filter(request, session, lang, courseDTOList);
+            sort(request, session, courseDTOList);
 
-            sortingOptions = courseSortingService.getSortingOptions();
-            sortingOrderOptions = courseSortingService.getSortingOrderOptions();
-            String sessionSorting = (String) session.getAttribute("sorting");
-            String sessionSortingOrder = (String) session.getAttribute("sorting_order");
-            System.out.println(sessionSorting);
-            System.out.println(sessionSortingOrder);
-            courseSortingService.applySoring(courseDTOList, sessionSorting, sessionSortingOrder);
-
-            courseDTOList = pagination(courseDTOList, request);
+            courseDTOList = applyPagination(courseDTOList, request, response);
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            logger.error("SQLException: " + e.getMessage(), e);
+            response.sendRedirect(request.getContextPath() + "/error_handler?type=500");
+            return;
         }
 
-        request.setAttribute("courses", courseDTOList);
-        request.setAttribute("filters", availableFilters);
-        request.setAttribute("applied_filters", requestFilters);
-        request.setAttribute("sorting_options", sortingOptions);
-        request.setAttribute("sorting_order_options", sortingOrderOptions);
-
-        request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.COURSE_LIST_JSP).forward(request, response);
+        logger.debug("CourseDTOList: " + courseDTOList);
+        if(courseDTOList != null) {
+            request.setAttribute("courses", courseDTOList);
+            request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.COURSE_LIST_JSP).forward(request, response);
+        }
     }
 
-    private List<CourseDTO> pagination(List<CourseDTO> courseDTOList, HttpServletRequest request) {
+    private void filter(HttpServletRequest request, HttpSession session, String lang, List<CourseDTO> courseDTOList) throws SQLException {
+        // get available filters
+        Map<String, List<String>> availableFilters = courseFilterService.getAvailableFilters(lang);
+
+        // get filters from session and apply them
+        Map<String, List<String>> requestFilters  = (Map<String, List<String>>) session.getAttribute("filters");
+        courseFilterService.applyFilters(courseDTOList, requestFilters);
+
+        request.setAttribute("filters", availableFilters);
+    }
+
+    private void sort(HttpServletRequest request, HttpSession session, List<CourseDTO> courseDTOList) {
+        // get sorting and order options
+        List<String> sortingOptions = courseSortingService.getSortingOptions();
+        List<String> sortingOrderOptions = courseSortingService.getSortingOrderOptions();
+
+        // get sorting and order from session and apply to courseDTO list
+        String sessionSorting = (String) session.getAttribute("sorting");
+        String sessionSortingOrder = (String) session.getAttribute("sorting_order");
+        courseSortingService.applySoring(courseDTOList, sessionSorting, sessionSortingOrder);
+
+        request.setAttribute("sorting_options", sortingOptions);
+        request.setAttribute("sorting_order_options", sortingOrderOptions);
+    }
+
+    private List<CourseDTO> applyPagination(List<CourseDTO> courseDTOList, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // default page
+        int currentPage = 1;
+
+        // get current page if it is not null
         String pageStr = request.getParameter("page");
-        int page = 1;
         if (pageStr != null) {
-            page = Integer.parseInt(pageStr);
+            currentPage = Integer.parseInt(pageStr);
         }
 
+        // calculate total number of pages
         int numberOfPages = courseDTOList.size() / RECORDS_PER_PAGE;
         if (courseDTOList.size() % RECORDS_PER_PAGE > 0) {
             numberOfPages++;
         }
 
-        request.setAttribute("page", page);
+        // redirect to 'not found' if current page is not in range of total number of pages
+        if(currentPage < 1 || currentPage > numberOfPages){
+            logger.error("Chosen page does not exists");
+            response.sendRedirect(request.getContextPath() + "/error_handler?type=500");
+            return null;
+        }
+
+        // save current page and number of pages in request
+        request.setAttribute("page", currentPage);
         request.setAttribute("number_of_pages", numberOfPages);
 
-        int start = page * RECORDS_PER_PAGE - RECORDS_PER_PAGE;
+        // return sublist
+        int start = currentPage * RECORDS_PER_PAGE - RECORDS_PER_PAGE;
         int end = Math.min(start + RECORDS_PER_PAGE, courseDTOList.size());
 
         return courseDTOList.subList(start, end);

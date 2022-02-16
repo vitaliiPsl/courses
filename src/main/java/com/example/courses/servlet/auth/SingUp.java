@@ -4,6 +4,8 @@ import com.example.courses.persistence.entity.Role;
 import com.example.courses.persistence.entity.User;
 import com.example.courses.service.UserService;
 import com.example.courses.servlet.Constants;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,13 +19,17 @@ import java.sql.SQLException;
 public class SingUp extends HttpServlet {
     private final UserService userService = new UserService();
 
+    private final static Logger logger = LogManager.getLogger(SingUp.class.getName());
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        logger.trace("get: sign up");
         request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.SIGN_UP_JSP).forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        logger.trace("post: sign up");
         String firstName = request.getParameter("first_name");
         String lastName = request.getParameter("last_name");
         String email = request.getParameter("email");
@@ -36,13 +42,19 @@ public class SingUp extends HttpServlet {
         user.setPassword(password);
         user.setRole(Role.STUDENT);
 
+        logger.info("Sign up request: " + user);
+
         try{
             userService.registerUser(user);
+            logger.info("Sing up went successfully");
         } catch (SQLException e) {
-            request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.SIGN_UP_JSP).forward(request, response);
+            logger.error("SQLException while saving new user", e);
+            this.doGet(request, response);
         } catch (IllegalArgumentException e){
+            logger.warn("Provided data is invalid: " + user, e);
+
             request.setAttribute("error", e.getMessage());
-            request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.SIGN_UP_JSP).forward(request, response);
+            this.doGet(request, response);
         }
 
         response.sendRedirect(request.getContextPath() + "/auth/log_in");

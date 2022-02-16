@@ -4,6 +4,8 @@ import com.example.courses.persistence.DAOFactory;
 import com.example.courses.persistence.SubjectDAO;
 import com.example.courses.persistence.entity.Subject;
 import com.example.courses.utils.DAOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,11 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PostgresSubjectDAO implements SubjectDAO {
+    private static final Logger logger = LogManager.getLogger(PostgresDAOFactory.class.getName());
 
     @Override
     public long saveSubject(Connection connection, Subject subject) throws SQLException {
+        logger.trace("Save subject: " + subject);
         long subjectId;
-
         PreparedStatement statement = null;
 
         try{
@@ -30,8 +33,7 @@ public class PostgresSubjectDAO implements SubjectDAO {
             subjectId = DAOUtils.getGeneratedId(statement);
             subject.setId(subjectId);
         } catch (SQLException e){
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+            logger.error("SQLException while saving subject", e);
             throw e;
         } finally {
             DAOFactory.closeResource(statement);
@@ -41,6 +43,7 @@ public class PostgresSubjectDAO implements SubjectDAO {
     }
 
     public void saveSubjectDescription(Connection connection, Subject subject) throws SQLException {
+        logger.trace("Save subject description: " + subject);
         PreparedStatement statement = null;
 
         try{
@@ -50,8 +53,7 @@ public class PostgresSubjectDAO implements SubjectDAO {
             statement.setLong(3, subject.getLanguageId());
             statement.executeUpdate();
         } catch (SQLException e){
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+            logger.error("SQLException while saving subject description", e);
             throw e;
         } finally {
             DAOFactory.closeResource(statement);
@@ -60,6 +62,7 @@ public class PostgresSubjectDAO implements SubjectDAO {
 
     @Override
     public void deleteSubjectById(Connection connection, long id) throws SQLException {
+        logger.trace("Delete subject by id: " + id);
         PreparedStatement statement = null;
 
         try{
@@ -67,8 +70,7 @@ public class PostgresSubjectDAO implements SubjectDAO {
             statement.setLong(1, id);
             statement.executeUpdate();
         } catch (SQLException e){
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+            logger.error("Error while deleting subject", e);
             throw e;
         } finally {
             DAOFactory.closeResource(statement);
@@ -77,6 +79,7 @@ public class PostgresSubjectDAO implements SubjectDAO {
 
     @Override
     public void updateSubject(Connection connection, Subject subject) throws SQLException {
+        logger.trace("Update subject: " + subject);
         PreparedStatement statement = null;
 
         try{
@@ -86,8 +89,7 @@ public class PostgresSubjectDAO implements SubjectDAO {
             statement.setLong(3, subject.getLanguageId());
             statement.executeUpdate();
         } catch (SQLException e){
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+            logger.error("SQLException occurred while updating subject", e);
             throw e;
         } finally {
             DAOFactory.closeResource(statement);
@@ -96,6 +98,7 @@ public class PostgresSubjectDAO implements SubjectDAO {
 
     @Override
     public Subject findSubject(Connection connection, long id, long languageId) throws SQLException {
+        logger.trace("Find subject. Id: " + id + ". Language id: " + languageId);
         Subject subject = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -109,8 +112,7 @@ public class PostgresSubjectDAO implements SubjectDAO {
                 subject = parseSubjectDescription(resultSet);
             }
         } catch (SQLException e){
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+            logger.error("SQLException while selecting subject", e);
             throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
@@ -122,6 +124,8 @@ public class PostgresSubjectDAO implements SubjectDAO {
 
     @Override
     public List<Subject> findAll(Connection connection, long languageId) throws SQLException {
+        logger.trace("Find all subject by language id: " + languageId);
+
         List<Subject> subjectList = new ArrayList<>();
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -134,8 +138,7 @@ public class PostgresSubjectDAO implements SubjectDAO {
                 subjectList.add(parseSubjectDescription(resultSet));
             }
         } catch (SQLException e){
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+            logger.error("SQLException while selecting all subjects", e);
             throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
@@ -146,10 +149,16 @@ public class PostgresSubjectDAO implements SubjectDAO {
     }
 
     private Subject parseSubjectDescription(ResultSet resultSet) throws SQLException {
+        logger.trace("Parse subject description");
         Subject subject = new Subject();
-        subject.setId(resultSet.getLong(SubjectDAOConstants.SUBJECT_DESCRIPTION_SUBJECT_ID));
-        subject.setSubject(resultSet.getString(SubjectDAOConstants.SUBJECT_DESCRIPTION_SUBJECT_NAME));
-        subject.setLanguageId(resultSet.getLong(SubjectDAOConstants.SUBJECT_DESCRIPTION_LANGUAGE_ID));
+        try {
+            subject.setId(resultSet.getLong(SubjectDAOConstants.SUBJECT_DESCRIPTION_SUBJECT_ID));
+            subject.setSubject(resultSet.getString(SubjectDAOConstants.SUBJECT_DESCRIPTION_SUBJECT_NAME));
+            subject.setLanguageId(resultSet.getLong(SubjectDAOConstants.SUBJECT_DESCRIPTION_LANGUAGE_ID));
+        } catch (SQLException e){
+            logger.error("SQLException while parsing subject description", e);
+            throw e;
+        }
 
         return subject;
     }

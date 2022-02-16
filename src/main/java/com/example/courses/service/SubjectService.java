@@ -3,6 +3,8 @@ package com.example.courses.service;
 import com.example.courses.persistence.DAOFactory;
 import com.example.courses.persistence.SubjectDAO;
 import com.example.courses.persistence.entity.Subject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -13,12 +15,16 @@ public class SubjectService {
     private final DAOFactory daoFactory;
     private final SubjectDAO subjectDAO;
 
+    private static final Logger logger = LogManager.getLogger(SubjectService.class.getName());
+
     public SubjectService(){
         daoFactory = DAOFactory.getDAOFactory(DAOFactory.FactoryType.POSTGRES);
         subjectDAO = daoFactory.getSubjectDao();
     }
 
     public long saveSubject(Subject subject) throws SQLException {
+        logger.info("Save subject: " + subject);
+
         long subjectId;
         Connection connection = null;
 
@@ -28,7 +34,7 @@ public class SubjectService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            System.out.println(e.getMessage());
+            logger.error("SQLException while saving subject", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -38,6 +44,8 @@ public class SubjectService {
     }
 
     public void saveSubjectDescription(Subject subject) throws SQLException {
+        logger.info("Save subject description: " + subject);
+
         Connection connection = null;
 
         try{
@@ -46,7 +54,7 @@ public class SubjectService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            System.out.println(e.getMessage());
+            logger.error("SQLException while saving subject description", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -54,7 +62,9 @@ public class SubjectService {
     }
 
     public Subject getSubject(long subjectId, long languageId) throws SQLException {
-        Subject subject = new Subject();
+        logger.trace("Get subject. Subject id: " + subjectId + ". Language id: " + languageId);
+
+        Subject subject;
         Connection connection = null;
 
         try{
@@ -63,7 +73,7 @@ public class SubjectService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            System.out.println(e.getMessage());
+            logger.error(String.format("SQLException while retrieving subject with id: %d and language id: %d", subjectId, languageId), e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -73,7 +83,9 @@ public class SubjectService {
     }
 
     public List<Subject> getAll(long languageId) throws SQLException {
-        List<Subject> subjectList = new ArrayList<>();
+        logger.trace("Get all subjects");
+
+        List<Subject> subjectList;
         Connection connection = null;
 
         try{
@@ -82,7 +94,7 @@ public class SubjectService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            System.out.println(e.getMessage());
+            logger.error("SQLException while retrieving all subjects", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -92,6 +104,8 @@ public class SubjectService {
     }
 
     public void deleteSubjectById(long subjectId) throws SQLException {
+        logger.trace("Delete subject by id: " + subjectId);
+
         Connection connection = null;
 
         try{
@@ -100,7 +114,7 @@ public class SubjectService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            System.out.println(e.getMessage());
+            logger.error(String.format("SQLException while deleting subjects with id: %d", subjectId), e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);

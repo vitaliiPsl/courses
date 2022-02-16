@@ -5,6 +5,8 @@ import com.example.courses.persistence.entity.Course;
 import com.example.courses.persistence.entity.Language;
 import com.example.courses.persistence.entity.Subject;
 import com.example.courses.persistence.entity.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
@@ -21,16 +23,29 @@ public class CourseFilterService {
     private final CourseService courseService;
     private final CourseDTOService courseDTOService;
 
+    private static final Logger logger = LogManager.getLogger(CourseFilterService.class.getName());
+
     public CourseFilterService(){
         courseService = new CourseService();
         courseDTOService = new CourseDTOService();
     }
 
     public Map<String, List<String>> getAvailableFilters(String languageCode) throws SQLException {
+        logger.trace("Get available filters");
+        logger.debug("Get available filters. Localization language: " + languageCode);
+
         Map<String, List<String>> filters = new HashMap<>();
 
-        List<Course> courseList = courseService.getAvailable();
-        List<CourseDTO> courseDTOList = courseDTOService.getCourseDTOList(courseList, languageCode);
+        List<Course> courseList;
+        List<CourseDTO> courseDTOList;
+
+        try {
+            courseList = courseService.getAvailable();
+            courseDTOList = courseDTOService.getCourseDTOList(courseList, languageCode);
+        } catch (SQLException e){
+            logger.error("SQLException while getting courseDTOList", e);
+            throw e;
+        }
 
         List<String> subjects = getSubjects(courseDTOList);
         filters.put(SUBJECT_FILTER, subjects);
@@ -41,42 +56,34 @@ public class CourseFilterService {
         return filters;
     }
 
-    public Map<String, List<String>> getRequestFilters(HttpServletRequest request) {
-        Map<String, List<String>> filters = new HashMap<>();
-
-        String[] subjects = request.getParameterValues(SUBJECT_FILTER);
-        if(subjects != null){
-            List<String> subjectList = Arrays.asList(subjects);
-            filters.put(SUBJECT_FILTER, subjectList);
-        }
-
-        String[] teachers = request.getParameterValues(TEACHER_FILTER);
-        if(teachers != null){
-            List<String> teacherList = Arrays.asList(teachers);
-            filters.put(TEACHER_FILTER, teacherList);
-        }
-
-        return filters;
-    }
-
     public void applyFilters(List<CourseDTO> courseDTOList, Map<String, List<String>> filters) {
+        logger.trace("ApplyFilters to courseDTOList: " + courseDTOList);
+        logger.info("Applying filters: " + filters);
+
+        logger.debug("Before applying filters: " + courseDTOList);
         if(filters.containsKey(SUBJECT_FILTER) && filters.get(SUBJECT_FILTER).size() != 0){
             filterBySubject(courseDTOList, filters.get(SUBJECT_FILTER));
         }
+
         if(filters.containsKey(TEACHER_FILTER) && filters.get(TEACHER_FILTER).size() != 0){
             filterByTeacher(courseDTOList, filters.get(TEACHER_FILTER));
         }
+
+        logger.debug("After applying filters: " + courseDTOList);
     }
 
     private static void filterBySubject(List<CourseDTO> courseDTOList, List<String> subjectList) {
+        logger.trace("Filter by subject");
         courseDTOList.removeIf(courseDTO -> !subjectList.contains(courseDTO.getSubject().getSubject()));
     }
 
     private static void filterByTeacher(List<CourseDTO> courseDTOList, List<String> teacherList) {
+        logger.trace("Filter by teacher");
         courseDTOList.removeIf(courseDTO -> !teacherList.contains(courseDTO.getTeacher().getFullName()));
     }
 
     private static List<String> getSubjects(List<CourseDTO> courseDTOList) {
+        logger.trace("Get subject");
         return courseDTOList.stream()
                 .map(CourseDTO::getSubject)
                 .map(Subject::getSubject)
@@ -85,6 +92,7 @@ public class CourseFilterService {
     }
 
     private static List<String> getTeachers(List<CourseDTO> courseDTOList) {
+        logger.trace("Get teachers");
         return courseDTOList.stream()
                 .map(CourseDTO::getTeacher)
                 .map(User::getFullName)

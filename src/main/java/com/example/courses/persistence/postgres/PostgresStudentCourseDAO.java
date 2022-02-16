@@ -3,18 +3,23 @@ package com.example.courses.persistence.postgres;
 import com.example.courses.persistence.DAOFactory;
 import com.example.courses.persistence.StudentCourseDAO;
 import com.example.courses.persistence.entity.StudentCourse;
+import com.example.courses.utils.DAOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PostgresStudentCourseDAO implements StudentCourseDAO {
+    private static final Logger logger = LogManager.getLogger(PostgresStudentCourseDAO.class.getName());
 
     @Override
     public long saveStudentCourse(Connection connection, StudentCourse studentCourse) throws SQLException {
+        logger.trace("Save record: " + studentCourse);
+
         long generatedId;
         PreparedStatement statement = null;
-        ResultSet generatedKey = null;
 
         try {
             statement = connection.prepareStatement(
@@ -26,17 +31,11 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
             statement.setInt(4, studentCourse.getScore());
             statement.executeUpdate();
 
-            generatedKey = statement.getGeneratedKeys();
-            if (generatedKey.next()) {
-                generatedId = generatedKey.getLong(1);
-            } else {
-                throw new SQLException();
-            }
+            generatedId = DAOUtils.getGeneratedId(statement);
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            logger.error("Error while saving studentCourse record", e);
             throw e;
         } finally {
-            DAOFactory.closeResource(generatedKey);
             DAOFactory.closeResource(statement);
         }
 
@@ -45,6 +44,7 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
 
     @Override
     public void deleteStudentCourse(Connection connection, long studentId, long courseId) throws SQLException {
+        logger.trace("Delete student course. Student id: " + studentId + ". Course id: " + courseId);
         PreparedStatement statement = null;
 
         try {
@@ -53,7 +53,7 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
             statement.setLong(2, courseId);
             statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            logger.error("Error while deleting studentCourse record", e);
             throw e;
         } finally {
             DAOFactory.closeResource(statement);
@@ -61,21 +61,20 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
     }
 
     @Override
-    public void updateStudentCourse(Connection connection, List<StudentCourse> studentCourseList) throws SQLException {
+    public void updateStudentCourse(Connection connection, StudentCourse studentCourse) throws SQLException {
+        logger.trace("Update student course: " + studentCourse);
         PreparedStatement statement = null;
 
-        try{
+        try {
             statement = connection.prepareStatement(StudentCourseDAOConstants.UPDATE_STUDENT_SCORE);
-            System.out.println("Start update: ");
-            studentCourseList.forEach(System.out::println);
-            for(StudentCourse studentCourse: studentCourseList) {
-                statement.setInt(1, studentCourse.getScore());
-                statement.setLong(2, studentCourse.getStudentId());
-                statement.setLong(3, studentCourse.getCourseId());
-                statement.executeUpdate();
-            }
+
+            statement.setInt(1, studentCourse.getScore());
+            statement.setLong(2, studentCourse.getStudentId());
+            statement.setLong(3, studentCourse.getCourseId());
+
+            statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            logger.error("Error while updating studentCourse", e);
             throw e;
         } finally {
             DAOFactory.closeResource(statement);
@@ -84,6 +83,8 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
 
     @Override
     public StudentCourse findStudentCourse(Connection connection, long studentId, long courseId) throws SQLException {
+        logger.trace("Find studentCourse. Student id: " + studentId + ". Course id: " + courseId);
+
         StudentCourse studentCourse = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -98,7 +99,7 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
                 studentCourse = parseStudentCourse(resultSet);
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            logger.error("Error during studentCourse select", e);
             throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
@@ -110,6 +111,8 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
 
     @Override
     public List<StudentCourse> findByStudentId(Connection connection, long studentId) throws SQLException {
+        logger.trace("Find studentCourse by student id: " + studentId);
+
         List<StudentCourse> studentCourseList = new ArrayList<>();
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -123,7 +126,7 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
                 studentCourseList.add(parseStudentCourse(resultSet));
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            logger.error("Error while selecting studentCourse by student id", e);
             throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
@@ -135,6 +138,8 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
 
     @Override
     public List<StudentCourse> findByCourseId(Connection connection, long courseId) throws SQLException {
+        logger.trace("Find studentCourse by course id: " + courseId);
+
         List<StudentCourse> studentCourseList = new ArrayList<>();
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -148,7 +153,7 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
                 studentCourseList.add(parseStudentCourse(resultSet));
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            logger.error("Error while selecting studentCourse by course id", e);
             throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
@@ -160,15 +165,21 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
 
 
     private StudentCourse parseStudentCourse(ResultSet resultSet) throws SQLException {
+        logger.trace("Parse studentCourse");
+
         StudentCourse studentCourse = new StudentCourse();
 
-        studentCourse.setStudentId(resultSet.getLong(StudentCourseDAOConstants.STUDENT_COURSE_STUDENT_ID));
-        studentCourse.setCourseId(resultSet.getLong(StudentCourseDAOConstants.STUDENT_COURSE_COURSE_ID));
-        studentCourse.setRegistrationDate(
-                resultSet.getTimestamp(StudentCourseDAOConstants.STUDENT_COURSE_REGISTRATION_DATE)
-                        .toLocalDateTime()
-        );
-        studentCourse.setScore(resultSet.getInt(StudentCourseDAOConstants.STUDENT_COURSE_SCORE));
+        try {
+            studentCourse.setStudentId(resultSet.getLong(StudentCourseDAOConstants.STUDENT_COURSE_STUDENT_ID));
+            studentCourse.setCourseId(resultSet.getLong(StudentCourseDAOConstants.STUDENT_COURSE_COURSE_ID));
+            studentCourse.setRegistrationDate(
+                    resultSet.getTimestamp(StudentCourseDAOConstants.STUDENT_COURSE_REGISTRATION_DATE)
+                            .toLocalDateTime()
+            );
+            studentCourse.setScore(resultSet.getInt(StudentCourseDAOConstants.STUDENT_COURSE_SCORE));
+        } catch (SQLException e){
+            logger.error("Error while parsing studentCourse record");
+        }
 
         return studentCourse;
     }

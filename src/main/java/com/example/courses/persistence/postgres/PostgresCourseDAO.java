@@ -4,6 +4,9 @@ import com.example.courses.persistence.CourseDAO;
 import com.example.courses.persistence.DAOFactory;
 import com.example.courses.persistence.entity.Course;
 import com.example.courses.persistence.entity.CourseStatus;
+import com.example.courses.utils.DAOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -11,12 +14,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PostgresCourseDAO implements CourseDAO {
+    private static final Logger logger = LogManager.getLogger(PostgresUserDAO.class.getName());
 
     @Override
     public long saveCourse(Connection connection, Course course) throws SQLException {
+        logger.trace("Save course: " + course);
+
         long insertedCourseId;
         PreparedStatement statement = null;
-        ResultSet generatedKey = null;
 
         try {
             statement = connection.prepareStatement(
@@ -27,17 +32,11 @@ public class PostgresCourseDAO implements CourseDAO {
             setCourseProperties(course, statement);
             statement.executeUpdate();
 
-            generatedKey = statement.getGeneratedKeys();
-            if (generatedKey.next()) {
-                insertedCourseId = generatedKey.getLong(1);
-            } else {
-                throw new SQLException();
-            }
+            insertedCourseId = DAOUtils.getGeneratedId(statement);
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            logger.error("Error while saving course", e);
             throw e;
         } finally {
-            DAOFactory.closeResource(generatedKey);
             DAOFactory.closeResource(statement);
         }
 
@@ -46,6 +45,7 @@ public class PostgresCourseDAO implements CourseDAO {
 
     @Override
     public void deleteCourseById(Connection connection, long id) throws SQLException {
+        logger.trace("Delete course by id: " + id);
         PreparedStatement statement = null;
 
         try {
@@ -53,7 +53,7 @@ public class PostgresCourseDAO implements CourseDAO {
             statement.setLong(1, id);
             statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            logger.error("Error while deleting course", e);
             throw e;
         } finally {
             DAOFactory.closeResource(statement);
@@ -62,6 +62,8 @@ public class PostgresCourseDAO implements CourseDAO {
 
     @Override
     public void updateCourse(Connection connection, Course course) throws SQLException {
+        logger.trace("Update course: " + course);
+
         PreparedStatement statement = null;
 
         try {
@@ -70,7 +72,7 @@ public class PostgresCourseDAO implements CourseDAO {
             statement.setLong(10, course.getId());
             statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            logger.error("Error while updating course", e);
             throw e;
         } finally {
             DAOFactory.closeResource(statement);
@@ -79,6 +81,8 @@ public class PostgresCourseDAO implements CourseDAO {
 
     @Override
     public Course findCourse(Connection connection, long courseId) throws SQLException {
+        logger.trace("Find course by id: " + courseId);
+
         Course course = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -92,7 +96,7 @@ public class PostgresCourseDAO implements CourseDAO {
                 course = parseCourse(resultSet);
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            logger.error("Error while selecting course by id", e);
             throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
@@ -104,6 +108,8 @@ public class PostgresCourseDAO implements CourseDAO {
 
     @Override
     public List<Course> findAll(Connection connection) throws SQLException {
+        logger.trace("Find all courses");
+
         List<Course> courseList = new ArrayList<>();
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -116,7 +122,7 @@ public class PostgresCourseDAO implements CourseDAO {
                 courseList.add(parseCourse(resultSet));
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            logger.error("Error while selecting all courses");
             throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
@@ -128,6 +134,8 @@ public class PostgresCourseDAO implements CourseDAO {
 
     @Override
     public List<Course> findAvailable(Connection connection) throws SQLException {
+        logger.trace("Find all available courses");
+
         List<Course> courseList = new ArrayList<>();
         Statement statement = null;
         ResultSet resultSet = null;
@@ -140,7 +148,7 @@ public class PostgresCourseDAO implements CourseDAO {
                 courseList.add(parseCourse(resultSet));
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            logger.error("Error while selecting available courses");
             throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
@@ -152,6 +160,8 @@ public class PostgresCourseDAO implements CourseDAO {
 
     @Override
     public List<Course> findCoursesBySearchQuery(Connection connection, String query) throws SQLException {
+        logger.trace("Find courses by search query: " + query);
+
         List<Course> courseList = new ArrayList<>();
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -167,7 +177,7 @@ public class PostgresCourseDAO implements CourseDAO {
                 courseList.add(parseCourse(resultSet));
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            logger.error("An error occurred during select by search query", e);
             throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
@@ -179,6 +189,8 @@ public class PostgresCourseDAO implements CourseDAO {
 
     @Override
     public List<Course> findAvailableCoursesBySearchQuery(Connection connection, String query) throws SQLException {
+        logger.trace("Find available courses by search query: " + query);
+
         List<Course> courseList = new ArrayList<>();
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -194,7 +206,7 @@ public class PostgresCourseDAO implements CourseDAO {
                 courseList.add(parseCourse(resultSet));
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            logger.error("An error occurred during while selecting available courses by search query", e);
             throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
@@ -206,6 +218,8 @@ public class PostgresCourseDAO implements CourseDAO {
 
     @Override
     public List<Course> findCoursesByTeacherId(Connection connection, long teacherId) throws SQLException {
+        logger.trace("Find courses by teacher id: " + teacherId);
+
         List<Course> courseList = new ArrayList<>();
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -219,7 +233,7 @@ public class PostgresCourseDAO implements CourseDAO {
                 courseList.add(parseCourse(resultSet));
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            logger.error("Error during select by teacher id", e);
             throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
@@ -231,6 +245,8 @@ public class PostgresCourseDAO implements CourseDAO {
 
     @Override
     public List<Course> findCoursesByLanguageId(Connection connection, long languageId) throws SQLException {
+        logger.trace("Find courses by teacher language: " + languageId);
+
         List<Course> courseList = new ArrayList<>();
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -244,7 +260,7 @@ public class PostgresCourseDAO implements CourseDAO {
                 courseList.add(parseCourse(resultSet));
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            logger.error("Error during select by language id", e);
             throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
@@ -255,42 +271,55 @@ public class PostgresCourseDAO implements CourseDAO {
     }
 
     private void setCourseProperties(Course course, PreparedStatement statement) throws SQLException {
-        statement.setLong(1, course.getTeacherId());
-        statement.setLong(2, course.getLanguageId());
-        statement.setLong(3, course.getSubjectId());
-        statement.setString(4, course.getTitle());
-        statement.setString(5, course.getDescription());
-        statement.setTimestamp(6, Timestamp.valueOf(course.getStartDate()));
-        statement.setTimestamp(7, Timestamp.valueOf(course.getEndDate()));
-        statement.setInt(8, course.getMaxScore());
-        statement.setString(9, course.getImageUrl());
+        logger.trace("Set course properties");
+
+        try {
+            statement.setLong(1, course.getTeacherId());
+            statement.setLong(2, course.getLanguageId());
+            statement.setLong(3, course.getSubjectId());
+            statement.setString(4, course.getTitle());
+            statement.setString(5, course.getDescription());
+            statement.setTimestamp(6, Timestamp.valueOf(course.getStartDate()));
+            statement.setTimestamp(7, Timestamp.valueOf(course.getEndDate()));
+            statement.setInt(8, course.getMaxScore());
+            statement.setString(9, course.getImageUrl());
+        } catch (SQLException e){
+            logger.error("Error while setting course properties");
+            throw e;
+        }
     }
 
     private Course parseCourse(ResultSet resultSet) throws SQLException {
         Course course = new Course();
 
-        course.setId(resultSet.getLong(CourseDAOConstants.COURSE_ID));
-        course.setTeacherId(resultSet.getLong(CourseDAOConstants.COURSE_TEACHER_ID));
-        course.setLanguageId(resultSet.getLong(CourseDAOConstants.COURSE_LANGUAGE_ID));
-        course.setTitle(resultSet.getString(CourseDAOConstants.COURSE_TITLE));
-        course.setSubjectId(resultSet.getLong(CourseDAOConstants.COURSE_SUBJECT_ID));
-        course.setDescription(resultSet.getString(CourseDAOConstants.COURSE_DESCRIPTION));
+        try {
+            course.setId(resultSet.getLong(CourseDAOConstants.COURSE_ID));
+            course.setTeacherId(resultSet.getLong(CourseDAOConstants.COURSE_TEACHER_ID));
+            course.setLanguageId(resultSet.getLong(CourseDAOConstants.COURSE_LANGUAGE_ID));
+            course.setTitle(resultSet.getString(CourseDAOConstants.COURSE_TITLE));
+            course.setSubjectId(resultSet.getLong(CourseDAOConstants.COURSE_SUBJECT_ID));
+            course.setDescription(resultSet.getString(CourseDAOConstants.COURSE_DESCRIPTION));
 
-        LocalDateTime startDate = resultSet.getTimestamp(CourseDAOConstants.COURSE_START_DATE).toLocalDateTime();
-        course.setStartDate(startDate);
+            LocalDateTime startDate = resultSet.getTimestamp(CourseDAOConstants.COURSE_START_DATE).toLocalDateTime();
+            course.setStartDate(startDate);
 
-        LocalDateTime endDate = resultSet.getTimestamp(CourseDAOConstants.COURSE_END_DATE).toLocalDateTime();
-        course.setEndDate(endDate);
+            LocalDateTime endDate = resultSet.getTimestamp(CourseDAOConstants.COURSE_END_DATE).toLocalDateTime();
+            course.setEndDate(endDate);
 
-        course.setMaxScore(resultSet.getInt(CourseDAOConstants.COURSE_MAX_SCORE));
-        course.setImageUrl(resultSet.getString(CourseDAOConstants.COURSE_IMAGE_URL));
+            course.setMaxScore(resultSet.getInt(CourseDAOConstants.COURSE_MAX_SCORE));
+            course.setImageUrl(resultSet.getString(CourseDAOConstants.COURSE_IMAGE_URL));
 
-        course.setCourseStatus(parseCourseStatus(startDate, endDate));
-
+            course.setCourseStatus(parseCourseStatus(startDate, endDate));
+        } catch (SQLException e){
+            logger.error("Error while parsing course result set", e);
+            throw e;
+        }
         return course;
     }
 
     private CourseStatus parseCourseStatus(LocalDateTime startDate, LocalDateTime endDate) {
+        logger.trace("Parse course status");
+
         LocalDateTime now = LocalDateTime.now();
 
         if(startDate.isAfter(now)){

@@ -7,6 +7,8 @@ import com.example.courses.persistence.entity.User;
 import com.example.courses.service.CourseDTOService;
 import com.example.courses.service.CourseService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,12 +25,18 @@ public class CourseSearchServlet extends HttpServlet {
     private static final CourseService courseService = new CourseService();
     private static final CourseDTOService courseDTOService = new CourseDTOService();
 
+    private final static Logger logger = LogManager.getLogger(CourseSearchServlet.class.getName());
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        logger.trace("Search by query");
+
         HttpSession session = request.getSession();
         String lang = (String) session.getAttribute("lang");
 
         String query = request.getParameter("query");
+        logger.debug("Search query: " + query);
+
         User user = (User) request.getSession().getAttribute("user");
         List<CourseDTO> courseDTOList = null;
 
@@ -43,12 +51,13 @@ public class CourseSearchServlet extends HttpServlet {
                 courseDTOList = courseDTOService.getCourseDTOList(courseList,lang);
                 writeResponse(response, courseDTOList);
             } catch (SQLException | IOException e) {
-                System.out.println(e.getMessage());
+                logger.error("Exception while searching for courses by query: " + query + "." + e.getMessage(), e);
             }
         }
     }
 
     private void writeResponse(HttpServletResponse response, List<CourseDTO> courseList) throws IOException {
+        logger.info("Initializing Jackson");
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
         String json = objectMapper.writeValueAsString(courseList);

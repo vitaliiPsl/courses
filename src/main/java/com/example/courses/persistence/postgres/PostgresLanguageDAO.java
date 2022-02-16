@@ -3,17 +3,23 @@ package com.example.courses.persistence.postgres;
 import com.example.courses.persistence.DAOFactory;
 import com.example.courses.persistence.LanguageDAO;
 import com.example.courses.persistence.entity.Language;
+import com.example.courses.utils.DAOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PostgresLanguageDAO implements LanguageDAO {
+    private static final Logger logger = LogManager.getLogger(PostgresDAOFactory.class.getName());
+
     @Override
     public long saveLanguage(Connection connection, Language language) throws SQLException {
+        logger.trace("Save language: " + language);
+
         long languageId;
         PreparedStatement statement = null;
-        ResultSet generatedKey = null;
 
         try {
             statement = connection.prepareStatement(
@@ -24,17 +30,11 @@ public class PostgresLanguageDAO implements LanguageDAO {
             statement.setString(2, language.getLanguageCode());
             statement.executeUpdate();
 
-            generatedKey = statement.getGeneratedKeys();
-            if (generatedKey.next()) {
-                languageId = generatedKey.getLong(1);
-            } else {
-                throw new SQLException();
-            }
+            languageId = DAOUtils.getGeneratedId(statement);
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            logger.error("Error while saving language", e);
             throw e;
         } finally {
-            DAOFactory.closeResource(generatedKey);
             DAOFactory.closeResource(statement);
         }
 
@@ -43,6 +43,7 @@ public class PostgresLanguageDAO implements LanguageDAO {
 
     @Override
     public void deleteLanguageById(Connection connection, long id) throws SQLException {
+        logger.trace("Delete language by id: " + id);
         PreparedStatement statement = null;
 
         try {
@@ -50,7 +51,7 @@ public class PostgresLanguageDAO implements LanguageDAO {
             statement.setLong(1, id);
             statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            logger.error("Error while deleting language", e);
             throw e;
         } finally {
             DAOFactory.closeResource(statement);
@@ -59,6 +60,8 @@ public class PostgresLanguageDAO implements LanguageDAO {
 
     @Override
     public Language findLanguageById(Connection connection, long id) throws SQLException {
+        logger.trace("Find language by id: " + id);
+
         Language language = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -71,7 +74,7 @@ public class PostgresLanguageDAO implements LanguageDAO {
                 language = parseLanguage(resultSet);
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            logger.error("Error while selecting language by id", e);
             throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
@@ -83,6 +86,7 @@ public class PostgresLanguageDAO implements LanguageDAO {
 
     @Override
     public Language findLanguageByName(Connection connection, String name) throws SQLException {
+        logger.trace("Find language by name: " + name);
         Language language = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -96,7 +100,7 @@ public class PostgresLanguageDAO implements LanguageDAO {
                 language = parseLanguage(resultSet);
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            logger.error("Error while selecting language by name", e);
             throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
@@ -108,6 +112,7 @@ public class PostgresLanguageDAO implements LanguageDAO {
 
     @Override
     public Language findLanguageByCode(Connection connection, String code) throws SQLException {
+        logger.trace("Find language by code: " + code);
         Language language = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -121,7 +126,7 @@ public class PostgresLanguageDAO implements LanguageDAO {
                 language = parseLanguage(resultSet);
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            logger.error("Error while selecting language by code", e);
             throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
@@ -133,6 +138,8 @@ public class PostgresLanguageDAO implements LanguageDAO {
 
     @Override
     public List<Language> findAll(Connection connection) throws SQLException {
+        logger.trace("Find all languages");
+
         List<Language> languageList = new ArrayList<>();
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -145,7 +152,7 @@ public class PostgresLanguageDAO implements LanguageDAO {
                 languageList.add(parseLanguage(resultSet));
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            logger.error("Error while selecting all languages", e);
             throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
@@ -156,11 +163,17 @@ public class PostgresLanguageDAO implements LanguageDAO {
     }
 
     private Language parseLanguage(ResultSet resultSet) throws SQLException {
-        Language language = new Language();
-        language.setId(resultSet.getLong(LanguageDAOConstants.LANGUAGE_ID));
-        language.setName(resultSet.getString(LanguageDAOConstants.LANGUAGE_NAME));
-        language.setLanguageCode(resultSet.getString(LanguageDAOConstants.LANGUAGE_CODE));
+        logger.trace("Parse language");
 
+        Language language = new Language();
+        try {
+            language.setId(resultSet.getLong(LanguageDAOConstants.LANGUAGE_ID));
+            language.setName(resultSet.getString(LanguageDAOConstants.LANGUAGE_NAME));
+            language.setLanguageCode(resultSet.getString(LanguageDAOConstants.LANGUAGE_CODE));
+        } catch (SQLException e){
+            logger.error("Error while parsing language", e);
+            throw e;
+        }
         return language;
     }
 

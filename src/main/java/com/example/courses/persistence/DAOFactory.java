@@ -1,17 +1,21 @@
 package com.example.courses.persistence;
 
 import com.example.courses.persistence.postgres.PostgresDAOFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
 public interface DAOFactory {
+    Logger logger = LogManager.getLogger(DAOFactory.class.getName());
+
 
     static DAOFactory getDAOFactory(FactoryType factoryType) {
         if (factoryType.equals(FactoryType.POSTGRES)) {
             return PostgresDAOFactory.getInstance();
         } else {
-            System.out.println("Invalid factory type");
+            logger.error("Invalid factory type: " + factoryType);
             throw new IllegalArgumentException("Factory type: " + factoryType + " is invalid");
         }
     }
@@ -33,17 +37,18 @@ public interface DAOFactory {
             try {
                 closeable.close();
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                logger.error("Error while closing resource", e);
             }
         }
     }
 
     static void rollback(Connection connection) {
+        logger.trace("Rollback");
         if (connection != null) {
             try {
                 connection.rollback();
             } catch (SQLException e) {
-                System.out.println();
+                logger.error("Error during rollback", e);
             }
         }
     }

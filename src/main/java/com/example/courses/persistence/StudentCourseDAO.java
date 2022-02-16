@@ -9,7 +9,7 @@ import java.util.List;
 public interface StudentCourseDAO {
     long saveStudentCourse(Connection connection, StudentCourse studentCourse) throws SQLException;
     void deleteStudentCourse(Connection connection, long studentId, long courseId) throws SQLException;
-    void updateStudentCourse(Connection connection, List<StudentCourse> studentCourseList) throws SQLException;
+    void updateStudentCourse(Connection connection, StudentCourse studentCourseList) throws SQLException;
 
     StudentCourse findStudentCourse(Connection connection, long studentId, long courseId) throws SQLException;
     List<StudentCourse> findByStudentId(Connection connection, long studentId) throws SQLException;

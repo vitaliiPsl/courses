@@ -1,5 +1,8 @@
 package com.example.courses.servlet;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -11,8 +14,11 @@ import java.io.IOException;
 @WebServlet("/courses/sort")
 public class CourseSortingServlet extends HttpServlet {
 
+    private static final Logger logger = LogManager.getLogger(CourseSortingServlet.class.getName());
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        logger.trace("Sorting course dto list");
         HttpSession session = request.getSession();
 
         // Get applied sorting or sorting order and redirect to course list

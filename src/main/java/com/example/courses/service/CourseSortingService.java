@@ -1,9 +1,9 @@
 package com.example.courses.service;
 
 import com.example.courses.DTO.CourseDTO;
-import com.example.courses.DTO.SortingDTO;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -17,8 +17,10 @@ public class CourseSortingService {
     static final String SORT_ORDER_ASCENDING = "ascending";
     static final String SORT_ORDER_DESCENDING = "descending";
 
+    private static final Logger logger = LogManager.getLogger(CourseSortingService.class.getName());
 
     public List<String> getSortingOptions() {
+        logger.trace("Get sorting options");
         return Arrays.asList(
                 SORT_BY_TITLE,
                 SORT_BY_DURATION,
@@ -26,6 +28,7 @@ public class CourseSortingService {
         );
     }
     public List<String> getSortingOrderOptions() {
+        logger.trace("Get sorting order options");
         return Arrays.asList(
                 SORT_ORDER_ASCENDING,
                 SORT_ORDER_DESCENDING
@@ -33,10 +36,10 @@ public class CourseSortingService {
     }
 
     public void applySoring(List<CourseDTO> courseDTOList, String sorting, String order){
-        if(sorting == null){
-            return;
-        }
+        logger.trace("Apply sorting to following courseDTO list: " + courseDTOList);
+        logger.info("Applying sorting. Sorting: " + sorting + ", order: " + order);
 
+        logger.debug("Before sorting: " + courseDTOList);
         switch (sorting) {
             case SORT_BY_TITLE:
                 sort(order, courseDTOList, SortingComparators.getTitleComparator());
@@ -48,12 +51,18 @@ public class CourseSortingService {
                 sort(order, courseDTOList, SortingComparators.getNumberOfStudentsComparator());
                 break;
         }
+
+        logger.debug("After sorting: " + courseDTOList);
     }
 
     private void sort(String order, List<CourseDTO> courseDTOList, Comparator<CourseDTO> comparator) {
+        logger.trace("Sort. Course: " + courseDTOList + ". Order: " + order);
+
         if(order.equals(SORT_ORDER_ASCENDING)) {
+            logger.trace("Sort in ascending order");
             courseDTOList.sort(comparator);
         } else {
+            logger.trace("Sort in descending order");
             courseDTOList.sort(comparator.reversed());
         }
     }

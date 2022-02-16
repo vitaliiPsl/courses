@@ -4,6 +4,8 @@ import com.example.courses.persistence.entity.Role;
 import com.example.courses.persistence.entity.User;
 import com.example.courses.service.UserService;
 import com.example.courses.servlet.Constants;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,13 +19,18 @@ import java.sql.SQLException;
 public class NewUserServlet extends HttpServlet {
     private static final UserService userService = new UserService();
 
+    private static final Logger logger = LogManager.getLogger(NewUserServlet.class.getName());
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        logger.trace("New user: get");
         request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.NEW_USER_JSP).forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        logger.trace("New user: post");
+
         String firstName = request.getParameter("first_name");
         String lastName = request.getParameter("last_name");
         Role role = parseRole(request.getParameter("role"));
@@ -37,13 +44,18 @@ public class NewUserServlet extends HttpServlet {
         user.setEmail(email);
         user.setPassword(password);
 
+        logger.info("Saving new user: " + user);
+
         try {
             userService.registerUser(user);
         } catch (IllegalArgumentException e) {
+            logger.error("Properties are invalid: " + user, e);
             request.setAttribute("error", e.getMessage());
-            request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.NEW_USER_JSP).forward(request, response);
+            this.doGet(request, response);
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            logger.error("SQLException while saving new user", e);
+            response.sendRedirect(request.getContextPath() + "/error_handler?type=500");
+            return;
         }
 
         response.sendRedirect(request.getContextPath() + "/");
@@ -57,8 +69,9 @@ public class NewUserServlet extends HttpServlet {
                 return Role.TEACHER;
             case "student":
                 return Role.STUDENT;
+            default:
+                logger.error("Invalid user role: " + roleName);
+                throw new IllegalArgumentException("There is no such role '" + roleName + "'");
         }
-
-        throw new IllegalArgumentException("There is no such role '" + roleName + "'");
     }
 }

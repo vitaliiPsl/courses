@@ -23,6 +23,8 @@ public class SessionListener implements HttpSessionListener {
         session.setAttribute("sorting", "title");
         //set default sorting order
         session.setAttribute("sorting_order", "ascending");
+
+        session.setAttribute("lang", "en");
     }
 
     private void addSessionCourseFiltersMap(HttpSession session){

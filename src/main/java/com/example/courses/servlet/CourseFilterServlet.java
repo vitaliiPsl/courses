@@ -1,6 +1,9 @@
 package com.example.courses.servlet;
 
 import com.example.courses.service.CourseFilterService;
+import com.example.courses.servlet.teacher.ScoresServlet;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,11 +17,14 @@ import java.util.*;
 @WebServlet("/courses/filter")
 public class CourseFilterServlet extends HttpServlet {
 
+    private static final Logger logger = LogManager.getLogger(CourseFilterServlet.class.getName());
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Get filters stored in session
         HttpSession session = request.getSession();
         Map<String, List<String>> sessionFilters = (Map<String, List<String>>) session.getAttribute("filters");
+        logger.debug("Filters stored in session: " + sessionFilters);
 
         // Get applied / removed filterKey and option and redirect to course list
         String subjectOption = request.getParameter("subject");
