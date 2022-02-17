@@ -1,17 +1,20 @@
 <%@ page import="com.example.courses.utils.TimeUtils" %>
 <%@ page import="com.example.courses.persistence.entity.Role" %>
-<%@ page import="com.example.courses.service.CourseSortingService" %>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page contentType="text/html;charset=UTF-8" %>
-<!DOCTYPE html>
-<html lang="en">
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
+<%@ page contentType="text/html;charset=UTF-8" %>
+<fmt:setLocale value="${sessionScope.lang}"/>
+<fmt:setBundle basename="i18n/course_list/course_list"/>
+
+<!DOCTYPE html>
+<html lang="${sessionScope.lang}">
 <head>
     <meta charset="UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Courses 👀</title>
+    <title><fmt:message key="label.title"/> 👀</title>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/style.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/filter.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/courses/course_list.css">
@@ -29,21 +32,21 @@
                     <input type="text" id="search-input" name="query"
                            data-request-url="${pageContext.request.contextPath}/courses/search?query="
                            data-course-url="${pageContext.request.contextPath}/course?course_id="
-                           placeholder="What do you want to learn?" value="${requestScope.query}"
+                           placeholder="<fmt:message key="label.search.placeholder"/>" value="${requestScope.query}"
                            autocomplete="off"/>
-                    <button type="submit" class="search-btn">Search</button>
+                    <button type="submit" class="search-btn"><fmt:message key="label.search.button"/></button>
                     <div class="hints-block"></div>
                 </div>
             </form>
             <div class="filter-row">
                 <div class="filter-block">
-                    <span class="filter-by-span">Filter By</span>
+                    <span class="filter-by-span"><fmt:message key="label.filter.filter_by"/></span>
                     <div class="filters">
 
                         <c:set var="filter" value="${requestScope.filters.get('subject')}"/>
                         <div class="filter dropdown-element">
                             <div class="dropdown-control filter-control">
-                                <h5>Subject</h5>
+                                <h5><fmt:message key="label.filter.subject_key"/></h5>
                                 <div class="arrow"></div>
                             </div>
                             <div class="dropdown-menu filter-menu hidden">
@@ -66,7 +69,7 @@
                         <c:set var="filter" value="${requestScope.filters.get('teacher')}"/>
                         <div class="filter dropdown-element">
                             <div class="dropdown-control filter-control">
-                                <h5>Teacher</h5>
+                                <h5><fmt:message key="label.filter.teacher_key"/></h5>
                                 <div class="arrow"></div>
                             </div>
                             <div class="dropdown-menu filter-menu hidden">
@@ -90,12 +93,12 @@
                 </div>
 
                 <div class="sorting-block">
-                    <span class="sort-by-span">Sort By</span>
+                    <span class="sort-by-span"><fmt:message key="label.sort.sort_by"/></span>
                     <div class="sorting">
 
                         <div class="filter sort dropdown-element">
                             <div class="dropdown-control filter-control sort">
-                                <h5>Sort By</h5>
+                                <h5><fmt:message key="label.sort.sort_key"/></h5>
                                 <div class="arrow"></div>
                             </div>
                             <div class="dropdown-menu sort-menu hidden">
@@ -116,7 +119,7 @@
 
                         <div class="filter sort dropdown-element">
                             <div class="dropdown-control filter-control">
-                                <h5>Order</h5>
+                                <h5><fmt:message key="label.sort.order_key"/></h5>
                                 <div class="arrow"></div>
                             </div>
                             <div class="dropdown-menu sort-menu hidden">
@@ -162,29 +165,29 @@
                         </div>
                         <div class="info-row">
                             <div class="info">
-                                <p class="subject-row">Subject:</p>
+                                <p class="subject-row"><fmt:message key="label.course.subject"/>:</p>
                                 <span class="subject">${subject.getSubject()}</span>
                             </div>
                         </div>
                         <div class="info-row">
                             <div class="info">
-                                <p class="teacher-row">Teacher:</p>
+                                <p class="teacher-row"><fmt:message key="label.course.teacher"/>:</p>
                                 <span class="teacher">${teacher.getFullName()}</span>
                             </div>
                             <div class="info">
-                                <p class="language-row">Language:</p>
+                                <p class="language-row"><fmt:message key="label.course.language"/>:</p>
                                 <span class="language">${language.getName()}</span>
                             </div>
                         </div>
                         <div class="info-row">
                             <div class="info">
-                                <p class="duration-row">Duration:</p>
+                                <p class="duration-row"><fmt:message key="label.course.duration"/>:</p>
                                 <span class="duration">
                                         ${TimeUtils.calculateDuration(course.getStartDate(), course.getEndDate())}
                                 </span>
                             </div>
                             <div class="info">
-                                <p class="number-of-students-row">Students:</p>
+                                <p class="number-of-students-row"><fmt:message key="label.course.students"/>:</p>
                                 <span class="number_of_students">${students.size()}</span>
                             </div>
                         </div>
@@ -196,12 +199,12 @@
                         <div class="manage-box">
                             <button class="manage-btn edit-btn">
                                 <a href="${pageContext.request.contextPath}/admin/course/edit?course_id=${course.getId()}">
-                                    Edit
+                                    <fmt:message key="label.manage_box.edit"/>
                                 </a>
                             </button>
                             <button class="manage-btn delete-btn">
                                 <a href="${pageContext.request.contextPath}/admin/course/delete?course_id=${course.getId()}">
-                                    Delete
+                                    <fmt:message key="label.manage_box.delete"/>
                                 </a>
                             </button>
                         </div>
