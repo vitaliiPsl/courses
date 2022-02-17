@@ -35,30 +35,45 @@ public class UserProfileServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        logger.trace("User profile: get");
+
         HttpSession session = request.getSession();
         String lang = (String) session.getAttribute("lang");
 
-        User user = null;
         String userId = request.getParameter("user_id");
+        logger.debug("user id: " + userId);
+
+        User user = null;
         List<CourseDTO> courseDTOList = null;
 
-        try{
-            long id = Long.parseLong(userId);
-            user = userService.getUserById(id);
-            List<Course> courseList = new ArrayList<>();
+        if(userId != null) {
+            try {
+                long id = Long.parseLong(userId);
+                user = userService.getUserById(id);
+                List<Course> courseList = new ArrayList<>();
 
-            if(user.getRole().equals(Role.STUDENT)){
-                List<StudentCourse> studentCourseList = studentCourseService.getCoursesByStudentId(id);
-                List<Long> coursesIds = studentCourseList.stream().map(StudentCourse::getCourseId).collect(Collectors.toList());
-                courseList = courseService.getCourses(coursesIds);
-            } else if(user.getRole().equals(Role.TEACHER)){
-                courseList = courseService.getCoursesByTeacherId(id);
+                if (user.getRole().equals(Role.STUDENT)) {
+                    List<StudentCourse> studentCourseList = studentCourseService.getCoursesByStudentId(id);
+                    List<Long> coursesIds = studentCourseList.stream().map(StudentCourse::getCourseId).collect(Collectors.toList());
+                    courseList = courseService.getCourses(coursesIds);
+                } else if (user.getRole().equals(Role.TEACHER)) {
+                    courseList = courseService.getCoursesByTeacherId(id);
+                }
+
+                courseDTOList = courseDTOService.getCourseDTOList(courseList, lang);
+            } catch (SQLException e) {
+                logger.error("SQLException: " + e.getMessage(), e);
+                response.sendRedirect(request.getContextPath() + "/error_handler?type=500");
+                return;
+            } catch (NumberFormatException e) {
+                logger.error("Invalid user id: " + userId, e);
+                response.sendRedirect(request.getContextPath() + "/error_handler?type=404");
+                return;
             }
 
-            courseDTOList = courseDTOService.getCourseDTOList(courseList, lang);
-        } catch (SQLException e) {
-            logger.error("SQLException: " + e.getMessage(), e);
-            response.sendRedirect(request.getContextPath() + "/error_handler?type=500");
+        } else {
+            logger.warn("User id is null");
+            response.sendRedirect(request.getContextPath() + "/error_handler?type=404");
             return;
         }
 
