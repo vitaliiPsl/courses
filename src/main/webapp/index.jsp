@@ -2,11 +2,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<fmt:setLocale value="${cookie['lang'].value}"/>
+<fmt:setLocale value="${sessionScope.lang}"/>
 <fmt:setBundle basename="i18n/index/index"/>
 
 <!DOCTYPE html>
-<html lang="${cookie['lang'].value}">
+<html lang="${sessionScope.lang}">
 <head>
     <title>Title</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/style.css">

@@ -3,11 +3,11 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <%@ page contentType="text/html;charset=UTF-8" %>
-<fmt:setLocale value="${cookie['lang'].value}"/>
+<fmt:setLocale value="${sessionScope.lang}"/>
 <fmt:setBundle basename="i18n/header/header"/>
 
 <!DOCTYPE html>
-<html lang="${cookie['lang'].value}">
+<html lang="${sessionScope.lang}">
 <head>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/header.css">
 </head>
@@ -81,8 +81,8 @@
                                     <fmt:message key="label.log_out"/>
                                 </a>
                                 <div class="language-switch">
-                                    <a href="${pageContext.request.requestURL}?lang=en" class="${cookie['lang'].value == "en" ? 'selected' : ''}"><fmt:message key="label.dropdown.lang_english"/></a>
-                                    <a href="${pageContext.request.requestURL}?lang=uk" class="${cookie['lang'].value == "uk" ? 'selected' : ''}"><fmt:message key="label.dropdown.lang_ukrainian"/></a>
+                                    <a href="${pageContext.request.requestURL}?lang=en" class="${sessionScope.lang == "en" ? 'selected' : ''}"><fmt:message key="label.dropdown.lang_english"/></a>
+                                    <a href="${pageContext.request.requestURL}?lang=uk" class="${sessionScope.lang == "uk" ? 'selected' : ''}"><fmt:message key="label.dropdown.lang_ukrainian"/></a>
                                 </div>
                             </div>
                         </li>

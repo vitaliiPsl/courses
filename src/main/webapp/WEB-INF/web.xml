@@ -40,16 +40,40 @@
         <url-pattern>/teacher/*</url-pattern>
     </filter-mapping>
 
+    <filter>
+        <filter-name>EncodingFilter</filter-name>
+        <filter-class>com.example.courses.servlet.filter.RequestEncodingFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>EncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!--LISTENERS-->
+    <listener>
+        <listener-class>com.example.courses.servlet.listener.SessionListener</listener-class>
+    </listener>
+
     <!--ERROR HANDLING-->
+    <!--Server error-->
+    <error-page>
+        <error-code>500</error-code>
+        <location>/error_handler?type=500</location>
+    </error-page>
+
+    <!--Not found-->
     <error-page>
         <error-code>404</error-code>
-        <location>/error_handler?type=not_found</location>
+        <location>/error_handler?type=404</location>
     </error-page>
+
+    <!--Forbidden-->
     <error-page>
         <exception-type>com.example.courses.exception.ForbiddenException</exception-type>
-        <location>/error_handler?type=forbidden</location>
+        <location>/error_handler?type=403</location>
     </error-page><error-page>
         <error-code>403</error-code>
-        <location>/error_handler?type=forbidden</location>
+        <location>/error_handler?type=403</location>
     </error-page>
+
 </web-app>
