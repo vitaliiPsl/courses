@@ -81,8 +81,8 @@
                                     <fmt:message key="label.log_out"/>
                                 </a>
                                 <div class="language-switch">
-                                    <a href="${pageContext.request.requestURL}?lang=en" class="${sessionScope.lang == "en" ? 'selected' : ''}"><fmt:message key="label.dropdown.lang_english"/></a>
-                                    <a href="${pageContext.request.requestURL}?lang=uk" class="${sessionScope.lang == "uk" ? 'selected' : ''}"><fmt:message key="label.dropdown.lang_ukrainian"/></a>
+                                    <a href="${requestScope['javax.servlet.forward.request_uri']}?lang=en" class="${sessionScope.lang == "en" ? 'selected' : ''}"><fmt:message key="label.dropdown.lang_english"/></a>
+                                    <a href="${requestScope['javax.servlet.forward.request_uri']}?lang=uk" class="${sessionScope.lang == "uk" ? 'selected' : ''}"><fmt:message key="label.dropdown.lang_ukrainian"/></a>
                                 </div>
                             </div>
                         </li>
