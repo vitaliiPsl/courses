@@ -2,6 +2,7 @@ package com.example.courses.servlet.user;
 
 import com.example.courses.persistence.entity.User;
 import com.example.courses.service.UserService;
+import com.example.courses.servlet.Constants;
 import com.example.courses.utils.HashingUtils;
 import com.example.courses.utils.UserValidation;
 import org.apache.logging.log4j.LogManager;
@@ -25,7 +26,7 @@ public class ChangePasswordServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.trace("Change password: get");
-        request.getRequestDispatcher("/WEB-INF/templates/change_password.jsp").forward(request, response);
+        request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.CHANGE_PASSWORD).forward(request, response);
     }
 
     @Override

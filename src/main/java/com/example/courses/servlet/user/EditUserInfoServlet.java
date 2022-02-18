@@ -2,6 +2,7 @@ package com.example.courses.servlet.user;
 
 import com.example.courses.persistence.entity.User;
 import com.example.courses.service.UserService;
+import com.example.courses.servlet.Constants;
 import com.example.courses.utils.UserValidation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,7 +25,7 @@ public class EditUserInfoServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.trace("EditUserInfo: get");
-        request.getRequestDispatcher("/WEB-INF/templates/edit_user_info.jsp").forward(request, response);
+        request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.EDIT_USER_INFO).forward(request, response);
     }
 
     @Override
