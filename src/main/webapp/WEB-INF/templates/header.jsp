@@ -33,6 +33,10 @@
                         <li><a href="${pageContext.request.contextPath}/auth/sign_up">
                             <fmt:message key="label.sign_up"/>
                         </a></li>
+                        <div class="language-switch">
+                            <a href="${requestScope['javax.servlet.forward.request_uri']}?lang=en" class="${sessionScope.lang == "en" ? 'selected' : ''}"><fmt:message key="label.dropdown.lang_english"/></a>
+                            <a href="${requestScope['javax.servlet.forward.request_uri']}?lang=uk" class="${sessionScope.lang == "uk" ? 'selected' : ''}"><fmt:message key="label.dropdown.lang_ukrainian"/></a>
+                        </div>
                     </c:if>
 
                     <c:if test="${sessionScope.user != null}">

@@ -76,6 +76,7 @@ header h1{
 }
 
 .account-dropdown{
+    min-width: 200px;
     position: relative;
 }
 
@@ -160,6 +161,7 @@ header h1{
 }
 
 .language-switch {
+    min-width: 100px;
     display: flex;
     justify-content: center;
     border: 1px solid;
@@ -168,6 +170,8 @@ header h1{
 
 .language-switch a{
     color: var(--main-color);
+    flex: 1;
+    text-align: center;
 }
 
 .language-switch a.selected{
