@@ -1,6 +1,8 @@
 package com.example.courses.servlet;
 
 import com.example.courses.DTO.CourseDTO;
+import com.example.courses.exception.NotFoundException;
+import com.example.courses.exception.ServerErrorException;
 import com.example.courses.persistence.entity.Course;
 import com.example.courses.persistence.entity.Role;
 import com.example.courses.persistence.entity.User;
@@ -48,11 +50,10 @@ public class CourseServlet extends HttpServlet {
 
             Course course = courseService.getCourseById(id);
 
-            // Redirect to 'not found' if course is null
+            // Throw not found if a course is null
             if (course == null) {
                 logger.trace("Course not found");
-                response.sendRedirect(request.getContextPath() + "/error_handler?type=404");
-                return;
+                throw new NotFoundException();
             }
 
             courseDTO = courseDTOService.getCourseDTO(course, lang);
@@ -66,12 +67,10 @@ public class CourseServlet extends HttpServlet {
             }
         } catch (SQLException e) {
             logger.error("SQLException: " + e.getMessage(), e);
-            response.sendRedirect(request.getContextPath() + "/error_handler?type=500");
-            return;
+            throw new ServerErrorException();
         } catch (NumberFormatException e) {
             logger.error("Invalid course id: " + courseDTO, e);
-            response.sendRedirect(request.getContextPath() + "/error_handler?type=404");
-            return;
+            throw new NotFoundException();
         }
 
         request.setAttribute("course", courseDTO);

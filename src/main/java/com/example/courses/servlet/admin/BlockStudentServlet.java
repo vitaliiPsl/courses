@@ -1,5 +1,7 @@
 package com.example.courses.servlet.admin;
 
+import com.example.courses.exception.NotFoundException;
+import com.example.courses.exception.ServerErrorException;
 import com.example.courses.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,26 +25,23 @@ public class BlockStudentServlet extends HttpServlet {
         logger.trace("Block user: get");
         String studentId = request.getParameter("student_id");
 
-        if(studentId != null){
-            logger.info("Block student with id: " + studentId);
-
-            try {
-                long id = Long.parseLong(studentId);
-                userService.blockUserById(id);
-            } catch (SQLException e) {
-                logger.error("SQLException while blocking student", e);
-                response.sendRedirect(request.getContextPath() + "/error_handler?type=500");
-                return;
-            } catch (NumberFormatException e) {
-                logger.error("Invalid student id: " + studentId, e);
-                response.sendRedirect(request.getContextPath() + "/error_handler?type=404");
-                return;
-            }
-
-            response.sendRedirect(request.getContextPath() + "/admin/students");
-        } else {
+        if(studentId == null){
             logger.warn("Student id is null");
-            response.sendRedirect(request.getContextPath() + "/error_handler?type=404");
+            throw new NotFoundException();
         }
+
+        logger.info("Block student with id: " + studentId);
+        try {
+            long id = Long.parseLong(studentId);
+            userService.blockUserById(id);
+        } catch (SQLException e) {
+            logger.error("SQLException while blocking student", e);
+            throw new ServerErrorException();
+        } catch (NumberFormatException e) {
+            logger.error("Invalid student id: " + studentId, e);
+            throw new NotFoundException();
+        }
+
+        response.sendRedirect(request.getContextPath() + "/admin/students");
     }
 }

@@ -1,5 +1,8 @@
 package com.example.courses.servlet.filter;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.Cookie;
@@ -11,14 +14,21 @@ import java.io.IOException;
 @WebFilter({"/*"})
 public class LocaleFilter implements Filter {
 
+    private final static Logger logger = LogManager.getLogger(LocaleFilter.class.getName());
+
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        logger.trace("Locale filter");
+
         HttpServletRequest req = (HttpServletRequest) servletRequest;
         HttpServletResponse res = (HttpServletResponse) servletResponse;
         HttpSession session = req.getSession();
 
-        String lang = null;
+        String lang = (String) session.getAttribute("lang");
+        logger.debug("Language attr in session: " + lang);
+
         if (req.getParameter("lang") != null) {
+            logger.debug("Requested language: " + lang);
             lang = req.getParameter("lang");
 
             Cookie cookie = new Cookie("lang", lang);
@@ -26,7 +36,7 @@ public class LocaleFilter implements Filter {
             res.addCookie(cookie);
 
             session.setAttribute("lang", lang);
-        } else {
+        } else if(lang == null){
             Cookie[] cookies = req.getCookies();
             lang = getLangFromCookies(cookies);
 
@@ -38,9 +48,11 @@ public class LocaleFilter implements Filter {
     }
 
     private String getLangFromCookies(Cookie[] cookies) {
-        for(Cookie cookie: cookies){
-            if(cookie.getName().equals("lang")){
-                return cookie.getValue();
+        if(cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("lang")) {
+                    return cookie.getValue();
+                }
             }
         }
 

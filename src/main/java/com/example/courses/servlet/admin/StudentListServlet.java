@@ -1,5 +1,6 @@
 package com.example.courses.servlet.admin;
 
+import com.example.courses.exception.ServerErrorException;
 import com.example.courses.persistence.entity.Role;
 import com.example.courses.persistence.entity.User;
 import com.example.courses.service.UserService;
@@ -26,14 +27,13 @@ public class StudentListServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.trace("students: get");
 
-        List<User> studentList = null;
+        List<User> studentList;
 
         try{
             studentList = userService.getUsersByRole(Role.STUDENT);
         } catch (SQLException e) {
             logger.error("SQLException while retrieving students", e);
-            response.sendRedirect(request.getContextPath() + "/error_handler?type=404");
-            return;
+            throw new ServerErrorException();
         }
 
         request.setAttribute("students", studentList);

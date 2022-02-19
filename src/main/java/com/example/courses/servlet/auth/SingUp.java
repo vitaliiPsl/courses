@@ -1,5 +1,6 @@
 package com.example.courses.servlet.auth;
 
+import com.example.courses.exception.ServerErrorException;
 import com.example.courses.persistence.entity.Role;
 import com.example.courses.persistence.entity.User;
 import com.example.courses.service.UserService;
@@ -49,12 +50,12 @@ public class SingUp extends HttpServlet {
             logger.info("Sing up went successfully");
         } catch (SQLException e) {
             logger.error("SQLException while saving new user", e);
-            this.doGet(request, response);
+            throw new ServerErrorException();
         } catch (IllegalArgumentException e){
-            logger.warn("Provided data is invalid: " + user, e);
-
+            logger.warn("Provided data is invalid: " + user);
             request.setAttribute("error", e.getMessage());
             this.doGet(request, response);
+            return;
         }
 
         response.sendRedirect(request.getContextPath() + "/auth/log_in");

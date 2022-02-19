@@ -49,6 +49,8 @@ public class CourseSearchServlet extends HttpServlet {
                     courseList = courseService.getAvailableCoursesBySearchQuery(query);
                 }
                 courseDTOList = courseDTOService.getCourseDTOList(courseList,lang);
+                logger.debug("List of courses that match search query: " + courseDTOList);
+
                 writeResponse(response, courseDTOList);
             } catch (SQLException | IOException e) {
                 logger.error("Exception while searching for courses by query: " + query + "." + e.getMessage(), e);
@@ -61,6 +63,7 @@ public class CourseSearchServlet extends HttpServlet {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
         String json = objectMapper.writeValueAsString(courseList);
+        logger.debug("List of courses in json: " + json);
 
         response.setContentType("application/json");
         response.getWriter().write(json);

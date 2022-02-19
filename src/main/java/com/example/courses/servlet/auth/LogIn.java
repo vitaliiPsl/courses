@@ -1,5 +1,6 @@
 package com.example.courses.servlet.auth;
 
+import com.example.courses.exception.ServerErrorException;
 import com.example.courses.persistence.entity.User;
 import com.example.courses.service.UserService;
 import com.example.courses.servlet.Constants;
@@ -44,13 +45,11 @@ public class LogIn extends HttpServlet {
         }
 
         User existing;
-
         try{
             existing = userService.getUserByEmail(email);
         } catch (SQLException e) {
             logger.error("SQLException while getting existing user by provided email", e);
-            response.sendRedirect(request.getContextPath() + "/error_handler?type=500");
-            return;
+            throw new ServerErrorException();
         }
 
         if(existing == null || !HashingUtils.checkPassword(password, existing.getPassword())){

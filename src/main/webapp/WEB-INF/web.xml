@@ -20,6 +20,8 @@
         <url-pattern>/teacher/*</url-pattern>
         <url-pattern>/user_courses</url-pattern>
         <url-pattern>/enroll</url-pattern>
+        <url-pattern>/user/edit</url-pattern>
+        <url-pattern>/user/password</url-pattern>
     </filter-mapping>
 
     <filter>
@@ -57,11 +59,19 @@
     <!--ERROR HANDLING-->
     <!--Server error-->
     <error-page>
+        <exception-type>com.example.courses.exception.ServerErrorException</exception-type>
+        <location>/error_handler?type=500</location>
+    </error-page>
+    <error-page>
         <error-code>500</error-code>
         <location>/error_handler?type=500</location>
     </error-page>
 
     <!--Not found-->
+    <error-page>
+        <exception-type>com.example.courses.exception.NotFoundException</exception-type>
+        <location>/error_handler?type=404</location>
+    </error-page>
     <error-page>
         <error-code>404</error-code>
         <location>/error_handler?type=404</location>
@@ -71,7 +81,8 @@
     <error-page>
         <exception-type>com.example.courses.exception.ForbiddenException</exception-type>
         <location>/error_handler?type=403</location>
-    </error-page><error-page>
+    </error-page>
+    <error-page>
         <error-code>403</error-code>
         <location>/error_handler?type=403</location>
     </error-page>

@@ -2,6 +2,7 @@ package com.example.courses.servlet;
 
 import com.example.courses.DTO.CourseDTO;
 import com.example.courses.exception.ForbiddenException;
+import com.example.courses.exception.ServerErrorException;
 import com.example.courses.persistence.entity.Course;
 import com.example.courses.persistence.entity.Role;
 import com.example.courses.persistence.entity.User;
@@ -61,8 +62,7 @@ public class UserCoursesServlet extends HttpServlet {
             request.setAttribute("courses", courseDTOList);
         } catch (SQLException e) {
             logger.error("SQLException: " + e.getMessage(), e);
-            response.sendRedirect(request.getContextPath() + "/error_handler?type=500");
-            return;
+            throw new ServerErrorException();
         }
 
         request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.USER_COURSES_JSP).forward(request, response);

@@ -1,6 +1,8 @@
 package com.example.courses.servlet;
 
 import com.example.courses.DTO.CourseDTO;
+import com.example.courses.exception.NotFoundException;
+import com.example.courses.exception.ServerErrorException;
 import com.example.courses.persistence.entity.Course;
 import com.example.courses.persistence.entity.Role;
 import com.example.courses.persistence.entity.User;
@@ -13,7 +15,10 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -28,16 +33,18 @@ public class CourseListServlet extends HttpServlet {
     private static final CourseFilterService courseFilterService = new CourseFilterService();
     private static final CourseSortingService courseSortingService = new CourseSortingService();
 
-    private static final Logger logger = LogManager.getLogger(CourseListServlet.class.getName()); 
-    
+    private static final Logger logger = LogManager.getLogger(CourseListServlet.class.getName());
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        logger.trace("CourseList: get");
+
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         String lang = (String) session.getAttribute("lang");
 
         List<CourseDTO> courseDTOList;
-        
+
         try {
             List<Course> courseList;
             String query = request.getParameter("query");
@@ -61,15 +68,13 @@ public class CourseListServlet extends HttpServlet {
             courseDTOList = applyPagination(courseDTOList, request, response);
         } catch (SQLException e) {
             logger.error("SQLException: " + e.getMessage(), e);
-            response.sendRedirect(request.getContextPath() + "/error_handler?type=500");
-            return;
+            throw new ServerErrorException();
         }
 
         logger.debug("CourseDTOList: " + courseDTOList);
-        if(courseDTOList != null) {
-            request.setAttribute("courses", courseDTOList);
-            request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.COURSE_LIST_JSP).forward(request, response);
-        }
+        request.setAttribute("courses", courseDTOList);
+
+        request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.COURSE_LIST_JSP).forward(request, response);
     }
 
     private void filter(HttpServletRequest request, HttpSession session, String lang, List<CourseDTO> courseDTOList) throws SQLException {
@@ -77,7 +82,7 @@ public class CourseListServlet extends HttpServlet {
         Map<String, List<String>> availableFilters = courseFilterService.getAvailableFilters(lang);
 
         // get filters from session and apply them
-        Map<String, List<String>> requestFilters  = (Map<String, List<String>>) session.getAttribute("filters");
+        Map<String, List<String>> requestFilters = (Map<String, List<String>>) session.getAttribute("filters");
         courseFilterService.applyFilters(courseDTOList, requestFilters);
 
         request.setAttribute("filters", availableFilters);
@@ -114,10 +119,9 @@ public class CourseListServlet extends HttpServlet {
         }
 
         // redirect to 'not found' if current page is not in range of total number of pages
-        if(currentPage < 1 || currentPage > numberOfPages){
-            logger.error("Chosen page does not exists");
-            response.sendRedirect(request.getContextPath() + "/error_handler?type=500");
-            return null;
+        if (numberOfPages != 0 && (currentPage < 1 || currentPage > numberOfPages)) {
+            logger.error("Chosen page (" + currentPage + ") does not exists");
+            throw new NotFoundException();
         }
 
         // save current page and number of pages in request

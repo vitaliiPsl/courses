@@ -1,7 +1,5 @@
 package com.example.courses.servlet;
 
-import com.example.courses.service.CourseFilterService;
-import com.example.courses.servlet.teacher.ScoresServlet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

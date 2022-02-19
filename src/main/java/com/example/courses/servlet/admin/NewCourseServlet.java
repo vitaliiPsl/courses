@@ -1,5 +1,7 @@
 package com.example.courses.servlet.admin;
 
+import com.example.courses.exception.NotFoundException;
+import com.example.courses.exception.ServerErrorException;
 import com.example.courses.persistence.entity.*;
 import com.example.courses.service.CourseService;
 import com.example.courses.service.LanguageService;
@@ -48,13 +50,13 @@ public class NewCourseServlet extends HttpServlet {
             subjects = subjectService.getAll(locale.getId());
         } catch (SQLException e){
             logger.error("SQLException while retrieving data for new course page", e);
-            response.sendRedirect(request.getContextPath() + "/error_handler?type=500");
-            return;
+            throw new ServerErrorException();
         }
 
         request.setAttribute("teachers", teachers);
         request.setAttribute("languages", languages);
         request.setAttribute("subjects", subjects);
+
         request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.NEW_COURSE_JSP).forward(request, response);
     }
 
@@ -69,12 +71,10 @@ public class NewCourseServlet extends HttpServlet {
             courseService.saveNewCourse(course);
         } catch (SQLException e) {
             logger.error("SQLException while saving edited course", e);
-            response.sendRedirect(request.getContextPath() + "/error_handler?type=500");
-            return;
+            throw new ServerErrorException();
         } catch (IllegalArgumentException e){
             logger.error("Invalid properties: " + course);
-            response.sendRedirect(request.getContextPath() + "/error_handler?type=500");
-            return;
+            throw new NotFoundException();
         }
 
         response.sendRedirect(request.getContextPath() + "/courses");

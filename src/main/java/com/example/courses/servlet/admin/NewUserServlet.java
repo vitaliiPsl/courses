@@ -1,5 +1,6 @@
 package com.example.courses.servlet.admin;
 
+import com.example.courses.exception.ServerErrorException;
 import com.example.courses.persistence.entity.Role;
 import com.example.courses.persistence.entity.User;
 import com.example.courses.service.UserService;
@@ -54,8 +55,7 @@ public class NewUserServlet extends HttpServlet {
             this.doGet(request, response);
         } catch (SQLException e) {
             logger.error("SQLException while saving new user", e);
-            response.sendRedirect(request.getContextPath() + "/error_handler?type=500");
-            return;
+            throw new ServerErrorException();
         }
 
         response.sendRedirect(request.getContextPath() + "/");
@@ -71,7 +71,7 @@ public class NewUserServlet extends HttpServlet {
                 return Role.STUDENT;
             default:
                 logger.error("Invalid user role: " + roleName);
-                throw new IllegalArgumentException("There is no such role '" + roleName + "'");
+                throw new IllegalArgumentException("There is no such role: '" + roleName + "'");
         }
     }
 }
