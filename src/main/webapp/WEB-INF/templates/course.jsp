@@ -75,7 +75,7 @@
                 </div>
             </div>
 
-            <c:if test="${sessionScope.user != null && sessionScope.user.getRole().equals(Role.TEACHER)}">
+            <c:if test="${sessionScope.user != null && !sessionScope.user.getRole().equals(Role.STUDENT)}">
                 <div class="students-block">
                     <h1>Students</h1>
                     <c:if test="${!students.isEmpty()}">
@@ -85,18 +85,32 @@
                             <table class="students-table">
                                 <tr>
                                     <th class="first-name-header">
-                                        <fmt:message key="label.table_first_name"/>
+                                        <fmt:message key="label.table.first_name"/>
                                     </th>
+
                                     <th class="last-name-header">
-                                        <fmt:message key="label.table_last_name"/>
+                                        <fmt:message key="label.table.last_name"/>
                                     </th>
+
                                     <th class="email-header">
-                                        <fmt:message key="label.table_email"/>
+                                        <fmt:message key="label.table.email"/>
                                     </th>
-                                    <th class="score-header">
-                                        <fmt:message key="label.table_score"/>
-                                    </th>
+
+                                    <c:if test="${sessionScope.user.getRole().equals(Role.ADMIN)}">
+                                        <th class="block-header">
+                                            <fmt:message key="label.table.block_status"/>
+                                        </th>
+                                    </c:if>
+
+                                    <c:if test="${sessionScope.user.getRole().equals(Role.TEACHER) && course.getTeacherId() == sessionScope.user.getId()}">
+                                        <c:if test="${!course.getCourseStatus().equals(CourseStatus.NOT_STARTED)}">
+                                            <th class="score-header">
+                                                <fmt:message key="label.table.score"/>
+                                            </th>
+                                        </c:if>
+                                    </c:if>
                                 </tr>
+
                                 <c:forEach var="student" items="${students}">
                                     <tr>
                                         <td class="first-name">
@@ -115,20 +129,52 @@
                                             </a>
                                         </td>
 
-                                        <td class="student-score">
-                                            <input type="number" min="0" max="${course.getMaxScore()}"
-                                                   placeholder="${requestScope.scores.getOrDefault(student.getId(), 0)}"
-                                                   name="score_${student.getId()}">
-                                        </td>
+                                        <c:if test="${sessionScope.user.getRole().equals(Role.ADMIN)}">
+                                            <td class="block">
+                                                <c:if test="${student.isBlocked()}">
+                                                    <button class="block-button">
+                                                        <a href="${pageContext.request.contextPath}/admin/unblock?student_id=${student.getId()}">
+                                                            <fmt:message key="label.table.btn.unblock"/>
+                                                        </a>
+                                                    </button>
+                                                </c:if>
+                                                <c:if test="${!student.isBlocked()}">
+                                                    <button class="block-button">
+                                                        <a href="${pageContext.request.contextPath}/admin/block?student_id=${student.getId()}">
+                                                            <fmt:message key="label.table.btn.block"/>
+                                                        </a>
+                                                    </button>
+                                                </c:if>
+                                            </td>
+                                        </c:if>
+
+                                        <c:if test="${sessionScope.user.getRole().equals(Role.TEACHER) && course.getTeacherId() == sessionScope.user.getId()}">
+                                            <c:if test="${!course.getCourseStatus().equals(CourseStatus.NOT_STARTED)}">
+                                                <td class="student-score">
+                                                    <c:if test="${course.getCourseStatus().equals(CourseStatus.IN_PROGRESS)}">
+                                                        <input type="number" min="0" max="${course.getMaxScore()}"
+                                                               placeholder="${requestScope.scores.getOrDefault(student.getId(), 0)}/${course.getMaxScore()}"
+                                                               name="score_${student.getId()}">
+                                                    </c:if>
+                                                    <c:if test="${course.getCourseStatus().equals(CourseStatus.COMPLETED)}">
+                                                        <span>${requestScope.scores.getOrDefault(student.getId(), 0)}/${course.getMaxScore()}</span>
+                                                    </c:if>
+                                                </td>
+                                            </c:if>
+                                        </c:if>
                                     </tr>
                                 </c:forEach>
                             </table>
-                            <button class="btn" type="submit">
-                                <fmt:message key="label.table_save_btn"/>
-                            </button>
+                            <c:if test="${sessionScope.user.getRole().equals(Role.TEACHER) && course.getTeacherId() == sessionScope.user.getId()}">
+                                <c:if test="${course.getCourseStatus().equals(CourseStatus.IN_PROGRESS)}">
+                                    <button class="btn" type="submit">
+                                        <fmt:message key="label.table.btn.save_scores"/>
+                                    </button>
+                                </c:if>
+                            </c:if>
                         </form>
                     </c:if>
-                    <c:if test="${students.isEmpty()}">
+                    <c:if test="${requestScope.students.isEmpty()}">
                         <div class="no-students">
                         </div>
                     </c:if>
@@ -168,7 +214,6 @@
                         </button>
                     </div>
                 </c:if>
-
             </div>
         </div>
     </c:if>
