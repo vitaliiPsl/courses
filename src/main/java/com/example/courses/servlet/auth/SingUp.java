@@ -5,6 +5,7 @@ import com.example.courses.persistence.entity.Role;
 import com.example.courses.persistence.entity.User;
 import com.example.courses.service.UserService;
 import com.example.courses.servlet.Constants;
+import com.example.courses.utils.UserValidation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,13 +25,13 @@ public class SingUp extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        logger.trace("get: sign up");
+        logger.trace("Sign up: get");
         request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.SIGN_UP_JSP).forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        logger.trace("post: sign up");
+        logger.trace("Sign up: post");
         String firstName = request.getParameter("first_name");
         String lastName = request.getParameter("last_name");
         String email = request.getParameter("email");

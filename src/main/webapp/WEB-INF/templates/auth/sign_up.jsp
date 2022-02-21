@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/style.css"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/auth/register.css"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/form.css"/>
-    <title>Sign Up</title>
+    <title><fmt:message key="label.sign_up"/></title>
 </head>
 
 <body>
@@ -41,10 +41,10 @@
                 </div>
 
                 <div class="form-row">
-                    <input type="password" name="password" placeholder="<fmt:message key="label.password"/>" class="form-input" required/>
+                    <input id="password" type="password" name="password" placeholder="<fmt:message key="label.password"/>" class="form-input" required/>
                 </div>
                 <div class="form-row">
-                    <input type="password" placeholder="<fmt:message key="label.repeat_password"/>" class="form-input" required/>
+                    <input id="repeat-password" type="password" placeholder="<fmt:message key="label.repeat_password"/>" class="form-input" required/>
                 </div>
 
                 <button class="form-submit"><fmt:message key="label.sign_up"/></button>
@@ -60,6 +60,7 @@
 </main>
 
 <footer></footer>
+<script src="${pageContext.request.contextPath}/static/js/confirm_password.js"></script>
 </body>
 
 </html>
