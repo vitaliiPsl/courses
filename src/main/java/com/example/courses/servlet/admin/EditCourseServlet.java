@@ -9,10 +9,12 @@ import com.example.courses.service.SubjectService;
 import com.example.courses.service.UserService;
 import com.example.courses.servlet.Constants;
 import com.example.courses.utils.CourseUtils;
+import com.example.courses.utils.ImageUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +25,11 @@ import java.sql.SQLException;
 import java.util.List;
 
 @WebServlet("/admin/course/edit")
+@MultipartConfig(
+        fileSizeThreshold=1024*1024*2,
+        maxFileSize=1024*1024*10,
+        maxRequestSize=1024*1024*50
+)
 public class EditCourseServlet extends HttpServlet {
     private static final UserService userService = new UserService();
     private static final LanguageService languageService = new LanguageService();
@@ -90,6 +97,12 @@ public class EditCourseServlet extends HttpServlet {
             long id = Long.parseLong(courseId);
             Course course = CourseUtils.buildCourse(request);
             course.setId(id);
+
+            String imageName = ImageUtils.saveCourseImage(request);
+            if (imageName != null) {
+                course.setImageName(imageName);
+            }
+
             courseService.updateCourse(course);
         } catch (SQLException e) {
             logger.error("SQLException while saving edited course", e);

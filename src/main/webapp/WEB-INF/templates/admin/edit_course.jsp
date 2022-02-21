@@ -31,8 +31,10 @@
     </div>
 
     <div class="container">
-        <form action="${pageContext.request.contextPath}/admin/course/edit?course_id=${course.getId()}" method="post">
-            <input class="form-input" type="text" name="course_title" value="${course.getTitle()}" placeholder="<fmt:message key="label.course_title"/>"
+        <form action="${pageContext.request.contextPath}/admin/course/edit?course_id=${course.getId()}" method="post"
+              enctype="multipart/form-data">
+            <input class="form-input" type="text" name="course_title" value="${course.getTitle()}"
+                   placeholder="<fmt:message key="label.course_title"/>"
                    autocomplete="off" required>
 
             <textarea class="form-input"
@@ -76,6 +78,11 @@
             <input class="form-input" type="datetime-local" name="start_date" value="${course.getStartDate()}">
             <input class="form-input" type="datetime-local" name="end_date" value="${course.getEndDate()}">
 
+            <div class="form-row image-input-row">
+                <input id="image-input" type="file" name="file" accept="image/*">
+                <label id="image-input-label" for="image-input">Choose image...</label>
+            </div>
+
             <button class="form-submit">
                 <fmt:message key="label.button_submit"/>
             </button>
@@ -84,7 +91,7 @@
 </main>
 
 <footer>
-
 </footer>
+<script src="${pageContext.request.contextPath}/static/js/course_image_input.js"></script>
 </body>
 </html>

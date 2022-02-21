@@ -19,6 +19,8 @@
 <jsp:include page="/WEB-INF/templates/header.jsp"/>
 
 <main>
+    <jsp:include page="/WEB-INF/templates/error.jsp"/>
+
     <div class="title-box">
         <div class="container">
             <div class="title-row">
@@ -28,14 +30,16 @@
     </div>
 
     <div class="container">
-        <form action="${pageContext.request.contextPath}/admin/course/new" method="post">
+        <form action="${pageContext.request.contextPath}/admin/course/new" method="post" enctype="multipart/form-data">
             <input class="form-input" type="text" name="course_title" placeholder="<fmt:message key="label.course_title"/>" autocomplete="off" required>
 
             <textarea class="form-input"
                       name="course_description"
                       placeholder="<fmt:message key="label.course_description"/>"
                       autocomplete="off"
+                      maxlength="512"
             ></textarea>
+
 
             <select name="subject_id">
                 <option value="" selected disabled hidden><fmt:message key="label.course_choose_subject"/></option>
@@ -45,10 +49,10 @@
                 </c:forEach>
             </select>
 
-<%--            <div class="form-group">--%>
-<%--                <input type="text" name="new_subject_en" placeholder="<fmt:message key="label.new_subject_en"/>" class="form-input"/>--%>
-<%--                <input type="text" name="new_subject_uk" placeholder="<fmt:message key="label.new_subject_uk"/>" class="form-input"/>--%>
-<%--            </div>--%>
+            <%--            <div class="form-group">--%>
+            <%--                <input type="text" name="new_subject_en" placeholder="<fmt:message key="label.new_subject_en"/>" class="form-input"/>--%>
+            <%--                <input type="text" name="new_subject_uk" placeholder="<fmt:message key="label.new_subject_uk"/>" class="form-input"/>--%>
+            <%--            </div>--%>
 
             <select name="teacher_id" required>
                 <option value="" selected disabled hidden><fmt:message key="label.course_choose_teacher"/></option>
@@ -71,13 +75,17 @@
             <input class="form-input" type="datetime-local" name="start_date" required>
             <input class="form-input" type="datetime-local" name="end_date" required>
 
+            <div class="form-row image-input-row">
+                <input id="image-input" type="file" name="file" accept="image/*">
+                <label id="image-input-label" for="image-input">Choose image...</label>
+            </div>
+
             <button class="form-submit"><fmt:message key="label.button_submit"/></button>
         </form>
     </div>
 </main>
 
-<footer>
-
-</footer>
+<footer></footer>
+<script src="${pageContext.request.contextPath}/static/js/course_image_input.js"></script>
 </body>
 </html>

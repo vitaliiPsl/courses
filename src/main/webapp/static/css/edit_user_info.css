@@ -1,0 +1,19 @@
+.avatar-block{
+    width: 100%;
+    order: -1;
+
+    display: flex;
+    justify-content: center;
+}
+
+.avatar-block img{
+    height: 150px;
+    width: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+.avatar-block #avatar-input{
+    display: none;
+}

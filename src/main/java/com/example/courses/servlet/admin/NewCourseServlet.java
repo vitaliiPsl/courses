@@ -1,6 +1,5 @@
 package com.example.courses.servlet.admin;
 
-import com.example.courses.exception.NotFoundException;
 import com.example.courses.exception.ServerErrorException;
 import com.example.courses.persistence.entity.*;
 import com.example.courses.service.CourseService;
@@ -9,10 +8,12 @@ import com.example.courses.service.SubjectService;
 import com.example.courses.service.UserService;
 import com.example.courses.servlet.Constants;
 import com.example.courses.utils.CourseUtils;
+import com.example.courses.utils.ImageUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +24,11 @@ import java.sql.SQLException;
 import java.util.List;
 
 @WebServlet("/admin/course/new")
+@MultipartConfig(
+        fileSizeThreshold=1024*1024*2,
+        maxFileSize=1024*1024*10,
+        maxRequestSize=1024*1024*50
+)
 public class NewCourseServlet extends HttpServlet {
     private static final UserService userService = new UserService();
     private static final LanguageService languageService = new LanguageService();
@@ -61,12 +67,19 @@ public class NewCourseServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         logger.trace("New course: post");
 
         Course course = null;
         try {
+            String imageName = ImageUtils.saveCourseImage(request);
+            if (imageName == null) {
+                imageName = ImageUtils.DEFAULT_IMAGE;
+            }
+
             course = CourseUtils.buildCourse(request);
+            course.setImageName(imageName);
+
             logger.info("Saving new course: " + course);
             courseService.saveNewCourse(course);
         } catch (SQLException e) {
@@ -74,7 +87,9 @@ public class NewCourseServlet extends HttpServlet {
             throw new ServerErrorException();
         } catch (IllegalArgumentException e){
             logger.error("Invalid properties: " + course);
-            throw new NotFoundException();
+            request.setAttribute("error", e.getMessage());
+            this.doGet(request, response);
+            return;
         }
 
         response.sendRedirect(request.getContextPath() + "/courses");

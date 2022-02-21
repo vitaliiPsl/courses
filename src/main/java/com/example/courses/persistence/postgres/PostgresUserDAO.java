@@ -69,7 +69,7 @@ public class PostgresUserDAO implements UserDAO {
             statement = connection.prepareStatement(UserDAOConstants.UPDATE_PERSON_BY_ID);
 
             setUserProperties(user, statement);
-            statement.setLong(7, user.getId());
+            statement.setLong(8, user.getId());
 
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -192,7 +192,8 @@ public class PostgresUserDAO implements UserDAO {
             statement.setString(3, user.getEmail());
             statement.setString(4, user.getPassword());
             statement.setBoolean(5, user.isBlocked());
-            statement.setInt(6, user.getRole().ordinal() + 1);
+            statement.setString(6, user.getImageName());
+            statement.setInt(7, user.getRole().ordinal() + 1);
         } catch (SQLException e){
             logger.error("SQLException while setting user's properties", e);
             throw e;
@@ -211,6 +212,7 @@ public class PostgresUserDAO implements UserDAO {
             user.setEmail(resultSet.getString(UserDAOConstants.PERSON_EMAIL));
             user.setPassword(resultSet.getString(UserDAOConstants.PERSON_PASSWORD));
             user.setBlocked(resultSet.getBoolean(UserDAOConstants.PERSON_IS_BLOCKED));
+            user.setImageName(resultSet.getString(UserDAOConstants.PERSON_IMAGE_NAME));
             user.setRole(parseRole(resultSet.getString(UserDAOConstants.ROLE_NAME)));
         } catch (SQLException e){
             logger.error("SQLException while building users", e);
@@ -252,6 +254,7 @@ public class PostgresUserDAO implements UserDAO {
         static final String PERSON_EMAIL = "email";
         static final String PERSON_PASSWORD = "password";
         static final String PERSON_IS_BLOCKED = "is_blocked";
+        static final String PERSON_IMAGE_NAME = "image_name";
         static final String ROLE_ID = "id";
         static final String ROLE_NAME = "name";
 
@@ -263,6 +266,7 @@ public class PostgresUserDAO implements UserDAO {
                         PERSON_EMAIL + ", " +
                         PERSON_PASSWORD + ", " +
                         PERSON_IS_BLOCKED + ", " +
+                        PERSON_IMAGE_NAME + ", " +
                         PERSON_ROLE_ID +
                         ") VALUES(?, ?, ?, ?, ?, ?)";
 
@@ -274,6 +278,7 @@ public class PostgresUserDAO implements UserDAO {
                         PERSON_EMAIL + " = ?," +
                         PERSON_PASSWORD + " = ?," +
                         PERSON_IS_BLOCKED + " = ?," +
+                        PERSON_IMAGE_NAME + " = ?," +
                         PERSON_ROLE_ID + " = ? " +
                         "WHERE " + PERSON_ID + " =?";
 
@@ -289,6 +294,7 @@ public class PostgresUserDAO implements UserDAO {
                         "p." + PERSON_EMAIL + ", " +
                         "p." + PERSON_PASSWORD + ", " +
                         "p." + PERSON_IS_BLOCKED + ", " +
+                        "p." + PERSON_IMAGE_NAME + ", " +
                         "r." + ROLE_NAME;
 
         static final String JOIN_PERSON_ROLE =

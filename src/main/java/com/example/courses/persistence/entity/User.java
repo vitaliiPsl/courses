@@ -1,5 +1,7 @@
 package com.example.courses.persistence.entity;
 
+import com.example.courses.utils.ImageUtils;
+
 import java.util.Objects;
 
 public class User {
@@ -9,17 +11,21 @@ public class User {
     String email;
     String password;
     boolean isBlocked;
+    String imageName;
     Role role;
 
-    public User(){}
+    public User(){
+        imageName = ImageUtils.DEFAULT_IMAGE;
+    }
 
-    public User(long id, String firstName, String lastName, String email, String password, boolean isBlocked, Role role) {
+    public User(long id, String firstName, String lastName, String email, String password, boolean isBlocked, String imageName, Role role) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.isBlocked = isBlocked;
+        this.imageName = imageName;
         this.role = role;
     }
 
@@ -71,6 +77,14 @@ public class User {
         isBlocked = blocked;
     }
 
+    public String getImageName() {
+        return imageName;
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
+    }
+
     public Role getRole() {
         return role;
     }
@@ -98,12 +112,14 @@ public class User {
 
     @Override
     public String toString() {
-        return "Person{" +
+        return "User{" +
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
                 ", isBlocked=" + isBlocked +
+                ", imageName='" + imageName + '\'' +
                 ", role=" + role +
                 '}';
     }

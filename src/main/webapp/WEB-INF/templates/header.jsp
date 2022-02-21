@@ -74,7 +74,7 @@
                         <li class="account-dropdown">
                             <div class="account-dropdown-control">
                                 <div class="profile-img">
-                                    <img src="${pageContext.request.contextPath}/static/images/default.jpeg" alt="">
+                                    <img src="${pageContext.request.contextPath}/image?image_type=user&image_name=${sessionScope.user.getImageName()}" alt=""/>
                                 </div>
                                 <span class="user">${sessionScope.user.getFullName()}</span>
                                 <div class="arrow"></div>

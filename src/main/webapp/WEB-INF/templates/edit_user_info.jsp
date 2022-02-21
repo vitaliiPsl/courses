@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/style.css"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/auth/register.css"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/form.css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/edit_user_info.css"/>
     <title><fmt:message key="label.title"/></title>
 </head>
 
@@ -30,7 +31,7 @@
         <div class="log-in-box">
             <h1><fmt:message key="label.title"/></h1>
 
-            <form action="${pageContext.request.contextPath}/user/edit" method="post">
+            <form action="${pageContext.request.contextPath}/user/edit" method="post" enctype="multipart/form-data">
                 <c:set var="user" value="${sessionScope.user}"/>
                 <div class="form-group">
                     <input type="text" name="first_name" value="${user.getFirstName()}" placeholder="<fmt:message key="label.form.first_name"/>" class="form-input" required/>
@@ -39,6 +40,11 @@
 
                 <div class="form-row">
                     <input type="email" name="email" value="${user.getEmail()}" placeholder="<fmt:message key="label.form.email"/>" class="form-input" required/>
+                </div>
+
+                <div class="form-row avatar-block">
+                    <img id="avatar-image" src="${pageContext.request.contextPath}/image?image_type=user&image_name=${sessionScope.user.getImageName()}" alt=""/>
+                    <input id="avatar-input" type="file" name="file" accept="image/*">
                 </div>
 
                 <button class="form-submit"><fmt:message key="label.form.btn_save"/></button>
@@ -52,6 +58,6 @@
 </main>
 
 <footer></footer>
+<script src="${pageContext.request.contextPath}/static/js/profile_image_input.js"></script>
 </body>
-
 </html>

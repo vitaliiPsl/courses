@@ -70,7 +70,7 @@
 
                 <div class="image-block">
                     <div class="image-wrapper">
-                        <img src="${pageContext.request.contextPath}/static/images/default.jpeg" alt=""/>
+                        <img src="${pageContext.request.contextPath}/image?image_type=course&image_name=${course.getImageName()}" alt=""/>
                     </div>
                 </div>
             </div>

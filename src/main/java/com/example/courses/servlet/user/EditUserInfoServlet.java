@@ -3,11 +3,13 @@ package com.example.courses.servlet.user;
 import com.example.courses.persistence.entity.User;
 import com.example.courses.service.UserService;
 import com.example.courses.servlet.Constants;
+import com.example.courses.utils.ImageUtils;
 import com.example.courses.utils.UserValidation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +19,11 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 @WebServlet("/user/edit")
+@MultipartConfig(
+        fileSizeThreshold=1024*1024*2,
+        maxFileSize=1024*1024*10,
+        maxRequestSize=1024*1024*50
+)
 public class EditUserInfoServlet extends HttpServlet {
     private static final UserService userService = new UserService();
 
@@ -51,6 +58,10 @@ public class EditUserInfoServlet extends HttpServlet {
         user.setEmail(email);
 
         try {
+            String imageName = ImageUtils.saveUserImage(request);
+            if(imageName != null){
+                user.setImageName(imageName);
+            }
             userService.updateUser(user);
         } catch (SQLException e) {
             logger.error("SQLException while updating new user", e);

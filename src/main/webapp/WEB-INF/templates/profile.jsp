@@ -24,7 +24,7 @@
     <div class="container">
         <div class="info-block">
             <div class="image-block">
-                <img src="${pageContext.request.contextPath}/static/images/default.jpeg" alt=""/>
+                <img src="${pageContext.request.contextPath}/image?image_type=user&image_name=${requestScope.user.getImageName()}" alt=""/>
             </div>
 
             <div class="data-block">

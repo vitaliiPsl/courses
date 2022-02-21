@@ -282,7 +282,7 @@ public class PostgresCourseDAO implements CourseDAO {
             statement.setTimestamp(6, Timestamp.valueOf(course.getStartDate()));
             statement.setTimestamp(7, Timestamp.valueOf(course.getEndDate()));
             statement.setInt(8, course.getMaxScore());
-            statement.setString(9, course.getImageUrl());
+            statement.setString(9, course.getImageName());
         } catch (SQLException e){
             logger.error("Error while setting course properties");
             throw e;
@@ -307,7 +307,7 @@ public class PostgresCourseDAO implements CourseDAO {
             course.setEndDate(endDate);
 
             course.setMaxScore(resultSet.getInt(CourseDAOConstants.COURSE_MAX_SCORE));
-            course.setImageUrl(resultSet.getString(CourseDAOConstants.COURSE_IMAGE_URL));
+            course.setImageName(resultSet.getString(CourseDAOConstants.COURSE_IMAGE_NAME));
 
             course.setCourseStatus(parseCourseStatus(startDate, endDate));
         } catch (SQLException e){
@@ -343,7 +343,7 @@ public class PostgresCourseDAO implements CourseDAO {
         static final String COURSE_START_DATE = "start_date";
         static final String COURSE_END_DATE = "end_date";
         static final String COURSE_MAX_SCORE = "max_score";
-        static final String COURSE_IMAGE_URL = "image_url";
+        static final String COURSE_IMAGE_NAME = "image_name";
 
         static final String INSERT_COURSE =
                 "INSERT INTO " +
@@ -357,7 +357,7 @@ public class PostgresCourseDAO implements CourseDAO {
                             COURSE_START_DATE + ", " +
                             COURSE_END_DATE + ", " +
                             COURSE_MAX_SCORE + ", " +
-                            COURSE_IMAGE_URL +
+                            COURSE_IMAGE_NAME +
                         ") VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
         static final String UPDATE_COURSE_BY_ID =
@@ -371,7 +371,7 @@ public class PostgresCourseDAO implements CourseDAO {
                         COURSE_START_DATE + " = ?, " +
                         COURSE_END_DATE + " = ?, " +
                         COURSE_MAX_SCORE + " = ?, " +
-                        COURSE_IMAGE_URL + " = ? " +
+                        COURSE_IMAGE_NAME + " = ? " +
                         "WHERE " + COURSE_ID + " = ?;";
 
         static final String DELETE_COURSE_BY_ID =
@@ -389,7 +389,7 @@ public class PostgresCourseDAO implements CourseDAO {
                         "c." + COURSE_START_DATE + ", " +
                         "c." + COURSE_END_DATE + ", " +
                         "c." + COURSE_MAX_SCORE + ", " +
-                        "c." + COURSE_IMAGE_URL;
+                        "c." + COURSE_IMAGE_NAME;
 
         static final String SELECT_COURSE_BY_ID =
                 "SELECT " +

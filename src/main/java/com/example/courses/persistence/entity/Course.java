@@ -1,5 +1,7 @@
 package com.example.courses.persistence.entity;
 
+import com.example.courses.utils.ImageUtils;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -13,10 +15,12 @@ public class Course {
     int maxScore;
     LocalDateTime startDate;
     LocalDateTime endDate;
-    String imageUrl;
+    String imageName;
     CourseStatus courseStatus;
 
-    public Course() {}
+    public Course() {
+        imageName = ImageUtils.DEFAULT_IMAGE;
+    }
 
     public Course(long id, long teacherId, long languageId, long subjectId, String title, String description, int maxScore, LocalDateTime startDate, LocalDateTime endDate, String imageUrl, CourseStatus courseStatus) {
         this.id = id;
@@ -28,7 +32,7 @@ public class Course {
         this.maxScore = maxScore;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.imageUrl = imageUrl;
+        this.imageName = imageUrl;
         this.courseStatus = courseStatus;
     }
 
@@ -104,12 +108,12 @@ public class Course {
         this.endDate = endDate;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getImageName() {
+        return imageName;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
     }
 
     public CourseStatus getCourseStatus() {
@@ -145,7 +149,7 @@ public class Course {
                 ", maxScore=" + maxScore +
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
-                ", imageUrl='" + imageUrl + '\'' +
+                ", imageUrl='" + imageName + '\'' +
                 ", courseStatus=" + courseStatus +
                 '}';
     }
