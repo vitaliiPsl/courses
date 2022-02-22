@@ -268,7 +268,7 @@ public class PostgresUserDAO implements UserDAO {
                         PERSON_IS_BLOCKED + ", " +
                         PERSON_IMAGE_NAME + ", " +
                         PERSON_ROLE_ID +
-                        ") VALUES(?, ?, ?, ?, ?, ?)";
+                        ") VALUES(?, ?, ?, ?, ?, ?, ?)";
 
         static final String UPDATE_PERSON_BY_ID =
                 "UPDATE " + TABLE_PERSON + " " +
