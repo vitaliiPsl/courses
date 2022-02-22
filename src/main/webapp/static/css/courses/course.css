@@ -28,6 +28,12 @@ main{
     font-size: 48px;
 }
 
+.certificate-btn{
+    padding-left: 8px;
+    padding-right: 8px;
+    width: fit-content;
+}
+
 .enroll-block{
     width: 100%;
 

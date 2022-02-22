@@ -44,6 +44,13 @@
                     </p>
 
                     <c:if test="${sessionScope.user == null || sessionScope.user.getRole().equals(Role.STUDENT)}">
+
+                        <c:if test="${course.getCourseStatus().equals(CourseStatus.COMPLETED)}">
+                            <button class="certificate-btn">
+                                <a href="${pageContext.request.contextPath}/certificate?course_id=${course.getId()}" download><fmt:message key="label.certificate"/></a>
+                            </button>
+                        </c:if>
+
                         <div class="enroll-block">
                             <c:if test="${requestScope.student_course == null}">
                                 <form action="${pageContext.request.contextPath}/enroll?course_id=${course.getId()}"

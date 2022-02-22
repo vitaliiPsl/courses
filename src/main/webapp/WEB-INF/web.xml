@@ -22,6 +22,7 @@
         <url-pattern>/enroll</url-pattern>
         <url-pattern>/user/edit</url-pattern>
         <url-pattern>/user/password</url-pattern>
+        <url-pattern>/certificate</url-pattern>
     </filter-mapping>
 
     <filter>
