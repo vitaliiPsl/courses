@@ -1,6 +1,7 @@
 <%@ page import="com.example.courses.persistence.entity.Role" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <%@ page contentType="text/html;charset=UTF-8" %>
 <fmt:setLocale value="${sessionScope.lang}"/>
@@ -34,8 +35,8 @@
                             <fmt:message key="label.sign_up"/>
                         </a></li>
                         <div class="language-switch">
-                            <a href="${requestScope['javax.servlet.forward.request_uri']}?lang=en" class="${sessionScope.lang == "en" ? 'selected' : ''}"><fmt:message key="label.dropdown.lang_english"/></a>
-                            <a href="${requestScope['javax.servlet.forward.request_uri']}?lang=uk" class="${sessionScope.lang == "uk" ? 'selected' : ''}"><fmt:message key="label.dropdown.lang_ukrainian"/></a>
+                            <a href="<t:addParam name='lang' value='en' />" class="${sessionScope.lang == "en" ? 'selected' : ''}"><fmt:message key="label.dropdown.lang_english"/></a>
+                            <a href="<t:addParam name='lang' value='uk' />" class="${sessionScope.lang == "uk" ? 'selected' : ''}"><fmt:message key="label.dropdown.lang_ukrainian"/></a>
                         </div>
                     </c:if>
 
@@ -85,8 +86,8 @@
                                     <fmt:message key="label.log_out"/>
                                 </a>
                                 <div class="language-switch">
-                                    <a href="${requestScope['javax.servlet.forward.request_uri']}?lang=en" class="${sessionScope.lang == "en" ? 'selected' : ''}"><fmt:message key="label.dropdown.lang_english"/></a>
-                                    <a href="${requestScope['javax.servlet.forward.request_uri']}?lang=uk" class="${sessionScope.lang == "uk" ? 'selected' : ''}"><fmt:message key="label.dropdown.lang_ukrainian"/></a>
+                                    <a href="<t:addParam name='lang' value='en' />" class="${sessionScope.lang == "en" ? 'selected' : ''}"><fmt:message key="label.dropdown.lang_english"/></a>
+                                    <a href="<t:addParam name='lang' value='uk' />" class="${sessionScope.lang == "uk" ? 'selected' : ''}"><fmt:message key="label.dropdown.lang_ukrainian"/></a>
                                 </div>
                             </div>
                         </li>
