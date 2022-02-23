@@ -1,0 +1,11 @@
+.subject-group{
+    gap: 0;
+}
+
+.language-span {
+    display: flex;
+    background: black;
+    color: white;
+    padding: 8px 10px;
+    border-radius: 5px 5px 5px 0;
+}
