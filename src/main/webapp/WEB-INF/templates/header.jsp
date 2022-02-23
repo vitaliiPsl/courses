@@ -35,8 +35,12 @@
                             <fmt:message key="label.sign_up"/>
                         </a></li>
                         <div class="language-switch">
-                            <a href="<t:addParam name='lang' value='en' />" class="${sessionScope.lang == "en" ? 'selected' : ''}"><fmt:message key="label.dropdown.lang_english"/></a>
-                            <a href="<t:addParam name='lang' value='uk' />" class="${sessionScope.lang == "uk" ? 'selected' : ''}"><fmt:message key="label.dropdown.lang_ukrainian"/></a>
+                            <a href="<t:addParam name='lang' value='en' />"
+                               class="${sessionScope.lang == "en" ? 'selected' : ''}"><fmt:message
+                                    key="label.dropdown.lang_english"/></a>
+                            <a href="<t:addParam name='lang' value='uk' />"
+                               class="${sessionScope.lang == "uk" ? 'selected' : ''}"><fmt:message
+                                    key="label.dropdown.lang_ukrainian"/></a>
                         </div>
                     </c:if>
 
@@ -46,15 +50,35 @@
                                 <li><a href="${pageContext.request.contextPath}/courses">
                                     <fmt:message key="label.courses"/>
                                 </a></li>
-                                <li><a href="${pageContext.request.contextPath}/admin/course/new">
-                                    <fmt:message key="label.new_course"/>
-                                </a></li>
-                                <li><a href="${pageContext.request.contextPath}/admin/new_user">
-                                    <fmt:message key="label.new_user"/>
-                                </a></li>
                                 <li><a href="${pageContext.request.contextPath}/admin/students">
                                     <fmt:message key="label.students"/>
                                 </a></li>
+                                <%--                                <li><a href="${pageContext.request.contextPath}/admin/course/new">--%>
+                                <%--                                    <fmt:message key="label.new_course"/>--%>
+                                <%--                                </a></li>--%>
+                                <%--                                <li><a href="${pageContext.request.contextPath}/admin/new_user">--%>
+                                <%--                                    <fmt:message key="label.new_user"/>--%>
+                                <%--                                </a></li>--%>
+                                <%--                                <li><a href="${pageContext.request.contextPath}/admin/course/new">--%>
+                                <%--                                    <fmt:message key="label.new_user"/>--%>
+                                <%--                                </a></li>--%>
+                                <li class="header-dropdown">
+                                    <div class="header-dropdown-control">
+                                        <span><fmt:message key="label.new"/></span>
+                                        <div class="arrow"></div>
+                                    </div>
+                                    <div class="header-dropdown-menu hidden">
+                                        <a href="${pageContext.request.contextPath}/admin/course/new">
+                                            <fmt:message key="label.new_course"/>
+                                        </a>
+                                        <a href="${pageContext.request.contextPath}/admin/new_user">
+                                            <fmt:message key="label.new_user"/>
+                                        </a>
+                                        <a href="${pageContext.request.contextPath}/admin/subject/new">
+                                            <fmt:message key="label.new_subject"/>
+                                        </a>
+                                    </div>
+                                </li>
                             </c:when>
                             <c:when test="${sessionScope.user.getRole().equals(Role.TEACHER)}">
                                 <li><a href="${pageContext.request.contextPath}/user_courses">
@@ -72,22 +96,28 @@
                         </c:choose>
 
                         <div class="vr"></div>
-                        <li class="account-dropdown">
-                            <div class="account-dropdown-control">
+                        <li class="header-dropdown">
+                            <div class="header-dropdown-control">
                                 <div class="profile-img">
-                                    <img src="${pageContext.request.contextPath}/image?image_type=user&image_name=${sessionScope.user.getImageName()}" alt=""/>
+                                    <img src="${pageContext.request.contextPath}/image?image_type=user&image_name=${sessionScope.user.getImageName()}"
+                                         alt=""/>
                                 </div>
                                 <span class="user">${sessionScope.user.getFullName()}</span>
                                 <div class="arrow"></div>
                             </div>
-                            <div class="account-dropdown-menu hidden">
-                                <a href="${pageContext.request.contextPath}/user?user_id=${sessionScope.user.getId()}"><fmt:message key="label.dropdown.my_profile"/></a>
+                            <div class="header-dropdown-menu hidden">
+                                <a href="${pageContext.request.contextPath}/user?user_id=${sessionScope.user.getId()}"><fmt:message
+                                        key="label.dropdown.my_profile"/></a>
                                 <a href="${pageContext.request.contextPath}/auth/log_out">
                                     <fmt:message key="label.log_out"/>
                                 </a>
                                 <div class="language-switch">
-                                    <a href="<t:addParam name='lang' value='en' />" class="${sessionScope.lang == "en" ? 'selected' : ''}"><fmt:message key="label.dropdown.lang_english"/></a>
-                                    <a href="<t:addParam name='lang' value='uk' />" class="${sessionScope.lang == "uk" ? 'selected' : ''}"><fmt:message key="label.dropdown.lang_ukrainian"/></a>
+                                    <a href="<t:addParam name='lang' value='en' />"
+                                       class="${sessionScope.lang == "en" ? 'selected' : ''}"><fmt:message
+                                            key="label.dropdown.lang_english"/></a>
+                                    <a href="<t:addParam name='lang' value='uk' />"
+                                       class="${sessionScope.lang == "uk" ? 'selected' : ''}"><fmt:message
+                                            key="label.dropdown.lang_ukrainian"/></a>
                                 </div>
                             </div>
                         </li>

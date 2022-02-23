@@ -1,8 +1,11 @@
-const accountDropdown = document.querySelector(".account-dropdown");
-const accountDropdownMenu = document.querySelector(".account-dropdown-menu");
+const headerDropdowns = document.querySelectorAll(".header-dropdown");
 
-accountDropdown.addEventListener("click", () => {
-   accountDropdownMenu.classList.toggle("hidden");
-   let arrow = accountDropdown.querySelector(".arrow");
-   arrow.classList.toggle("up");
+headerDropdowns.forEach(headerDropdown => {
+   let headerDropdownMenu = headerDropdown.querySelector(".header-dropdown-menu");
+
+   headerDropdown.addEventListener("click", () => {
+      headerDropdownMenu.classList.toggle("hidden");
+      let arrow = headerDropdown.querySelector(".arrow");
+      arrow.classList.toggle("up");
+   });
 });
