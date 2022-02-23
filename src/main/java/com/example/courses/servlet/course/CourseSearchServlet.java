@@ -1,4 +1,4 @@
-package com.example.courses.servlet;
+package com.example.courses.servlet.course;
 
 import com.example.courses.DTO.CourseDTO;
 import com.example.courses.persistence.entity.Course;

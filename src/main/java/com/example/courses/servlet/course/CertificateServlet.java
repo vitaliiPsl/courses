@@ -1,4 +1,4 @@
-package com.example.courses.servlet;
+package com.example.courses.servlet.course;
 
 import com.example.courses.exception.NotFoundException;
 import com.example.courses.exception.ServerErrorException;

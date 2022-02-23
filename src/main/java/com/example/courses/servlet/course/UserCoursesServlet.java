@@ -1,4 +1,4 @@
-package com.example.courses.servlet;
+package com.example.courses.servlet.course;
 
 import com.example.courses.DTO.CourseDTO;
 import com.example.courses.exception.ForbiddenException;
@@ -10,6 +10,7 @@ import com.example.courses.persistence.entity.StudentCourse;
 import com.example.courses.service.CourseDTOService;
 import com.example.courses.service.CourseService;
 import com.example.courses.service.StudentCourseService;
+import com.example.courses.servlet.Constants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
