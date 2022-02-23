@@ -6,13 +6,15 @@ public class Language {
     private long id;
     private String name;
     private String languageCode;
+    private boolean isDefault;
 
     public Language(){}
 
-    public Language(long id, String name, String languageCode) {
+    public Language(long id, String name, String languageCode, boolean isDefault) {
         this.id = id;
         this.name = name;
         this.languageCode = languageCode;
+        this.isDefault = isDefault;
     }
 
     public long getId() {
@@ -39,6 +41,14 @@ public class Language {
         this.languageCode = languageCode;
     }
 
+    public boolean isDefault() {
+        return isDefault;
+    }
+
+    public void setDefault(boolean aDefault) {
+        isDefault = aDefault;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -58,6 +68,7 @@ public class Language {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", languageCode='" + languageCode + '\'' +
+                ", isDefault=" + isDefault +
                 '}';
     }
 }
