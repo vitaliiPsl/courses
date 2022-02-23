@@ -37,12 +37,13 @@ public class SingUp extends HttpServlet {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        User user = new User();
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setEmail(email);
-        user.setPassword(password);
-        user.setRole(Role.STUDENT);
+        User.Builder builder = new User.Builder();
+        User user = builder.setFirstName(firstName)
+            .setLastName(lastName)
+            .setEmail(email)
+            .setPassword(password)
+            .setRole(Role.STUDENT)
+            .build();
 
         logger.info("Sign up request: " + user);
 

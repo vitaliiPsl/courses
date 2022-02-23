@@ -153,4 +153,77 @@ public class Course {
                 ", courseStatus=" + courseStatus +
                 '}';
     }
+
+    public static class Builder{
+        long id;
+        long teacherId;
+        long languageId;
+        long subjectId;
+        String title;
+        String description;
+        int maxScore;
+        LocalDateTime startDate;
+        LocalDateTime endDate;
+        String imageName;
+        CourseStatus courseStatus;
+
+        public Builder setId(long id){
+            this.id = id;
+            return this;
+        }
+
+        public Builder setTeacherId(long teacherId){
+            this.teacherId = teacherId;
+            return this;
+        }
+
+        public Builder setLanguageId(long languageId){
+            this.languageId = languageId;
+            return this;
+        }
+
+        public Builder setSubjectId(long subjectId){
+            this.subjectId = subjectId;
+            return this;
+        }
+
+        public Builder setTitle(String title){
+            this.title = title;
+            return this;
+        }
+
+        public Builder setDescription(String description){
+            this.description = description;
+            return this;
+        }
+
+        public Builder setMaxScore(int maxScore){
+            this.maxScore = maxScore;
+            return this;
+        }
+
+        public Builder setStartDate(LocalDateTime startDate){
+            this.startDate = startDate;
+            return this;
+        }
+
+        public Builder setEndDate(LocalDateTime endDate){
+            this.endDate = endDate;
+            return this;
+        }
+
+        public Builder setImageName(String imageName){
+            this.imageName = imageName;
+            return this;
+        }
+
+        public Builder setCourseStatus(CourseStatus courseStatus){
+            this.courseStatus = courseStatus;
+            return this;
+        }
+
+        public Course build(){
+            return new Course(id, teacherId, languageId, subjectId, title, description, maxScore, startDate, endDate, imageName, courseStatus);
+        }
+    }
 }

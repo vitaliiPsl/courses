@@ -123,4 +123,59 @@ public class User {
                 ", role=" + role +
                 '}';
     }
+
+    public static class Builder{
+        long id;
+        String firstName;
+        String lastName;
+        String email;
+        String password;
+        boolean isBlocked;
+        String imageName;
+        Role role;
+
+        public Builder setId(long id){
+            this.id = id;
+            return this;
+        }
+
+        public Builder setFirstName(String firstName){
+            this.firstName = firstName;
+            return this;
+        }
+
+        public Builder setLastName(String lastName){
+            this.lastName = lastName;
+            return this;
+        }
+
+        public Builder setEmail(String email){
+            this.email = email;
+            return this;
+        }
+
+        public Builder setPassword(String password){
+            this.password = password;
+            return this;
+        }
+
+        public Builder setBlocked(boolean isBlocked){
+            this.isBlocked = isBlocked;
+            return this;
+        }
+
+        public Builder setImageName(String imageName){
+            this.imageName = imageName;
+            return this;
+        }
+
+        public Builder setRole(Role role){
+            this.role = role;
+            return this;
+        }
+
+        public User build(){
+            return new User(id, firstName, lastName, email, password, isBlocked, imageName, role);
+        }
+    }
 }

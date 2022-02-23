@@ -38,12 +38,13 @@ public class NewUserServlet extends HttpServlet {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        User user = new User();
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setRole(role);
-        user.setEmail(email);
-        user.setPassword(password);
+        User.Builder builder = new User.Builder();
+        User user = builder.setFirstName(firstName)
+                .setLastName(lastName)
+                .setEmail(email)
+                .setPassword(password)
+                .setRole(role)
+                .build();
 
         logger.info("Saving new user: " + user);
 
