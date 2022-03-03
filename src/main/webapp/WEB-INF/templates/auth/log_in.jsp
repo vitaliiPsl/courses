@@ -15,7 +15,7 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/style.css" />
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/auth/register.css" />
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/form.css" />
-    <title>Log In</title>
+    <title><fmt:message key="label.log_in"/></title>
 </head>
 
 <body>

@@ -16,7 +16,9 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/auth/register.css"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/form.css"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/edit_user_info.css"/>
-    <title><fmt:message key="label.title"/></title>
+    <title>
+        <fmt:message key="label.title"/>
+    </title>
 </head>
 
 <body>
@@ -34,12 +36,12 @@
             <form action="${pageContext.request.contextPath}/user/edit" method="post" enctype="multipart/form-data">
                 <c:set var="user" value="${sessionScope.user}"/>
                 <div class="form-group">
-                    <input type="text" name="first_name" value="${user.getFirstName()}" placeholder="<fmt:message key="label.form.first_name"/>" class="form-input" required/>
-                    <input type="text" name="last_name" value="${user.getLastName()}" placeholder="<fmt:message key="label.form.last_name"/>" class="form-input" required/>
+                    <input type="text" name="first_name" value="<c:out value="${user.getFirstName()}"/>" placeholder="<fmt:message key="label.form.first_name"/>" class="form-input" required/>
+                    <input type="text" name="last_name" value="<c:out value="${user.getLastName()}"/>" placeholder="<fmt:message key="label.form.last_name"/>" class="form-input" required/>
                 </div>
 
                 <div class="form-row">
-                    <input type="email" name="email" value="${user.getEmail()}" placeholder="<fmt:message key="label.form.email"/>" class="form-input" required/>
+                    <input type="email" name="email" value="<c:out value="${user.getEmail()}"/>" placeholder="<fmt:message key="label.form.email"/>" class="form-input" required/>
                 </div>
 
                 <div class="form-row avatar-block">

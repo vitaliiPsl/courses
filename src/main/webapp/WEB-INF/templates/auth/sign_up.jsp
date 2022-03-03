@@ -60,7 +60,7 @@
 </main>
 
 <footer></footer>
-<script src="${pageContext.request.contextPath}/static/js/confirm_password.js"></script>
+<%--<script src="${pageContext.request.contextPath}/static/js/confirm_password.js"></script>--%>
 </body>
 
 </html>

@@ -42,23 +42,26 @@
 
 
             <select name="subject_id">
-                <option value="" selected disabled hidden><fmt:message key="label.course_choose_subject"/></option>
+                <option value="" selected disabled hidden>
+                    <fmt:message key="label.course_choose_subject"/>
+                </option>
 
                 <c:forEach var="subject" items="${requestScope.subjects}">
-                    <option value="${subject.getId()}">${subject.getSubject()}</option>
+                    <option value="${subject.getId()}">
+                            <c:out value="${subject.getSubject()}"/>
+                    </option>
                 </c:forEach>
             </select>
 
-            <%--            <div class="form-group">--%>
-            <%--                <input type="text" name="new_subject_en" placeholder="<fmt:message key="label.new_subject_en"/>" class="form-input"/>--%>
-            <%--                <input type="text" name="new_subject_uk" placeholder="<fmt:message key="label.new_subject_uk"/>" class="form-input"/>--%>
-            <%--            </div>--%>
-
             <select name="teacher_id" required>
-                <option value="" selected disabled hidden><fmt:message key="label.course_choose_teacher"/></option>
+                <option value="" selected disabled hidden>
+                    <fmt:message key="label.course_choose_teacher"/>
+                </option>
 
                 <c:forEach var="teacher" items="${requestScope.teachers}">
-                    <option value="${teacher.getId()}">${teacher.getFullName()}</option>
+                    <option value="${teacher.getId()}">
+                            <c:out value="${teacher.getFullName()}"/>
+                    </option>
                 </c:forEach>
             </select>
 
@@ -66,7 +69,9 @@
                 <option value="" selected disabled hidden><fmt:message key="label.course_choose_language"/></option>
 
                 <c:forEach var="language" items="${requestScope.languages}">
-                    <option value="${language.getId()}">${language.getName()}</option>
+                    <option value="${language.getId()}">
+                            <c:out value="${language.getName()}"/>
+                    </option>
                 </c:forEach>
             </select>
 
@@ -80,7 +85,9 @@
                 <label id="image-input-label" for="image-input">Choose image...</label>
             </div>
 
-            <button class="form-submit"><fmt:message key="label.button_submit"/></button>
+            <button class="form-submit">
+                <fmt:message key="label.button_submit"/>
+            </button>
         </form>
     </div>
 </main>

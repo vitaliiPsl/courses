@@ -42,7 +42,9 @@
           <input type="password" placeholder="<fmt:message key="label.form.repeat_password"/>" class="form-input" required/>
         </div>
 
-        <button class="form-submit"><fmt:message key="label.form.btn_save"/></button>
+        <button class="form-submit">
+          <fmt:message key="label.form.btn_save"/>
+        </button>
       </form>
 
       <div class="question-block">

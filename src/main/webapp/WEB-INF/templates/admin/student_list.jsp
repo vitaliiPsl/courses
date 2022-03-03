@@ -53,17 +53,17 @@
                         <tr class="student-row">
                             <td class="first-name">
                                 <a href="${pageContext.request.contextPath}/user?user_id=${student.getId()}">
-                                        ${student.getFirstName()}
+                                        <c:out value="${student.getFirstName()}"/>
                                 </a>
                             </td>
                             <td class="last-name">
                                 <a href="${pageContext.request.contextPath}/user?user_id=${student.getId()}">
-                                        ${student.getLastName()}
+                                        <c:out value="${student.getLastName()}"/>
                                 </a>
                             </td>
                             <td class="email">
                                 <a href="${pageContext.request.contextPath}/user?user_id=${student.getId()}">
-                                        ${student.getEmail()}
+                                        <c:out value="${student.getEmail()}"/>
                                 </a>
                             </td>
                             <td class="block">
@@ -88,9 +88,7 @@
             </c:if>
 
             <c:if test="${requestScope.students == null || requestScope.students.isEmpty()}}">
-                <div class="no-students">
-                    #
-                </div>
+                <div class="no-students"></div>
             </c:if>
         </div>
     </div>

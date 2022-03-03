@@ -32,59 +32,96 @@
         <div class="container">
             <div class="content">
                 <div class="info-block">
-                    <h1 class="course-name">${course.getTitle()}</h1>
-                    <h3 class="course-subject">${subject.getSubject()}</h3>
+                    <h1 class="course-name">
+                        <c:out value="${course.getTitle()}"/>
+                    </h1>
+                    <h3 class="course-subject">
+                        <c:out value="${subject.getSubject()}"/>
+                    </h3>
                     <p class="course-description">
-                        ${course.getDescription()}
+                        <c:out value="${course.getDescription()}"/>
                     </p>
                     <p class="teacher"><fmt:message key="label.teacher"/>
                         <a href="${pageContext.request.contextPath}/user?user_id=${teacher.getId()}">
-                            <span>${teacher.getFullName()}</span>
+                            <span>
+                                <c:out value="${teacher.getFullName()}"/>
+                            </span>
                         </a>
                     </p>
 
+                    <%--Check if user is not authenticated and if it is a student--%>
                     <c:if test="${sessionScope.user == null || sessionScope.user.getRole().equals(Role.STUDENT)}">
 
+                        <%--If course is completed, than student can download certificate--%>
                         <c:if test="${course.getCourseStatus().equals(CourseStatus.COMPLETED)}">
                             <button class="certificate-btn">
-                                <a href="${pageContext.request.contextPath}/certificate?course_id=${course.getId()}" download><fmt:message key="label.certificate"/></a>
+                                <a href="${pageContext.request.contextPath}/certificate?course_id=${course.getId()}"
+                                   download>
+                                    <fmt:message key="label.certificate"/>
+                                </a>
                             </button>
                         </c:if>
 
-                        <div class="enroll-block">
-                            <c:if test="${requestScope.student_course == null}">
-                                <form action="${pageContext.request.contextPath}/enroll?course_id=${course.getId()}"
-                                      method="post">
-                                    <button type="submit" class="enroll-btn">
-                                        <span><fmt:message key="label.enroll_btn_enroll"/></span>
-                                        <span><fmt:message
-                                                key="label.enroll_btn_starts"/> ${course.getStartDate().toLocalDate()}</span>
-                                    </button>
-                                </form>
-                            </c:if>
-                            <c:if test="${requestScope.student_course != null}">
-                                <div class="enrolled">
-                                    <span><fmt:message key="label.enroll_status_enrolled"/></span>
-                                </div>
-                            </c:if>
-                            <div class="enrolled-count">
-                                <span class="enrolled-span"><fmt:message key="label.enroll_number_of_students"/></span>
-                                <span>${students.size()}</span>
+                        <%--If course hasn't started yet--%>
+                        <c:if test="${course.getCourseStatus().equals(CourseStatus.NOT_STARTED)}">
+                            <div class="enroll-block">
+                                    <%--Show enroll button if student isn't already enrolled--%>
+                                <c:if test="${requestScope.student_course == null}">
+                                    <form action="${pageContext.request.contextPath}/enroll?course_id=${course.getId()}"
+                                          method="post">
+                                        <button type="submit" class="enroll-btn">
+                                            <span>
+                                                <fmt:message key="label.enroll_btn_enroll"/>
+                                            </span>
+
+                                                <%--Start date--%>
+                                            <span>
+                                               <fmt:message key="label.enroll_btn_starts"/>
+                                               <c:out value="${course.getStartDate().toLocalDate()}"/>
+                                            </span>
+                                        </button>
+                                    </form>
+                                </c:if>
+
+                                    <%--If student is already enrolled, then show 'enrolled' message--%>
+                                <c:if test="${requestScope.student_course != null}">
+                                    <div class="enrolled">
+                                        <span>
+                                            <fmt:message key="label.enroll_status_enrolled"/>
+                                        </span>
+                                    </div>
+                                </c:if>
                             </div>
+                        </c:if>
+
+                        <%--Number of student that already enrolled--%>
+                        <div class="enrolled-count">
+                            <span class="enrolled-span">
+                                <fmt:message key="label.enroll_number_of_students"/>
+                            </span>
+                            <span>
+                                <c:out value="${students.size()}"/>
+                            </span>
                         </div>
                     </c:if>
                 </div>
 
                 <div class="image-block">
                     <div class="image-wrapper">
-                        <img src="${pageContext.request.contextPath}/image?image_type=course&image_name=${course.getImageName()}" alt=""/>
+                        <img src="${pageContext.request.contextPath}/image?image_type=course&image_name=${course.getImageName()}"
+                             alt=""/>
                     </div>
                 </div>
             </div>
 
+            <%--If user is ADMIN or TEACHER--%>
             <c:if test="${sessionScope.user != null && !sessionScope.user.getRole().equals(Role.STUDENT)}">
                 <div class="students-block">
-                    <h1>Students</h1>
+                    <h1>
+                        <fmt:message key="label.table.title"/>
+                    </h1>
+
+                    <%--If there are students--%>
                     <c:if test="${!students.isEmpty()}">
                         <form action="${pageContext.request.contextPath}/teacher/course/score?course_id=${course.getId()}"
                               method="post">
@@ -109,7 +146,10 @@
                                         </th>
                                     </c:if>
 
+                                        <%--If it is a teacher that teaches this course --%>
                                     <c:if test="${sessionScope.user.getRole().equals(Role.TEACHER) && course.getTeacherId() == sessionScope.user.getId()}">
+
+                                        <%--If course has already started yet--%>
                                         <c:if test="${!course.getCourseStatus().equals(CourseStatus.NOT_STARTED)}">
                                             <th class="score-header">
                                                 <fmt:message key="label.table.score"/>
@@ -122,17 +162,17 @@
                                     <tr>
                                         <td class="first-name">
                                             <a href="${pageContext.request.contextPath}/user?user_id=${student.getId()}">
-                                                    ${student.getFirstName()}
+                                                <c:out value="${student.getFirstName()}"/>
                                             </a>
                                         </td>
                                         <td class="last-name">
                                             <a href="${pageContext.request.contextPath}/user?user_id=${student.getId()}">
-                                                    ${student.getLastName()}
+                                                <c:out value="${student.getLastName()}"/>
                                             </a>
                                         </td>
                                         <td class="email">
                                             <a href="${pageContext.request.contextPath}/user?user_id=${student.getId()}">
-                                                    ${student.getEmail()}
+                                                <c:out value="${student.getEmail()}"/>
                                             </a>
                                         </td>
 
@@ -155,16 +195,23 @@
                                             </td>
                                         </c:if>
 
+                                            <%--If user is teacher--%>
                                         <c:if test="${sessionScope.user.getRole().equals(Role.TEACHER) && course.getTeacherId() == sessionScope.user.getId()}">
+
+                                            <%--If course has already started--%>
                                             <c:if test="${!course.getCourseStatus().equals(CourseStatus.NOT_STARTED)}">
                                                 <td class="student-score">
+                                                        <%--If course is in progress, than show scores input--%>
                                                     <c:if test="${course.getCourseStatus().equals(CourseStatus.IN_PROGRESS)}">
                                                         <input type="number" min="0" max="${course.getMaxScore()}"
-                                                               placeholder="${requestScope.scores.getOrDefault(student.getId(), 0)}/${course.getMaxScore()}"
+                                                               placeholder="<c:out value="${requestScope.scores.getOrDefault(student.getId(), 0)}/${course.getMaxScore()}"/>"
                                                                name="score_${student.getId()}">
                                                     </c:if>
+                                                        <%--If course is completed, then show scores--%>
                                                     <c:if test="${course.getCourseStatus().equals(CourseStatus.COMPLETED)}">
-                                                        <span>${requestScope.scores.getOrDefault(student.getId(), 0)}/${course.getMaxScore()}</span>
+                                                        <span>
+                                                                <c:out value="${requestScope.scores.getOrDefault(student.getId(), 0)}"/>/<c:out value="${course.getMaxScore()}"/>
+                                                        </span>
                                                     </c:if>
                                                 </td>
                                             </c:if>
@@ -172,6 +219,8 @@
                                     </tr>
                                 </c:forEach>
                             </table>
+
+                                <%--If it is a teacher, then show button to save scores--%>
                             <c:if test="${sessionScope.user.getRole().equals(Role.TEACHER) && course.getTeacherId() == sessionScope.user.getId()}">
                                 <c:if test="${course.getCourseStatus().equals(CourseStatus.IN_PROGRESS)}">
                                     <button class="btn" type="submit">
@@ -181,9 +230,9 @@
                             </c:if>
                         </form>
                     </c:if>
+
                     <c:if test="${requestScope.students.isEmpty()}">
-                        <div class="no-students">
-                        </div>
+                        <div class="no-students"></div>
                     </c:if>
                 </div>
             </c:if>
@@ -197,13 +246,19 @@
                     <h3>
                         <fmt:message key="label.action_row_status"/>
                     </h3>
-                    <h3>${course.getCourseStatus().getStatus()}</h3>
+                    <h3>
+                        <c:out value="${course.getCourseStatus().getStatus()}"/>
+                    </h3>
                 </div>
 
                 <c:if test="${sessionScope.user.getRole().equals(Role.STUDENT) && course.getCourseStatus().equals(CourseStatus.COMPLETED)}">
                     <div class="score-box">
-                        <h3><fmt:message key="label.action_row_score"/></h3>
-                        <h3>${requestScope.student_course.getScore()}/${course.getMaxScore()}</h3>
+                        <h3>
+                            <fmt:message key="label.action_row_score"/>
+                        </h3>
+                        <h3>
+                            <c:out value="${requestScope.student_course.getScore()}/${course.getMaxScore()}"/>
+                        </h3>
                     </div>
                 </c:if>
 

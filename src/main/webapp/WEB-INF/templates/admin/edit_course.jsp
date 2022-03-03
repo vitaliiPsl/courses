@@ -33,20 +33,26 @@
     <div class="container">
         <form action="${pageContext.request.contextPath}/admin/course/edit?course_id=${course.getId()}" method="post"
               enctype="multipart/form-data">
-            <input class="form-input" type="text" name="course_title" value="${course.getTitle()}"
+            <input class="form-input" type="text" name="course_title" value="<c:out value="${course.getTitle()}"/>"
                    placeholder="<fmt:message key="label.course_title"/>"
                    autocomplete="off" required>
 
             <textarea class="form-input"
                       name="course_description"
                       placeholder="<fmt:message key="label.course_description"/>"
-                      autocomplete="off">${course.getDescription()}</textarea>
+                      autocomplete="off">
+                <c:out value="${course.getDescription()}"
+                /></textarea>
 
             <select name="subject_id">
-                <option value="" selected disabled hidden><fmt:message key="label.course_choose_subject"/></option>
+                <option value="" selected disabled hidden>
+                    <fmt:message key="label.course_choose_subject"/>
+                </option>
 
                 <c:forEach var="subject" items="${requestScope.subjects}">
-                    <option value="${subject.getId()}" ${subject.getId() == course.getSubjectId() ? 'selected' : ''}>${subject.getSubject()}</option>
+                    <option value="${subject.getId()}" ${subject.getId() == course.getSubjectId() ? 'selected' : ''}>
+                        <c:out value="${subject.getSubject()}"/>
+                    </option>
                 </c:forEach>
             </select>
 
@@ -54,9 +60,10 @@
                 <option value="" disabled hidden>
                     <fmt:message key="label.course_choose_teacher"/>
                 </option>
+
                 <c:forEach var="teacher" items="${requestScope.teachers}">
                     <option value="${teacher.getId()}" ${teacher.getId() == course.getTeacherId() ? 'selected' : ''}>
-                            ${teacher.getFullName()}
+                        <c:out value="${teacher.getFullName()}"/>
                     </option>
                 </c:forEach>
             </select>
@@ -65,18 +72,22 @@
                 <option value="" disabled hidden>
                     <fmt:message key="label.course_choose_language"/>
                 </option>
+
                 <c:forEach var="language" items="${requestScope.languages}">
                     <option value="${language.getId()}" ${language.getId() == course.getLanguageId() ? 'selected' : ''}>
-                            ${language.getName()}
+                        <c:out value="${language.getName()}"/>
                     </option>
                 </c:forEach>
             </select>
 
-            <input class="form-input" type="number" name="max_score" value="${course.getMaxScore()}" min="0"
+            <input class="form-input" type="number" name="max_score" value="<c:out value="${course.getMaxScore()}"/>"
+                   min="0"
                    placeholder="<fmt:message key="label.course_max_score"/>" autocomplete="off">
 
-            <input class="form-input" type="datetime-local" name="start_date" value="${course.getStartDate()}">
-            <input class="form-input" type="datetime-local" name="end_date" value="${course.getEndDate()}">
+            <input class="form-input" type="datetime-local" name="start_date"
+                   value="<c:out value="${course.getStartDate()}"/>">
+            <input class="form-input" type="datetime-local" name="end_date"
+                   value="<c:out value="${course.getEndDate()}"/>">
 
             <div class="form-row image-input-row">
                 <input id="image-input" type="file" name="file" accept="image/*">

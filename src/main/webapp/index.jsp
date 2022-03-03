@@ -23,7 +23,7 @@
 <main>
     <div class="container">
         <c:if test="${sessionScope.user != null}">
-            <h1><fmt:message key="label.welcome"/>, ${user.getFirstName()}</h1>
+            <h1><fmt:message key="label.welcome"/>, <c:out value="${user.getFirstName()}"/></h1>
         </c:if>
         <c:if test="${sessionScope.user == null}">
             <h1><fmt:message key="label.welcome"/></h1>

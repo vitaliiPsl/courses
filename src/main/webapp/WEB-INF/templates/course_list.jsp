@@ -27,26 +27,37 @@
 <main>
     <div class="filter-box">
         <div class="container">
+
+            <%--Search bar--%>
             <form action="${pageContext.request.contextPath}/courses">
                 <div class="search-row">
                     <input type="text" id="search-input" name="query"
                            data-request-url="${pageContext.request.contextPath}/courses/search?query="
                            data-course-url="${pageContext.request.contextPath}/course?course_id="
-                           placeholder="<fmt:message key="label.search.placeholder"/>" value="${requestScope.query}"
+                           placeholder="<fmt:message key="label.search.placeholder"/>"
+                           value="<c:out value="${requestScope.query}"/>"
                            autocomplete="off"/>
                     <button type="submit" class="search-btn"><fmt:message key="label.search.button"/></button>
                     <div class="hints-block"></div>
                 </div>
             </form>
+
             <div class="filter-row">
+
+                <%--FILTERS--%>
                 <div class="filter-block">
-                    <span class="filter-by-span"><fmt:message key="label.filter.filter_by"/></span>
+                    <span class="filter-by-span">
+                        <fmt:message key="label.filter.filter_by"/>
+                    </span>
                     <div class="filters">
 
+                        <%--Subject filter--%>
                         <c:set var="filter" value="${requestScope.filters.get('subject')}"/>
                         <div class="filter dropdown-element">
                             <div class="dropdown-control filter-control">
-                                <h5><fmt:message key="label.filter.subject_key"/></h5>
+                                <h5>
+                                    <fmt:message key="label.filter.subject_key"/>
+                                </h5>
                                 <div class="arrow"></div>
                             </div>
                             <div class="dropdown-menu filter-menu hidden">
@@ -56,16 +67,20 @@
                                     <div class="filter-option option">
                                         <form class="option-form"
                                               action="${pageContext.request.contextPath}/courses/filter" method="post">
+
                                             <input class="filter-checkbox" type="checkbox" name="subject"
-                                                   value="${value}"
+                                                   value="<c:out value="${value}"/>"
                                                 ${checked ? 'checked' : ''}/>
-                                            <label>${value}</label>
+                                            <label>
+                                                <c:out value="${value}"/>
+                                            </label>
                                         </form>
                                     </div>
                                 </c:forEach>
                             </div>
                         </div>
 
+                        <%--Teacher filter--%>
                         <c:set var="filter" value="${requestScope.filters.get('teacher')}"/>
                         <div class="filter dropdown-element">
                             <div class="dropdown-control filter-control">
@@ -80,25 +95,32 @@
                                         <form class="option-form"
                                               action="${pageContext.request.contextPath}/courses/filter" method="post">
                                             <input class="filter-checkbox" type="checkbox" name="teacher"
-                                                   value="${value}"
+                                                   value="<c:out value="${value}"/>"
                                                 ${checked ? 'checked' : ''}/>
-                                            <label>${value}</label>
+                                            <label>
+                                                <c:out value="${value}"/>
+                                            </label>
                                         </form>
                                     </div>
                                 </c:forEach>
                             </div>
                         </div>
-
                     </div>
                 </div>
 
+                <%--SORTING--%>
                 <div class="sorting-block">
-                    <span class="sort-by-span"><fmt:message key="label.sort.sort_by"/></span>
+                    <span class="sort-by-span">
+                        <fmt:message key="label.sort.sort_by"/>
+                    </span>
                     <div class="sorting">
 
+                        <%--Sorting options--%>
                         <div class="filter sort dropdown-element">
                             <div class="dropdown-control filter-control sort">
-                                <h5><fmt:message key="label.sort.sort_key"/></h5>
+                                <h5>
+                                    <fmt:message key="label.sort.sort_key"/>
+                                </h5>
                                 <div class="arrow"></div>
                             </div>
                             <div class="dropdown-menu sort-menu hidden">
@@ -109,17 +131,20 @@
                                         <form class="option-form"
                                               action="${pageContext.request.contextPath}/courses/sort" method="post">
                                             <input class="filter-checkbox" type="checkbox"
-                                                   name="sorting" value="${option}" ${selected ? 'checked' : ''} hidden>
-                                            <label>${option}</label>
+                                                   name="sorting" value="<c:out value="${option}"/>" ${selected ? 'checked' : ''} hidden>
+                                            <label><c:out value="${option}"/></label>
                                         </form>
                                     </div>
                                 </c:forEach>
                             </div>
                         </div>
 
+                        <%--Sorting order--%>
                         <div class="filter sort dropdown-element">
                             <div class="dropdown-control filter-control">
-                                <h5><fmt:message key="label.sort.order_key"/></h5>
+                                <h5>
+                                    <fmt:message key="label.sort.order_key"/>
+                                </h5>
                                 <div class="arrow"></div>
                             </div>
                             <div class="dropdown-menu sort-menu hidden">
@@ -131,8 +156,8 @@
                                         <form class="option-form"
                                               action="${pageContext.request.contextPath}/courses/sort" method="post">
                                             <input class="filter-checkbox" type="checkbox" name="sorting_order"
-                                                   value="${option}" ${selected ? 'checked' : ''} hidden>
-                                            <label>${option}</label>
+                                                   value="<c:out value="${option}"/>" ${selected ? 'checked' : ''} hidden>
+                                            <label><c:out value="${option}"/></label>
                                         </form>
                                     </div>
                                 </c:forEach>
@@ -155,46 +180,58 @@
 
                 <div class="course">
                     <div class="img-box">
-                        <img src="${pageContext.request.contextPath}/image?image_type=course&image_name=${course.getImageName()}" alt=""/>
+                        <img src="${pageContext.request.contextPath}/image?image_type=course&image_name=${course.getImageName()}"
+                             alt=""/>
                     </div>
                     <div class="info-box">
                         <div class="title-row">
                             <a href="${pageContext.request.contextPath}/course?course_id=${course.getId()}">
-                                <h2>${course.getTitle()}</h2>
+                                <h2>
+                                    <c:out value="${course.getTitle()}"/>
+                                </h2>
                             </a>
                         </div>
                         <div class="info-row">
                             <div class="info">
                                 <p class="subject-row"><fmt:message key="label.course.subject"/>:</p>
-                                <span class="subject">${subject.getSubject()}</span>
+                                <span class="subject">
+                                    <c:out value="${subject.getSubject()}"/>
+                                </span>
                             </div>
                         </div>
                         <div class="info-row">
                             <div class="info">
                                 <p class="teacher-row"><fmt:message key="label.course.teacher"/>:</p>
-                                <span class="teacher">${teacher.getFullName()}</span>
+                                <span class="teacher">
+                                    <c:out value="${teacher.getFullName()}"/>
+                                </span>
                             </div>
                             <div class="info">
                                 <p class="language-row"><fmt:message key="label.course.language"/>:</p>
-                                <span class="language">${language.getName()}</span>
+                                <span class="language">
+                                    <c:out value="${language.getName()}"/>
+                                </span>
                             </div>
                         </div>
                         <div class="info-row">
                             <div class="info">
                                 <p class="duration-row"><fmt:message key="label.course.duration"/>:</p>
                                 <span class="duration">
-                                        ${TimeUtils.calculateDuration(course.getStartDate(), course.getEndDate())}
+                                    <c:out value="${TimeUtils.calculateDuration(course.getStartDate(), course.getEndDate())}"/>
                                 </span>
                             </div>
                             <div class="info">
                                 <p class="number-of-students-row"><fmt:message key="label.course.students"/>:</p>
-                                <span class="number_of_students">${students.size()}</span>
+                                <span class="number_of_students">
+                                    <c:out value="${students.size()}"/>
+                                </span>
                             </div>
                         </div>
                         <div class="info-row">
                         </div>
                     </div>
 
+                    <%--ADMIN can delete or edit course--%>
                     <c:if test="${sessionScope.user.getRole().equals(Role.ADMIN)}">
                         <div class="manage-box">
                             <button class="manage-btn edit-btn">
@@ -212,12 +249,15 @@
                 </div>
             </c:forEach>
 
+            <%--PAGINATION--%>
             <div class="pages-box">
                 <c:set var="page" value="${requestScope.page}"/>
                 <c:forEach var="page_number" begin="1" end="${requestScope.number_of_pages}">
                     <div class="page-number ${page == page_number ? 'selected' : ''}">
                         <a href="${pageContext.request.contextPath}/courses?page=${page_number}">
-                            <h5>${page_number}</h5>
+                            <h5>
+                                <c:out value="${page_number}"/>
+                            </h5>
                         </a>
                     </div>
                 </c:forEach>

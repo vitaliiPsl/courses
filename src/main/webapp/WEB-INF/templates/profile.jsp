@@ -30,22 +30,22 @@
             <div class="data-block">
                 <div class="data-row">
                     <span class="description-span"><fmt:message key="label.info_first_name"/>:</span>
-                    <span class="info-span">${requestScope.user.getFirstName()}</span>
+                    <span class="info-span"><c:out value="${requestScope.user.getFirstName()}"/></span>
                 </div>
 
                 <div class="data-row">
                     <span class="description-span"><fmt:message key="label.info_last_name"/>:</span>
-                    <span class="info-span">${requestScope.user.getLastName()}</span>
+                    <span class="info-span"><c:out value="${requestScope.user.getLastName()}"/></span>
                 </div>
 
                 <div class="data-row">
                     <span class="description-span"><fmt:message key="label.info_email"/>:</span>
-                    <span class="info-span">${requestScope.user.getEmail()}</span>
+                    <span class="info-span"><c:out value="${requestScope.user.getEmail()}"/></span>
                 </div>
 
                 <div class="data-row">
                     <span class="description-span"><fmt:message key="label.info_role"/>:</span>
-                    <span class="info-span">${requestScope.user.getRole().getRole()}</span>
+                    <span class="info-span"><c:out value="${requestScope.user.getRole().getRole()}"/></span>
                 </div>
 
                 <c:if test="${requestScope.user.getId() == sessionScope.user.getId()}">
@@ -93,12 +93,14 @@
                         <div class="info-box">
                             <div class="info-row">
                                 <a href="${pageContext.request.contextPath}/course?course_id=${courseDTO.getCourse().getId()}">
-                                    <h2>${courseDTO.getCourse().getTitle()}</h2>
+                                    <h2>
+                                        <c:out value="${courseDTO.getCourse().getTitle()}"/>
+                                    </h2>
                                 </a>
                             </div>
                             <div class="info-row">
                                 <p class="subject-row"><fmt:message key="label.course_subject"/>:</p>
-                                <span class="subject">${courseDTO.getSubject().getSubject()}</span>
+                                <span class="subject"><c:out value="${courseDTO.getSubject().getSubject()}"/></span>
                             </div>
                         </div>
                     </div>

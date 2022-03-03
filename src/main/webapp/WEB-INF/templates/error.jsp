@@ -8,7 +8,7 @@
 <c:if test="${requestScope.error != null}">
     <div class="container">
         <div class="error">
-                ${requestScope.error}
+                <c:out value="${requestScope.error}"/>
         </div>
     </div>
 </c:if>

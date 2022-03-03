@@ -50,38 +50,40 @@
                 <c:set var="course" value="${courseDTO.getCourse()}"/>
                 <div class="course" data-status="${course.getCourseStatus().getStatus()}">
                     <div class="img-box">
-                        <img src="${pageContext.request.contextPath}/image?image_type=course&image_name=${course.getImageName()}" alt=""/>
+                        <img src="${pageContext.request.contextPath}/image?image_type=course&image_name=${course.getImageName()}"
+                             alt=""/>
                     </div>
                     <div class="info-box">
                         <div class="info-row">
                             <a href="${pageContext.request.contextPath}/course?course_id=${course.getId()}">
-                                <h2>${course.getTitle()}</h2>
+                                <h2><c:out value="${course.getTitle()}"/></h2>
                             </a>
                         </div>
                         <div class="info-row">
                             <p class="subject-row">
                                 <fmt:message key="label.subject"/>
                             </p>
-                            <span class="subject">${courseDTO.getSubject().getSubject()}</span>
+                            <span class="subject"><c:out value="${courseDTO.getSubject().getSubject()}"/></span>
                         </div>
                         <div class="info-row">
                             <p class="status-row">
                                 <fmt:message key="label.status"/>
                             </p>
-                            <span class="status">${course.getCourseStatus().getStatus()}</span>
+                            <span class="status"><c:out value="${course.getCourseStatus().getStatus()}"/></span>
                         </div>
                     </div>
 
                     <c:if test="${sessionScope.user.getRole().equals(Role.STUDENT)}">
                         <c:if test="${course.getCourseStatus().equals(CourseStatus.COMPLETED)}">
-                    <div class="score-box">
-                        <h3>
-                            <fmt:message key="label.score"/>
-                        </h3>
-                        <h3>
-                            ${requestScope.scores.getOrDefault(course.getId(), 0)} / ${course.getMaxScore()}
-                        </h3>
-                    </div>
+                            <div class="score-box">
+                                <h3>
+                                    <fmt:message key="label.score"/>
+                                </h3>
+                                <h3>
+                                    <c:out value="${requestScope.scores.getOrDefault(course.getId(), 0)}"/> / <c:out
+                                        value="${course.getMaxScore()}"/>
+                                </h3>
+                            </div>
                         </c:if>
                     </c:if>
                 </div>

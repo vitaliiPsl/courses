@@ -22,18 +22,27 @@
             </div>
             <div class="nav">
                 <ul>
+                    <%--When user is unauthenticated--%>
                     <c:if test="${sessionScope.user == null}">
-                        <li><a href="${pageContext.request.contextPath}/courses">
-                            <fmt:message key="label.courses"/>
-                        </a>
+                        <li>
+                            <a href="${pageContext.request.contextPath}/courses">
+                                <fmt:message key="label.courses"/>
+                            </a>
                         </li>
                         <div class="vr"></div>
-                        <li><a href="${pageContext.request.contextPath}/auth/log_in">
-                            <fmt:message key="label.log_in"/>
-                        </a></li>
-                        <li><a href="${pageContext.request.contextPath}/auth/sign_up">
-                            <fmt:message key="label.sign_up"/>
-                        </a></li>
+
+                        <li>
+                            <a href="${pageContext.request.contextPath}/auth/log_in">
+                                <fmt:message key="label.log_in"/>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="${pageContext.request.contextPath}/auth/sign_up">
+                                <fmt:message key="label.sign_up"/>
+                            </a>
+                        </li>
+
                         <div class="language-switch">
                             <a href="<t:addParam name='lang' value='en' />"
                                class="${sessionScope.lang == "en" ? 'selected' : ''}"><fmt:message
@@ -46,27 +55,27 @@
 
                     <c:if test="${sessionScope.user != null}">
                         <c:choose>
+                            <%--When user is ADMIN--%>
                             <c:when test="${sessionScope.user.getRole().equals(Role.ADMIN)}">
-                                <li><a href="${pageContext.request.contextPath}/courses">
-                                    <fmt:message key="label.courses"/>
-                                </a></li>
-                                <li><a href="${pageContext.request.contextPath}/admin/students">
-                                    <fmt:message key="label.students"/>
-                                </a></li>
-                                <%--                                <li><a href="${pageContext.request.contextPath}/admin/course/new">--%>
-                                <%--                                    <fmt:message key="label.new_course"/>--%>
-                                <%--                                </a></li>--%>
-                                <%--                                <li><a href="${pageContext.request.contextPath}/admin/new_user">--%>
-                                <%--                                    <fmt:message key="label.new_user"/>--%>
-                                <%--                                </a></li>--%>
-                                <%--                                <li><a href="${pageContext.request.contextPath}/admin/course/new">--%>
-                                <%--                                    <fmt:message key="label.new_user"/>--%>
-                                <%--                                </a></li>--%>
+                                <li>
+                                    <a href="${pageContext.request.contextPath}/courses">
+                                        <fmt:message key="label.courses"/>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="${pageContext.request.contextPath}/admin/students">
+                                        <fmt:message key="label.students"/>
+                                    </a>
+                                </li>
+
+                                <%--Dropdown with 'New...' pages--%>
                                 <li class="header-dropdown">
                                     <div class="header-dropdown-control">
                                         <span><fmt:message key="label.new"/></span>
                                         <div class="arrow"></div>
                                     </div>
+
                                     <div class="header-dropdown-menu hidden">
                                         <a href="${pageContext.request.contextPath}/admin/course/new">
                                             <fmt:message key="label.new_course"/>
@@ -80,29 +89,41 @@
                                     </div>
                                 </li>
                             </c:when>
+
+                            <%--When user is TEACHER--%>
                             <c:when test="${sessionScope.user.getRole().equals(Role.TEACHER)}">
-                                <li><a href="${pageContext.request.contextPath}/user_courses">
-                                    <fmt:message key="label.user's_courses"/>
-                                </a></li>
+                                <li>
+                                    <a href="${pageContext.request.contextPath}/user_courses">
+                                        <fmt:message key="label.user's_courses"/>
+                                    </a>
+                                </li>
                             </c:when>
+
+                            <%--When user is STUDENT--%>
                             <c:when test="${sessionScope.user.getRole().equals(Role.STUDENT)}">
-                                <li><a href="${pageContext.request.contextPath}/courses">
-                                    <fmt:message key="label.courses"/>
-                                </a></li>
-                                <li><a href="${pageContext.request.contextPath}/user_courses">
-                                    <fmt:message key="label.user's_courses"/>
-                                </a></li>
+                                <li>
+                                    <a href="${pageContext.request.contextPath}/courses">
+                                        <fmt:message key="label.courses"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="${pageContext.request.contextPath}/user_courses">
+                                        <fmt:message key="label.user's_courses"/>
+                                    </a>
+                                </li>
                             </c:when>
                         </c:choose>
 
                         <div class="vr"></div>
+
+                        <%--Dropdown with profile, log out links and language switch--%>
                         <li class="header-dropdown">
                             <div class="header-dropdown-control">
                                 <div class="profile-img">
                                     <img src="${pageContext.request.contextPath}/image?image_type=user&image_name=${sessionScope.user.getImageName()}"
                                          alt=""/>
                                 </div>
-                                <span class="user">${sessionScope.user.getFullName()}</span>
+                                <span class="user"><c:out value="${sessionScope.user.getFullName()}"/></span>
                                 <div class="arrow"></div>
                             </div>
                             <div class="header-dropdown-menu hidden">
