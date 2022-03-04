@@ -131,7 +131,7 @@ public class User {
         String email;
         String password;
         boolean isBlocked;
-        String imageName;
+        String imageName = ImageUtils.DEFAULT_IMAGE;
         Role role;
 
         public Builder setId(long id){

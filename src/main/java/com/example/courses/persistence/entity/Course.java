@@ -164,7 +164,7 @@ public class Course {
         int maxScore;
         LocalDateTime startDate;
         LocalDateTime endDate;
-        String imageName;
+        String imageName = ImageUtils.DEFAULT_IMAGE;
         CourseStatus courseStatus;
 
         public Builder setId(long id){
