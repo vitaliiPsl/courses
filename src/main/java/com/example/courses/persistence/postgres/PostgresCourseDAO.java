@@ -33,9 +33,6 @@ public class PostgresCourseDAO implements CourseDAO {
             statement.executeUpdate();
 
             insertedCourseId = DAOUtils.getGeneratedId(statement);
-        } catch (SQLException e) {
-            logger.error("Error while saving course", e);
-            throw e;
         } finally {
             DAOFactory.closeResource(statement);
         }
@@ -52,9 +49,6 @@ public class PostgresCourseDAO implements CourseDAO {
             statement = connection.prepareStatement(CourseDAOConstants.DELETE_COURSE_BY_ID);
             statement.setLong(1, id);
             statement.executeUpdate();
-        } catch (SQLException e) {
-            logger.error("Error while deleting course", e);
-            throw e;
         } finally {
             DAOFactory.closeResource(statement);
         }
@@ -71,9 +65,6 @@ public class PostgresCourseDAO implements CourseDAO {
             setCourseProperties(course, statement);
             statement.setLong(10, course.getId());
             statement.executeUpdate();
-        } catch (SQLException e) {
-            logger.error("Error while updating course", e);
-            throw e;
         } finally {
             DAOFactory.closeResource(statement);
         }
@@ -95,9 +86,6 @@ public class PostgresCourseDAO implements CourseDAO {
             if (resultSet.next()) {
                 course = parseCourse(resultSet);
             }
-        } catch (SQLException e) {
-            logger.error("Error while selecting course by id", e);
-            throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
             DAOFactory.closeResource(statement);
@@ -121,9 +109,6 @@ public class PostgresCourseDAO implements CourseDAO {
             while (resultSet.next()) {
                 courseList.add(parseCourse(resultSet));
             }
-        } catch (SQLException e) {
-            logger.error("Error while selecting all courses");
-            throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
             DAOFactory.closeResource(statement);
@@ -147,9 +132,6 @@ public class PostgresCourseDAO implements CourseDAO {
             while (resultSet.next()) {
                 courseList.add(parseCourse(resultSet));
             }
-        } catch (SQLException e) {
-            logger.error("Error while selecting available courses");
-            throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
             DAOFactory.closeResource(statement);
@@ -176,9 +158,6 @@ public class PostgresCourseDAO implements CourseDAO {
             while (resultSet.next()) {
                 courseList.add(parseCourse(resultSet));
             }
-        } catch (SQLException e) {
-            logger.error("An error occurred during select by search query", e);
-            throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
             DAOFactory.closeResource(statement);
@@ -205,9 +184,6 @@ public class PostgresCourseDAO implements CourseDAO {
             while (resultSet.next()) {
                 courseList.add(parseCourse(resultSet));
             }
-        } catch (SQLException e) {
-            logger.error("An error occurred during while selecting available courses by search query", e);
-            throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
             DAOFactory.closeResource(statement);
@@ -232,9 +208,6 @@ public class PostgresCourseDAO implements CourseDAO {
             while (resultSet.next()) {
                 courseList.add(parseCourse(resultSet));
             }
-        } catch (SQLException e) {
-            logger.error("Error during select by teacher id", e);
-            throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
             DAOFactory.closeResource(statement);
@@ -259,9 +232,6 @@ public class PostgresCourseDAO implements CourseDAO {
             if (resultSet.next()) {
                 courseList.add(parseCourse(resultSet));
             }
-        } catch (SQLException e) {
-            logger.error("Error during select by language id", e);
-            throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
             DAOFactory.closeResource(statement);
@@ -290,31 +260,30 @@ public class PostgresCourseDAO implements CourseDAO {
     }
 
     private Course parseCourse(ResultSet resultSet) throws SQLException {
-        Course course = new Course();
+        Course.Builder courseBuilder = new Course.Builder();
 
         try {
-            course.setId(resultSet.getLong(CourseDAOConstants.COURSE_ID));
-            course.setTeacherId(resultSet.getLong(CourseDAOConstants.COURSE_TEACHER_ID));
-            course.setLanguageId(resultSet.getLong(CourseDAOConstants.COURSE_LANGUAGE_ID));
-            course.setTitle(resultSet.getString(CourseDAOConstants.COURSE_TITLE));
-            course.setSubjectId(resultSet.getLong(CourseDAOConstants.COURSE_SUBJECT_ID));
-            course.setDescription(resultSet.getString(CourseDAOConstants.COURSE_DESCRIPTION));
+            courseBuilder.setId(resultSet.getLong(CourseDAOConstants.COURSE_ID))
+                    .setTeacherId(resultSet.getLong(CourseDAOConstants.COURSE_TEACHER_ID))
+                    .setLanguageId(resultSet.getLong(CourseDAOConstants.COURSE_LANGUAGE_ID))
+                    .setTitle(resultSet.getString(CourseDAOConstants.COURSE_TITLE))
+                    .setSubjectId(resultSet.getLong(CourseDAOConstants.COURSE_SUBJECT_ID))
+                    .setDescription(resultSet.getString(CourseDAOConstants.COURSE_DESCRIPTION))
+                    .setMaxScore(resultSet.getInt(CourseDAOConstants.COURSE_MAX_SCORE))
+                    .setImageName(resultSet.getString(CourseDAOConstants.COURSE_IMAGE_NAME));
 
             LocalDateTime startDate = resultSet.getTimestamp(CourseDAOConstants.COURSE_START_DATE).toLocalDateTime();
-            course.setStartDate(startDate);
+            courseBuilder.setStartDate(startDate);
 
             LocalDateTime endDate = resultSet.getTimestamp(CourseDAOConstants.COURSE_END_DATE).toLocalDateTime();
-            course.setEndDate(endDate);
+            courseBuilder.setEndDate(endDate);
 
-            course.setMaxScore(resultSet.getInt(CourseDAOConstants.COURSE_MAX_SCORE));
-            course.setImageName(resultSet.getString(CourseDAOConstants.COURSE_IMAGE_NAME));
-
-            course.setCourseStatus(parseCourseStatus(startDate, endDate));
+            courseBuilder.setCourseStatus(parseCourseStatus(startDate, endDate));
         } catch (SQLException e){
             logger.error("Error while parsing course result set", e);
             throw e;
         }
-        return course;
+        return courseBuilder.build();
     }
 
     private CourseStatus parseCourseStatus(LocalDateTime startDate, LocalDateTime endDate) {
@@ -322,9 +291,9 @@ public class PostgresCourseDAO implements CourseDAO {
 
         LocalDateTime now = LocalDateTime.now();
 
-        if(startDate.isAfter(now)){
+        if (startDate.isAfter(now)) {
             return CourseStatus.NOT_STARTED;
-        } else if(endDate.isBefore(now)){
+        } else if (endDate.isBefore(now)) {
             return CourseStatus.COMPLETED;
         } else {
             return CourseStatus.IN_PROGRESS;
@@ -349,15 +318,15 @@ public class PostgresCourseDAO implements CourseDAO {
                 "INSERT INTO " +
                         TABLE_COURSE +
                         "(" +
-                            COURSE_TEACHER_ID + ", " +
-                            COURSE_LANGUAGE_ID + ", " +
-                            COURSE_SUBJECT_ID + ", " +
-                            COURSE_TITLE + ", " +
-                            COURSE_DESCRIPTION + ", " +
-                            COURSE_START_DATE + ", " +
-                            COURSE_END_DATE + ", " +
-                            COURSE_MAX_SCORE + ", " +
-                            COURSE_IMAGE_NAME +
+                        COURSE_TEACHER_ID + ", " +
+                        COURSE_LANGUAGE_ID + ", " +
+                        COURSE_SUBJECT_ID + ", " +
+                        COURSE_TITLE + ", " +
+                        COURSE_DESCRIPTION + ", " +
+                        COURSE_START_DATE + ", " +
+                        COURSE_END_DATE + ", " +
+                        COURSE_MAX_SCORE + ", " +
+                        COURSE_IMAGE_NAME +
                         ") VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
         static final String UPDATE_COURSE_BY_ID =
@@ -400,15 +369,15 @@ public class PostgresCourseDAO implements CourseDAO {
         static final String SELECT_COURSES_BY_SEARCH_REQUEST =
                 "SELECT " +
                         SELECT_COURSE_PROPERTIES + " " +
-                "FROM " + TABLE_COURSE + " AS c " +
-                "WHERE " + COURSE_TITLE + " ilike " + "?;";
+                        "FROM " + TABLE_COURSE + " AS c " +
+                        "WHERE " + COURSE_TITLE + " ilike " + "?;";
 
         static final String SELECT_AVAILABLE_COURSES_BY_SEARCH_REQUEST =
                 "SELECT " +
                         SELECT_COURSE_PROPERTIES + " " +
-                "FROM " + TABLE_COURSE + " AS c " +
-                "WHERE " + COURSE_START_DATE + " > NOW() " +
-                "AND " + COURSE_TITLE + " ilike " + "?;";
+                        "FROM " + TABLE_COURSE + " AS c " +
+                        "WHERE " + COURSE_START_DATE + " > NOW() " +
+                        "AND " + COURSE_TITLE + " ilike " + "?;";
 
         static final String SELECT_COURSES_BY_LANGUAGE =
                 "SELECT " +

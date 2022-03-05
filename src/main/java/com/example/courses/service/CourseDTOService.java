@@ -35,13 +35,12 @@ public class CourseDTOService {
         CourseDTO courseDTO;
         Connection connection = null;
 
-        try{
+        try {
             connection = daoFactory.getConnection();
             courseDTO = makeCourseDTO(connection, course, languageCode);
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            logger.error("SQLException while getting courseDTO", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -57,15 +56,14 @@ public class CourseDTOService {
         List<CourseDTO> courseDTOList = new ArrayList<>();
         Connection connection = null;
 
-        try{
+        try {
             connection = daoFactory.getConnection();
-            for(Course course : courseList) {
+            for (Course course : courseList) {
                 courseDTOList.add(makeCourseDTO(connection, course, languageCode));
             }
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            logger.error("SQLException while getting courseDTO list", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -80,23 +78,18 @@ public class CourseDTOService {
 
         CourseDTO courseDTO = new CourseDTO();
 
-        try {
-            Language locale = languageDAO.findLanguageByCode(connection, languageCode);
+        Language locale = languageDAO.findLanguageByCode(connection, languageCode);
 
-            Language courseLanguage = languageDAO.findLanguageById(connection, course.getLanguageId());
-            Subject subject = subjectDAO.findSubject(connection, course.getSubjectId(), locale.getId());
-            User teacher = userDAO.findUser(connection, course.getTeacherId());
-            List<User> students = getStudents(connection, course);
+        Language courseLanguage = languageDAO.findLanguageById(connection, course.getLanguageId());
+        Subject subject = subjectDAO.findSubject(connection, course.getSubjectId(), locale.getId());
+        User teacher = userDAO.findUser(connection, course.getTeacherId());
+        List<User> students = getStudents(connection, course);
 
-            courseDTO.setCourse(course);
-            courseDTO.setSubject(subject);
-            courseDTO.setLanguage(courseLanguage);
-            courseDTO.setTeacher(teacher);
-            courseDTO.setStudents(students);
-        } catch (SQLException e){
-            logger.error("SQLException while building courseDTO", e);
-            throw e;
-        }
+        courseDTO.setCourse(course);
+        courseDTO.setSubject(subject);
+        courseDTO.setLanguage(courseLanguage);
+        courseDTO.setTeacher(teacher);
+        courseDTO.setStudents(students);
 
         return courseDTO;
     }
@@ -105,14 +98,10 @@ public class CourseDTOService {
         logger.trace("Get list of students that takes: " + course);
 
         List<User> students = new ArrayList<>();
-        try{
-            List<StudentCourse> studentCourseList = studentCourseDAO.findByCourseId(connection, course.getId());
-            for(StudentCourse studentCourse: studentCourseList){
-                students.add(userDAO.findUser(connection, studentCourse.getStudentId()));
-            }
-        } catch (SQLException e){
-            logger.error("SQLException while retrieving students", e);
-            throw e;
+        List<StudentCourse> studentCourseList = studentCourseDAO.findByCourseId(connection, course.getId());
+
+        for (StudentCourse studentCourse : studentCourseList) {
+            students.add(userDAO.findUser(connection, studentCourse.getStudentId()));
         }
 
         return students;

@@ -57,7 +57,6 @@ public class UserService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            logger.error("SQLException while saving user", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -77,7 +76,6 @@ public class UserService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            logger.error("SQLException while deleting user", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -95,7 +93,6 @@ public class UserService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            logger.error("SQLException while updating user", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -114,7 +111,6 @@ public class UserService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            logger.error("SQLException while retrieving user by id", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -135,7 +131,6 @@ public class UserService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            logger.error("SQLException while retrieving user by email", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -158,7 +153,6 @@ public class UserService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            logger.trace("SQLException while getting users by list of ids", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -179,7 +173,6 @@ public class UserService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            logger.trace("SQLException while getting users role", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);

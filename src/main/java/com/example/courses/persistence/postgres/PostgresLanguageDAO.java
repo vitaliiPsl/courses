@@ -32,9 +32,6 @@ public class PostgresLanguageDAO implements LanguageDAO {
             statement.executeUpdate();
 
             languageId = DAOUtils.getGeneratedId(statement);
-        } catch (SQLException e) {
-            logger.error("Error while saving language", e);
-            throw e;
         } finally {
             DAOFactory.closeResource(statement);
         }
@@ -51,9 +48,6 @@ public class PostgresLanguageDAO implements LanguageDAO {
             statement = connection.prepareStatement(LanguageDAOConstants.DELETE_LANGUAGE_BY_ID);
             statement.setLong(1, id);
             statement.executeUpdate();
-        } catch (SQLException e) {
-            logger.error("Error while deleting language", e);
-            throw e;
         } finally {
             DAOFactory.closeResource(statement);
         }
@@ -74,9 +68,6 @@ public class PostgresLanguageDAO implements LanguageDAO {
             if (resultSet.next()) {
                 language = parseLanguage(resultSet);
             }
-        } catch (SQLException e) {
-            logger.error("Error while selecting language by id", e);
-            throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
             DAOFactory.closeResource(statement);
@@ -100,9 +91,6 @@ public class PostgresLanguageDAO implements LanguageDAO {
             if (resultSet.next()) {
                 language = parseLanguage(resultSet);
             }
-        } catch (SQLException e) {
-            logger.error("Error while selecting language by name", e);
-            throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
             DAOFactory.closeResource(statement);
@@ -126,9 +114,6 @@ public class PostgresLanguageDAO implements LanguageDAO {
             if (resultSet.next()) {
                 language = parseLanguage(resultSet);
             }
-        } catch (SQLException e) {
-            logger.error("Error while selecting language by code", e);
-            throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
             DAOFactory.closeResource(statement);
@@ -151,9 +136,6 @@ public class PostgresLanguageDAO implements LanguageDAO {
             if (resultSet.next()) {
                 language = parseLanguage(resultSet);
             }
-        } catch (SQLException e) {
-            logger.error("Error while selecting language by code", e);
-            throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
             DAOFactory.closeResource(statement);
@@ -177,9 +159,6 @@ public class PostgresLanguageDAO implements LanguageDAO {
             while (resultSet.next()) {
                 languageList.add(parseLanguage(resultSet));
             }
-        } catch (SQLException e) {
-            logger.error("Error while selecting all languages", e);
-            throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
             DAOFactory.closeResource(statement);
@@ -201,6 +180,7 @@ public class PostgresLanguageDAO implements LanguageDAO {
             logger.error("Error while parsing language", e);
             throw e;
         }
+
         return language;
     }
 

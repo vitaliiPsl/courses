@@ -46,7 +46,6 @@ public class CourseService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            logger.error("SQLException while saving course", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -65,7 +64,6 @@ public class CourseService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            logger.error("SQLException while deleting course", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -82,7 +80,6 @@ public class CourseService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            logger.error("SQLException while updating course", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -100,7 +97,6 @@ public class CourseService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            logger.error("SQLException while retrieving course by id", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -123,7 +119,6 @@ public class CourseService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            logger.error("SQLException while retrieving list of courses  by their ids", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -144,7 +139,6 @@ public class CourseService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            logger.error("SQLException while retrieving all courses", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -165,7 +159,6 @@ public class CourseService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            logger.error("SQLException while retrieving available courses", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -186,7 +179,6 @@ public class CourseService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            logger.error("SQLException while retrieving courses by search query", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -207,7 +199,6 @@ public class CourseService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            logger.error("SQLException while retrieving available courses by search query", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -228,7 +219,6 @@ public class CourseService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            logger.error("SQLException while retrieving courses by teacher id", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);

@@ -32,9 +32,6 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
             statement.executeUpdate();
 
             generatedId = DAOUtils.getGeneratedId(statement);
-        } catch (SQLException e) {
-            logger.error("Error while saving studentCourse record", e);
-            throw e;
         } finally {
             DAOFactory.closeResource(statement);
         }
@@ -52,9 +49,6 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
             statement.setLong(1, studentId);
             statement.setLong(2, courseId);
             statement.executeUpdate();
-        } catch (SQLException e) {
-            logger.error("Error while deleting studentCourse record", e);
-            throw e;
         } finally {
             DAOFactory.closeResource(statement);
         }
@@ -73,9 +67,6 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
             statement.setLong(3, studentCourse.getCourseId());
 
             statement.executeUpdate();
-        } catch (SQLException e) {
-            logger.error("Error while updating studentCourse", e);
-            throw e;
         } finally {
             DAOFactory.closeResource(statement);
         }
@@ -98,9 +89,6 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
             if (resultSet.next()) {
                 studentCourse = parseStudentCourse(resultSet);
             }
-        } catch (SQLException e) {
-            logger.error("Error during studentCourse select", e);
-            throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
             DAOFactory.closeResource(statement);
@@ -125,9 +113,6 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
             while (resultSet.next()) {
                 studentCourseList.add(parseStudentCourse(resultSet));
             }
-        } catch (SQLException e) {
-            logger.error("Error while selecting studentCourse by student id", e);
-            throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
             DAOFactory.closeResource(statement);
@@ -152,9 +137,6 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
             while (resultSet.next()) {
                 studentCourseList.add(parseStudentCourse(resultSet));
             }
-        } catch (SQLException e) {
-            logger.error("Error while selecting studentCourse by course id", e);
-            throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
             DAOFactory.closeResource(statement);

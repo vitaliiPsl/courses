@@ -78,7 +78,7 @@ public class PostgresSubjectDAO implements SubjectDAO {
     }
 
     @Override
-    public void updateSubject(Connection connection, Subject subject) throws SQLException {
+    public void updateSubjectDescription(Connection connection, Subject subject) throws SQLException {
         logger.trace("Update subject: " + subject);
         PreparedStatement statement = null;
 

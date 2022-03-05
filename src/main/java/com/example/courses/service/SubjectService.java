@@ -44,7 +44,6 @@ public class SubjectService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            logger.error("SQLException while saving subject", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -65,7 +64,6 @@ public class SubjectService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            logger.error(String.format("SQLException while retrieving subject with id: %d and language id: %d", subjectId, languageId), e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -86,7 +84,6 @@ public class SubjectService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            logger.error("SQLException while retrieving all subjects", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -106,7 +103,6 @@ public class SubjectService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            logger.error(String.format("SQLException while deleting subjects with id: %d", subjectId), e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);

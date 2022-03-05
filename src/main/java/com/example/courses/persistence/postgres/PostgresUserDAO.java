@@ -32,9 +32,6 @@ public class PostgresUserDAO implements UserDAO {
             statement.executeUpdate();
 
             userId = DAOUtils.getGeneratedId(statement);
-        } catch (SQLException e) {
-            logger.error("SQLException while saving user", e);
-            throw e;
         } finally {
             DAOFactory.closeResource(statement);
         }
@@ -52,9 +49,6 @@ public class PostgresUserDAO implements UserDAO {
             statement = connection.prepareStatement(UserDAOConstants.DELETE_PERSON_BY_ID);
             statement.setLong(1, id);
             statement.executeUpdate();
-        } catch (SQLException e) {
-            logger.error("SQLException while deleting by user id", e);
-            throw e;
         } finally {
             DAOFactory.closeResource(statement);
         }
@@ -72,9 +66,6 @@ public class PostgresUserDAO implements UserDAO {
             statement.setLong(8, user.getId());
 
             statement.executeUpdate();
-        } catch (SQLException e) {
-            logger.error("SQLException while updating user", e);
-            throw e;
         } finally {
             DAOFactory.closeResource(statement);
         }
@@ -95,9 +86,6 @@ public class PostgresUserDAO implements UserDAO {
             if(resultSet.next()) {
                 user = parsePerson(resultSet);
             }
-        } catch (SQLException e) {
-            logger.error("SQLException while selecting user by id", e);
-            throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
             DAOFactory.closeResource(statement);
@@ -121,9 +109,6 @@ public class PostgresUserDAO implements UserDAO {
             if(resultSet.next()) {
                 user = parsePerson(resultSet);
             }
-        } catch (SQLException e) {
-            logger.error("SQLException while selecting user by email", e);
-            throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
             DAOFactory.closeResource(statement);
@@ -147,9 +132,6 @@ public class PostgresUserDAO implements UserDAO {
             while(resultSet.next()){
                 userList.add(parsePerson(resultSet));
             }
-        } catch (SQLException e) {
-            logger.error("SQLException while selecting all users", e);
-            throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
             DAOFactory.closeResource(statement);
@@ -174,9 +156,6 @@ public class PostgresUserDAO implements UserDAO {
             while(resultSet.next()){
                 userList.add(parsePerson(resultSet));
             }
-        } catch (SQLException e) {
-            logger.error("SQLException while selecting users by role: " + role.getRole(), e);
-            throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
             DAOFactory.closeResource(statement);
@@ -203,23 +182,24 @@ public class PostgresUserDAO implements UserDAO {
     private User parsePerson(ResultSet resultSet) throws SQLException {
         logger.trace("Parsing user");
 
-        User user = new User();
+        User.Builder userBuilder = new User.Builder();
 
         try {
-            user.setId(resultSet.getLong(UserDAOConstants.PERSON_ID));
-            user.setFirstName(resultSet.getString(UserDAOConstants.PERSON_FIRST_NAME));
-            user.setLastName(resultSet.getString(UserDAOConstants.PERSON_LAST_NAME));
-            user.setEmail(resultSet.getString(UserDAOConstants.PERSON_EMAIL));
-            user.setPassword(resultSet.getString(UserDAOConstants.PERSON_PASSWORD));
-            user.setBlocked(resultSet.getBoolean(UserDAOConstants.PERSON_IS_BLOCKED));
-            user.setImageName(resultSet.getString(UserDAOConstants.PERSON_IMAGE_NAME));
-            user.setRole(parseRole(resultSet.getString(UserDAOConstants.ROLE_NAME)));
+            userBuilder.setId(resultSet.getLong(UserDAOConstants.PERSON_ID))
+                    .setFirstName(resultSet.getString(UserDAOConstants.PERSON_FIRST_NAME))
+                    .setLastName(resultSet.getString(UserDAOConstants.PERSON_LAST_NAME))
+                    .setEmail(resultSet.getString(UserDAOConstants.PERSON_EMAIL))
+                    .setPassword(resultSet.getString(UserDAOConstants.PERSON_PASSWORD))
+                    .setBlocked(resultSet.getBoolean(UserDAOConstants.PERSON_IS_BLOCKED))
+                    .setImageName(resultSet.getString(UserDAOConstants.PERSON_IMAGE_NAME))
+                    .setRole(parseRole(resultSet.getString(UserDAOConstants.ROLE_NAME)));
+
         } catch (SQLException e){
             logger.error("SQLException while building users", e);
             throw e;
         }
 
-        return user;
+        return userBuilder.build();
     }
 
     private Role parseRole(String roleStr) throws SQLException {

@@ -32,7 +32,6 @@ public class LanguageService {
             language = languageDAO.findLanguageById(connection, languageId);
             connection.commit();
         } catch (SQLException e) {
-            logger.error("SQLException while retrieving language by id", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -53,7 +52,6 @@ public class LanguageService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            logger.error("SQLException while retrieving language by code", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -75,7 +73,6 @@ public class LanguageService {
             connection.commit();
         } catch (SQLException e) {
             DAOFactory.rollback(connection);
-            logger.error("SQLException while retrieving all languages", e);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);

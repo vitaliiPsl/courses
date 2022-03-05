@@ -11,7 +11,7 @@ public interface SubjectDAO {
     void saveSubjectDescription(Connection connection, Subject subject) throws SQLException;
 
     void deleteSubjectById(Connection connection, long id) throws SQLException;
-    void updateSubject(Connection connection, Subject subject) throws SQLException;
+    void updateSubjectDescription(Connection connection, Subject subject) throws SQLException;
 
     Subject findSubject(Connection connection, long id, long languageId) throws SQLException;
 
