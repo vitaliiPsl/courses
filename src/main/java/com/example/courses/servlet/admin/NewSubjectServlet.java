@@ -50,7 +50,7 @@ public class NewSubjectServlet extends HttpServlet {
             Map<Language, String> subjectTranslations = new HashMap<>();
             for(Language lang: languageList){
                 String subjectTranslation = request.getParameter("subject_" + lang.getLanguageCode());
-                if(subjectTranslation != null){
+                if(subjectTranslation != null && !subjectTranslation.isBlank()){
                     subjectTranslations.put(lang, subjectTranslation);
                 } else {
                     request.setAttribute("error", "You have to provide translation in all available languages");
