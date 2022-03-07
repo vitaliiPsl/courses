@@ -53,7 +53,7 @@
                     <c:if test="${sessionScope.user == null || sessionScope.user.getRole().equals(Role.STUDENT)}">
 
                         <%--If course is completed, than student can download certificate--%>
-                        <c:if test="${course.getCourseStatus().equals(CourseStatus.COMPLETED)}">
+                        <c:if test="${sessionScope.user != null && course.getCourseStatus().equals(CourseStatus.COMPLETED)}">
                             <button class="certificate-btn">
                                 <a href="${pageContext.request.contextPath}/certificate?course_id=${course.getId()}"
                                    download>
