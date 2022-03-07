@@ -34,6 +34,7 @@ public class CertificateServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
+        String lang = (String) session.getAttribute("lang");
         String courseId = request.getParameter("course_id");
 
         byte[] certificate = null;
@@ -48,11 +49,11 @@ public class CertificateServlet extends HttpServlet {
                 throw new NotFoundException();
             }
 
-            certificate = CertificateUtils.makeCertificate(course, user, studentCourse.getScore());
+            certificate = new CertificateUtils(lang).makeCertificate(course, user, studentCourse.getScore());
         } catch (SQLException e) {
             logger.error("SQLException", e);
             throw new ServerErrorException();
-        } catch (DocumentException e) {
+        } catch (Exception e) {
             logger.error("Exception while making certificate", e);
             throw new ServerErrorException();
         }
