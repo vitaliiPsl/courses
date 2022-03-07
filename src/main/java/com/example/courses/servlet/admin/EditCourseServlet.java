@@ -95,12 +95,16 @@ public class EditCourseServlet extends HttpServlet {
         logger.info("Edit course by id: " + courseId);
         try {
             long id = Long.parseLong(courseId);
+            Course original = courseService.getCourseById(id);
+
             Course course = CourseUtils.buildCourse(request);
             course.setId(id);
 
             String imageName = ImageUtils.saveCourseImage(request);
             if (imageName != null) {
                 course.setImageName(imageName);
+            } else {
+                course.setImageName(original.getImageName());
             }
 
             courseService.updateCourse(course);
