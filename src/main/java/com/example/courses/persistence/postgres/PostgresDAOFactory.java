@@ -10,12 +10,16 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/**
+ * PostgreSQL implementation of DAOFactory
+ * @see com.example.courses.persistence.DAOFactory
+ */
 public class PostgresDAOFactory implements DAOFactory {
     private static final Logger logger = LogManager.getLogger(PostgresDAOFactory.class.getName());
     private final DataSource dataSource;
     private static PostgresDAOFactory instance;
 
-    PostgresDAOFactory() {
+    private PostgresDAOFactory() {
         try {
             dataSource = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/postgres");
         } catch (NamingException e) {

@@ -1,6 +1,8 @@
 package com.example.courses.servlet.listener;
 
 
+import com.example.courses.service.CourseSortingService;
+
 import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
@@ -10,6 +12,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Session listener.
+ * Initialises map of course filters and sorting+order
+ */
 @WebListener
 public class SessionListener implements HttpSessionListener {
 
@@ -20,9 +26,9 @@ public class SessionListener implements HttpSessionListener {
         addSessionCourseFiltersMap(session);
 
         // set default sorting
-        session.setAttribute("sorting", "title");
+        session.setAttribute("sorting", CourseSortingService.SORT_BY_TITLE);
         //set default sorting order
-        session.setAttribute("sorting_order", "ascending");
+        session.setAttribute("sorting_order", CourseSortingService.SORT_ORDER_ASCENDING);
     }
 
     private void addSessionCourseFiltersMap(HttpSession session){

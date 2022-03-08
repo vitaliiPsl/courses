@@ -28,6 +28,13 @@ public class CourseDTOService {
         studentCourseDAO = daoFactory.getStudentCourseDao();
     }
 
+    /**
+     * Retrieves all required info and builds courseDto
+     * @param course - course
+     * @param languageCode - translation language
+     * @return
+     * @throws SQLException
+     */
     public CourseDTO getCourseDTO(Course course, String languageCode) throws SQLException {
         logger.trace("Get course");
         logger.debug("Get course. Localization language: " + languageCode);
@@ -49,6 +56,13 @@ public class CourseDTOService {
         return courseDTO;
     }
 
+    /**
+     * Makes courseDTO list
+     * @param courseList - list of courses
+     * @param languageCode - code of translation language
+     * @return courseDTO list
+     * @throws SQLException
+     */
     public List<CourseDTO> getCourseDTOList(List<Course> courseList, String languageCode) throws SQLException {
         logger.trace("Get courseDTO list based on course list: " + courseList);
         logger.debug("Get course. Language of localization: " + languageCode);

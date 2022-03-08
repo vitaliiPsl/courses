@@ -14,9 +14,20 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * PostgreSQL implementation of SubjectDAO
+ * @see com.example.courses.persistence.SubjectDAO
+ */
 public class PostgresSubjectDAO implements SubjectDAO {
     private static final Logger logger = LogManager.getLogger(PostgresDAOFactory.class.getName());
 
+    /**
+     * Adds new id to subject table and sets subject id
+     * @param connection - db connection
+     * @param subject - new subject
+     * @return generated id
+     * @throws SQLException
+     */
     @Override
     public long saveSubject(Connection connection, Subject subject) throws SQLException {
         logger.trace("Save subject: " + subject);
@@ -42,6 +53,13 @@ public class PostgresSubjectDAO implements SubjectDAO {
         return subjectId;
     }
 
+    /**
+     * Saves subject translation
+     * @param connection - db connection
+     * @param subject - subject translation
+     * @throws SQLException
+     */
+    @Override
     public void saveSubjectDescription(Connection connection, Subject subject) throws SQLException {
         logger.trace("Save subject description: " + subject);
         PreparedStatement statement = null;

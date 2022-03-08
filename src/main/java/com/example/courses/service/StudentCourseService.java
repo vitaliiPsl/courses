@@ -21,6 +21,12 @@ public class StudentCourseService {
         studentCourseDAO = daoFactory.getStudentCourseDao();
     }
 
+    /**
+     * Register student for a course by making new entry in corresponding db table
+     * @param studentId - student id
+     * @param courseId - course id
+     * @throws SQLException
+     */
     public void registerStudentForCourse(long studentId, long courseId) throws SQLException {logger.info("Initializing daoFactory and subjectDao");
         logger.trace(String.format("Register student %d for course %d", studentId, courseId));
 
@@ -41,6 +47,11 @@ public class StudentCourseService {
         }
     }
 
+    /**
+     * Updates StudentCourse records
+     * @param studentCourseList - list of studentCourse record
+     * @throws SQLException
+     */
     public void updateStudentCourses(List<StudentCourse> studentCourseList) throws SQLException {
         logger.trace("Update studentCourseS: " + studentCourseList);
 
@@ -60,6 +71,13 @@ public class StudentCourseService {
         }
     }
 
+    /**
+     * Retrieves student course record by student and course id
+     * @param studentId - student id
+     * @param courseId - course id
+     * @return StudentCourse record
+     * @throws SQLException
+     */
     public StudentCourse getStudentCourse(long studentId, long courseId) throws SQLException {
         logger.trace(String.format("Get student course by student id: %d and course id: %d", studentId, courseId));
 
@@ -80,6 +98,12 @@ public class StudentCourseService {
         return studentCourse;
     }
 
+    /**
+     * Gets list of StudentsCourse records by course id
+     * @param courseId - course id
+     * @return list of StudentCourse records
+     * @throws SQLException
+     */
     public List<StudentCourse> getStudentsByCourseId(long courseId) throws SQLException {
         logger.trace(String.format("Get students by course id: %d", courseId));
 
@@ -100,6 +124,12 @@ public class StudentCourseService {
         return studentCourseList;
     }
 
+    /**
+     * Gets list of StudentsCourse records by student id
+     * @param studentId - student id
+     * @return list of StudentCourse records
+     * @throws SQLException
+     */
     public List<StudentCourse> getCoursesByStudentId(long studentId) throws SQLException {
         logger.trace(String.format("Get courses by student id: %d", studentId));
 

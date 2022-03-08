@@ -12,6 +12,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * PostgreSQL implementation of UserDAO
+ * @see com.example.courses.persistence.UserDAO
+ */
 public class PostgresUserDAO implements UserDAO {
     private static final Logger logger = LogManager.getLogger(PostgresUserDAO.class.getName());
 
@@ -19,7 +23,7 @@ public class PostgresUserDAO implements UserDAO {
     public long saveUser(Connection connection, User user) throws SQLException {
         logger.info("Saving new user:" + user);
 
-        long userId;
+        long generatedId;
         PreparedStatement statement = null;
 
         try {
@@ -31,12 +35,13 @@ public class PostgresUserDAO implements UserDAO {
             setUserProperties(user, statement);
             statement.executeUpdate();
 
-            userId = DAOUtils.getGeneratedId(statement);
+            generatedId = DAOUtils.getGeneratedId(statement);
+            user.setId(generatedId);
         } finally {
             DAOFactory.closeResource(statement);
         }
 
-        return userId;
+        return generatedId;
     }
 
     @Override
@@ -202,6 +207,12 @@ public class PostgresUserDAO implements UserDAO {
         return userBuilder.build();
     }
 
+    /**
+     * Makes Role based on retrieved role name
+     * @param roleStr - role name
+     * @return Role
+     * @throws SQLException if role name is invalid
+     */
     private Role parseRole(String roleStr) throws SQLException {
         Role role;
 

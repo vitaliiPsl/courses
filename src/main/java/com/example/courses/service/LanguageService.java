@@ -21,6 +21,12 @@ public class LanguageService {
         languageDAO = daoFactory.getLanguageDao();
     }
 
+    /**
+     * Retrieve language by its id
+     * @param languageId - language id
+     * @return language or null if it doesn't exist
+     * @throws SQLException
+     */
     public Language getLanguageById(long languageId) throws SQLException {
         logger.trace("Get language by id: " + languageId);
 
@@ -40,6 +46,12 @@ public class LanguageService {
         return language;
     }
 
+    /**
+     * Retrieve language by language code
+     * @param code - language code
+     * @return language or null if it doesn't exist
+     * @throws SQLException
+     */
     public Language getLanguageByCode(String code) throws SQLException {
         logger.trace("Get language by code: " + code);
 
@@ -60,6 +72,11 @@ public class LanguageService {
         return language;
     }
 
+    /**
+     * Retrieve all languages
+     * @return list of all languages
+     * @throws SQLException
+     */
     public List<Language> getAllLanguages() throws SQLException {
         logger.trace("Get all languages");
 

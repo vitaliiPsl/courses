@@ -23,6 +23,12 @@ public class SubjectService {
         subjectDAO = daoFactory.getSubjectDao();
     }
 
+    /**
+     * Saves new subject
+     * @param subjectTranslations - map of subject translations
+     * @return generated id
+     * @throws SQLException
+     */
     public long saveSubject(Map<Language, String> subjectTranslations) throws SQLException {
         logger.info("Save subject: " + subjectTranslations);
 
@@ -52,6 +58,13 @@ public class SubjectService {
         return subjectId;
     }
 
+    /**
+     * Retrieves subject by id and language id
+     * @param subjectId - subject id
+     * @param languageId - id of translation language
+     * @return subject or null if it doesn't exist
+     * @throws SQLException
+     */
     public Subject getSubject(long subjectId, long languageId) throws SQLException {
         logger.trace("Get subject. Subject id: " + subjectId + ". Language id: " + languageId);
 
@@ -72,6 +85,12 @@ public class SubjectService {
         return subject;
     }
 
+    /**
+     * Retrieves all subject
+     * @param languageId - id of translation language
+     * @return
+     * @throws SQLException
+     */
     public List<Subject> getAll(long languageId) throws SQLException {
         logger.trace("Get all subjects");
 
@@ -92,6 +111,11 @@ public class SubjectService {
         return subjectList;
     }
 
+    /**
+     * Deletes subject by id
+     * @param subjectId - id of subject to delete
+     * @throws SQLException
+     */
     public void deleteSubjectById(long subjectId) throws SQLException {
         logger.trace("Delete subject by id: " + subjectId);
 

@@ -25,26 +25,41 @@ public class UserService {
         userDAO = daoFactory.getUserDao();
     }
 
+    /**
+     * Registers new user
+     * @param user - new user
+     * @throws SQLException
+     * @throws IllegalArgumentException if user is invalid or already exists
+     */
     public void registerUser(User user) throws SQLException {
         logger.trace("Register user: " + user);
 
+        // check if user is valid
         if(!UserValidation.isUserValid(user)){
             logger.warn("User's properties are invalid: " + user);
             throw new IllegalArgumentException("You have to provide valid data");
         }
 
+        // check if user already exists
         User existing = getUserByEmail(user.getEmail());
         if(existing != null){
             logger.warn("User's with email: " + user.getEmail() + " already exists");
             throw new IllegalArgumentException("User with email " + user.getEmail() + " already exists");
         }
 
+        // hash password
         String hashedPassword = HashingUtils.hashPassword(user.getPassword());
         user.setPassword(hashedPassword);
 
         saveUser(user);
     }
 
+    /**
+     * Saves user to db
+     * @param user - user to save
+     * @return generated id
+     * @throws SQLException
+     */
     public long saveUser(User user) throws SQLException {
         logger.trace("Save user: " + user);
 
@@ -65,6 +80,11 @@ public class UserService {
         return userId;
     }
 
+    /**
+     * Deletes user from db
+     * @param user - user to delete
+     * @throws SQLException
+     */
     public void deleteUser(User user) throws SQLException{
         logger.trace("Delete user: " + user);
 
@@ -82,6 +102,11 @@ public class UserService {
         }
     }
 
+    /**
+     * Updates user info
+     * @param user - user to update
+     * @throws SQLException
+     */
     public void updateUser(User user) throws SQLException{
         logger.trace("Update user: " + user);
 
@@ -99,6 +124,12 @@ public class UserService {
         }
     }
 
+    /**
+     * Retrieves user by id
+     * @param id - id of user to retrieve
+     * @return user or null if there is no user in db with provided id
+     * @throws SQLException
+     */
     public User getUserById(long id) throws SQLException {
         logger.trace("Get user by id: " + id);
 
@@ -119,6 +150,12 @@ public class UserService {
         return user;
     }
 
+    /**
+     * Retrieves user by email
+     * @param email - email of user to retrieve
+     * @return user or null if there is no user in db with provided email
+     * @throws SQLException
+     */
     public User getUserByEmail(String email) throws SQLException {
         logger.trace("Get user by email: " + email);
 
@@ -139,6 +176,12 @@ public class UserService {
         return user;
     }
 
+    /**
+     * Retrieves users by their ids
+     * @param ids - list of users ids
+     * @return list of retrieved users
+     * @throws SQLException
+     */
     public List<User> getUsers(List<Long> ids) throws SQLException {
         logger.trace("Get list of users by ids: " + ids);
 
@@ -161,6 +204,12 @@ public class UserService {
         return userList;
     }
 
+    /**
+     * Get users from db by their role
+     * @param role - users role
+     * @return list of retrieved users
+     * @throws SQLException
+     */
     public List<User> getUsersByRole(Role role) throws SQLException {
         logger.trace("Get list of users by role: " + role.getRole());
 
@@ -181,6 +230,11 @@ public class UserService {
         return userList;
     }
 
+    /**
+     * Blocks user by id
+     * @param id - id of user to block
+     * @throws SQLException
+     */
     public void blockUserById(long id) throws SQLException {
         logger.trace("Block user by id: " + id);
 
@@ -192,6 +246,11 @@ public class UserService {
         }
     }
 
+    /**
+     * Unblocks user by id
+     * @param id - id of user to unblock
+     * @throws SQLException
+     */
     public void unblockUserById(long id) throws SQLException {
         logger.trace("Unblock user by id: " + id);
 

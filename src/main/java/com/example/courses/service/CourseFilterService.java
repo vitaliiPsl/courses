@@ -30,6 +30,12 @@ public class CourseFilterService {
         courseDTOService = new CourseDTOService();
     }
 
+    /**
+     * Makes map of available filters
+     * @param languageCode - code of translation language
+     * @return map of available filters
+     * @throws SQLException
+     */
     public Map<String, List<String>> getAvailableFilters(String languageCode) throws SQLException {
         logger.trace("Get available filters");
         logger.debug("Get available filters. Localization language: " + languageCode);
@@ -56,6 +62,11 @@ public class CourseFilterService {
         return filters;
     }
 
+    /**
+     * Applies filters to courseDTO list
+     * @param courseDTOList - list courseDTO objects to filter
+     * @param filters - filters selected by user
+     */
     public void applyFilters(List<CourseDTO> courseDTOList, Map<String, List<String>> filters) {
         logger.trace("ApplyFilters to courseDTOList: " + courseDTOList);
         logger.info("Applying filters: " + filters);

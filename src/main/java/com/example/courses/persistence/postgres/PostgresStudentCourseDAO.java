@@ -11,6 +11,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * PostgreSQL implementation of StudentCourseDAO
+ * @see com.example.courses.persistence.StudentCourseDAO
+ */
 public class PostgresStudentCourseDAO implements StudentCourseDAO {
     private static final Logger logger = LogManager.getLogger(PostgresStudentCourseDAO.class.getName());
 

@@ -7,6 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * This filters requires user to be authenticated
+ */
 public class RequireLogin implements Filter {
 
     @Override

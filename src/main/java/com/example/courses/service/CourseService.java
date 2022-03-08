@@ -23,6 +23,13 @@ public class CourseService {
         courseDao = daoFactory.getCourseDao();
     }
 
+    /**
+     * Validates and saves new course
+     * @param course - new course
+     * @return generated id
+     * @throws SQLException
+     * @throws IllegalArgumentException if course isn't valid
+     */
     public long saveNewCourse(Course course) throws SQLException {
         logger.trace("Save new course: " + course);
 
@@ -34,6 +41,12 @@ public class CourseService {
         return saveCourse(course);
     }
 
+    /**
+     * Saves course into db
+     * @param course - course to save
+     * @return generated id
+     * @throws SQLException
+     */
     public long saveCourse(Course course) throws SQLException {
         logger.trace("Save course: " + course);
 
@@ -54,6 +67,11 @@ public class CourseService {
         return courseId;
     }
 
+    /**
+     * Deletes course by its id
+     * @param id - id of course to delete
+     * @throws SQLException
+     */
     public void deleteCourse(long id) throws SQLException {
         logger.trace("Delete course by id: " + id);
         Connection connection = null;
@@ -70,6 +88,11 @@ public class CourseService {
         }
     }
 
+    /**
+     * Updates course data
+     * @param course - course to update
+     * @throws SQLException
+     */
     public void updateCourse(Course course) throws SQLException {
         logger.trace("Update course: " + course);
         Connection connection = null;
@@ -85,6 +108,13 @@ public class CourseService {
             DAOFactory.closeResource(connection);
         }
     }
+
+    /**
+     * Retrieves course by id
+     * @param courseId - course id
+     * @return course or null if it doesn't exist
+     * @throws SQLException
+     */
     public Course getCourseById(long courseId) throws SQLException {
         logger.trace("Get course by id: " + courseId);
 
@@ -105,6 +135,12 @@ public class CourseService {
         return course;
     }
 
+    /**
+     * Retrieves courses by ids
+     * @param ids - list of courses ids
+     * @return list of retrieved courses
+     * @throws SQLException
+     */
     public List<Course> getCourses(List<Long> ids) throws SQLException {
         logger.trace("Get list of courses by their ids: " + ids);
 
@@ -127,6 +163,11 @@ public class CourseService {
         return courseList;
     }
 
+    /**
+     * Retrieves all courses
+     * @return list of retrieved courses
+     * @throws SQLException
+     */
     public List<Course> getAll() throws SQLException {
         logger.trace("Get all courses");
 
@@ -147,6 +188,11 @@ public class CourseService {
         return courseList;
     }
 
+    /**
+     * Retrieves all available courses
+     * @return list of retrieved courses
+     * @throws SQLException
+     */
     public List<Course> getAvailable() throws SQLException {
         logger.trace("Get available courses");
 
@@ -167,6 +213,11 @@ public class CourseService {
         return courseList;
     }
 
+    /**
+     * Retrieves courses by search query
+     * @return list of retrieved courses
+     * @throws SQLException
+     */
     public List<Course> getCoursesBySearchQuery(String query) throws SQLException {
         logger.trace("Get courses by search query: " + query);
 
@@ -187,6 +238,11 @@ public class CourseService {
         return courseList;
     }
 
+    /**
+     * Retrieves available courses by search query
+     * @return list of retrieved courses
+     * @throws SQLException
+     */
     public List<Course> getAvailableCoursesBySearchQuery(String query) throws SQLException {
         logger.trace("Get available courses by search query: " + query);
 
@@ -207,6 +263,11 @@ public class CourseService {
         return courseList;
     }
 
+    /**
+     * Retrieves courses by teacher id
+     * @return list of retrieved courses
+     * @throws SQLException
+     */
     public List<Course> getCoursesByTeacherId(long teacherId) throws SQLException {
         logger.trace("Get courses by teacher id: " + teacherId);
 

@@ -10,15 +10,19 @@ import java.util.Comparator;
 import java.util.List;
 
 public class CourseSortingService {
-    static final String SORT_BY_TITLE = "title";
-    static final String SORT_BY_DURATION = "duration";
-    static final String SORT_BY_NUMBER_OF_STUDENTS = "number of students";
+    public static final String SORT_BY_TITLE = "title";
+    public static final String SORT_BY_DURATION = "duration";
+    public static final String SORT_BY_NUMBER_OF_STUDENTS = "number of students";
 
-    static final String SORT_ORDER_ASCENDING = "ascending";
-    static final String SORT_ORDER_DESCENDING = "descending";
+    public static final String SORT_ORDER_ASCENDING = "ascending";
+    public static final String SORT_ORDER_DESCENDING = "descending";
 
     private static final Logger logger = LogManager.getLogger(CourseSortingService.class.getName());
 
+    /**
+     * Sorting options
+     * @return list of sorting options
+     */
     public List<String> getSortingOptions() {
         logger.trace("Get sorting options");
         return Arrays.asList(
@@ -27,6 +31,11 @@ public class CourseSortingService {
                 SORT_BY_NUMBER_OF_STUDENTS
         );
     }
+
+    /**
+     * Sorting order options
+     * @return list of sorting order options
+     */
     public List<String> getSortingOrderOptions() {
         logger.trace("Get sorting order options");
         return Arrays.asList(
@@ -35,6 +44,12 @@ public class CourseSortingService {
         );
     }
 
+    /**
+     * Applies selected sorting to courseDTO list
+     * @param courseDTOList - list of courseDTO object to sort
+     * @param sorting - selected sorting
+     * @param order selected sorting order
+     */
     public void applySoring(List<CourseDTO> courseDTOList, String sorting, String order){
         logger.trace("Apply sorting to following courseDTO list: " + courseDTOList);
         logger.info("Applying sorting. Sorting: " + sorting + ", order: " + order);

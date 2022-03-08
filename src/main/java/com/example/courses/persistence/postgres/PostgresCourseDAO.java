@@ -13,6 +13,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * PostgreSQL implementation of CourseDAO
+ * @see com.example.courses.persistence.CourseDAO
+ */
 public class PostgresCourseDAO implements CourseDAO {
     private static final Logger logger = LogManager.getLogger(PostgresUserDAO.class.getName());
 
@@ -20,7 +24,7 @@ public class PostgresCourseDAO implements CourseDAO {
     public long saveCourse(Connection connection, Course course) throws SQLException {
         logger.trace("Save course: " + course);
 
-        long insertedCourseId;
+        long generatedId;
         PreparedStatement statement = null;
 
         try {
@@ -32,12 +36,13 @@ public class PostgresCourseDAO implements CourseDAO {
             setCourseProperties(course, statement);
             statement.executeUpdate();
 
-            insertedCourseId = DAOUtils.getGeneratedId(statement);
+            generatedId = DAOUtils.getGeneratedId(statement);
+            course.setId(generatedId);
         } finally {
             DAOFactory.closeResource(statement);
         }
 
-        return insertedCourseId;
+        return generatedId;
     }
 
     @Override
@@ -286,6 +291,12 @@ public class PostgresCourseDAO implements CourseDAO {
         return courseBuilder.build();
     }
 
+    /**
+     * Makes course status based on start and end dates
+     * @param startDate - course start date
+     * @param endDate - course end date
+     * @return course status
+     */
     private CourseStatus parseCourseStatus(LocalDateTime startDate, LocalDateTime endDate) {
         logger.trace("Parse course status");
 

@@ -11,6 +11,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * PostgreSQL implementation of LanguageDAO
+ * @see com.example.courses.persistence.LanguageDAO
+ */
 public class PostgresLanguageDAO implements LanguageDAO {
     private static final Logger logger = LogManager.getLogger(PostgresDAOFactory.class.getName());
 
@@ -18,7 +22,7 @@ public class PostgresLanguageDAO implements LanguageDAO {
     public long saveLanguage(Connection connection, Language language) throws SQLException {
         logger.trace("Save language: " + language);
 
-        long languageId;
+        long generatedId;
         PreparedStatement statement = null;
 
         try {
@@ -31,12 +35,13 @@ public class PostgresLanguageDAO implements LanguageDAO {
             statement.setBoolean(3, language.isDefault());
             statement.executeUpdate();
 
-            languageId = DAOUtils.getGeneratedId(statement);
+            generatedId = DAOUtils.getGeneratedId(statement);
+            language.setId(generatedId);
         } finally {
             DAOFactory.closeResource(statement);
         }
 
-        return languageId;
+        return generatedId;
     }
 
     @Override

@@ -11,6 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
+/**
+ * This filter check if there is 'lang' parameter in request,
+ * which means user wants to change interface language
+ * If there is 'lang' parameter, then filters sets new value in sission 'lang' attribute and makes new 'lang' cookie
+ */
 @WebFilter({"/*"})
 public class LocaleFilter implements Filter {
 

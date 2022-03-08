@@ -8,6 +8,9 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+/**
+ * Requires 'Teacher' role to access teacher's endpoints
+ */
 public class TeacherFilter implements Filter {
 
     @Override

@@ -8,6 +8,9 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+/**
+ * Requires 'Admin' role to access admin endpoints
+ */
 public class AdminFilter implements Filter {
 
     @Override
