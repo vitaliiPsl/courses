@@ -25,13 +25,18 @@ public class UserService {
         userDAO = daoFactory.getUserDao();
     }
 
+    public UserService(DAOFactory daoFactory, UserDAO userDAO) {
+        this.daoFactory = daoFactory;
+        this.userDAO = userDAO;
+    }
+
     /**
      * Registers new user
      * @param user - new user
      * @throws SQLException
      * @throws IllegalArgumentException if user is invalid or already exists
      */
-    public void registerUser(User user) throws SQLException {
+    public long registerUser(User user) throws SQLException {
         logger.trace("Register user: " + user);
 
         // check if user is valid
@@ -51,7 +56,7 @@ public class UserService {
         String hashedPassword = HashingUtils.hashPassword(user.getPassword());
         user.setPassword(hashedPassword);
 
-        saveUser(user);
+        return saveUser(user);
     }
 
     /**
@@ -235,7 +240,7 @@ public class UserService {
      * @param id - id of user to block
      * @throws SQLException
      */
-    public void blockUserById(long id) throws SQLException {
+    public void blockUser(long id) throws SQLException {
         logger.trace("Block user by id: " + id);
 
         User user = getUserById(id);
@@ -251,7 +256,7 @@ public class UserService {
      * @param id - id of user to unblock
      * @throws SQLException
      */
-    public void unblockUserById(long id) throws SQLException {
+    public void unblockUser(long id) throws SQLException {
         logger.trace("Unblock user by id: " + id);
 
         User user = getUserById(id);
