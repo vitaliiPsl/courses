@@ -39,13 +39,11 @@ public class PostgresSubjectDAO implements SubjectDAO {
                     SubjectDAOConstants.INSERT_SUBJECT,
                     PreparedStatement.RETURN_GENERATED_KEYS
             );
+            statement.setString(1, subject.getSubject());
             statement.executeUpdate();
 
             subjectId = DAOUtils.getGeneratedId(statement);
             subject.setId(subjectId);
-        } catch (SQLException e){
-            logger.error("SQLException while saving subject", e);
-            throw e;
         } finally {
             DAOFactory.closeResource(statement);
         }
@@ -60,19 +58,16 @@ public class PostgresSubjectDAO implements SubjectDAO {
      * @throws SQLException
      */
     @Override
-    public void saveSubjectDescription(Connection connection, Subject subject) throws SQLException {
+    public void saveSubjectTranslation(Connection connection, Subject subject) throws SQLException {
         logger.trace("Save subject description: " + subject);
         PreparedStatement statement = null;
 
-        try{
-            statement = connection.prepareStatement(SubjectDAOConstants.INSERT_SUBJECT_DESCRIPTION);
+        try {
+            statement = connection.prepareStatement(SubjectDAOConstants.INSERT_SUBJECT_TRANSLATION);
             statement.setLong(1, subject.getId());
             statement.setString(2, subject.getSubject());
             statement.setLong(3, subject.getLanguageId());
             statement.executeUpdate();
-        } catch (SQLException e){
-            logger.error("SQLException while saving subject description", e);
-            throw e;
         } finally {
             DAOFactory.closeResource(statement);
         }
@@ -83,13 +78,10 @@ public class PostgresSubjectDAO implements SubjectDAO {
         logger.trace("Delete subject by id: " + id);
         PreparedStatement statement = null;
 
-        try{
+        try {
             statement = connection.prepareStatement(SubjectDAOConstants.DELETE_SUBJECT);
             statement.setLong(1, id);
             statement.executeUpdate();
-        } catch (SQLException e){
-            logger.error("Error while deleting subject", e);
-            throw e;
         } finally {
             DAOFactory.closeResource(statement);
         }
@@ -106,32 +98,30 @@ public class PostgresSubjectDAO implements SubjectDAO {
             statement.setLong(2, subject.getId());
             statement.setLong(3, subject.getLanguageId());
             statement.executeUpdate();
-        } catch (SQLException e){
-            logger.error("SQLException occurred while updating subject", e);
-            throw e;
         } finally {
             DAOFactory.closeResource(statement);
         }
     }
 
     @Override
-    public Subject findSubject(Connection connection, long id, long languageId) throws SQLException {
-        logger.trace("Find subject. Id: " + id + ". Language id: " + languageId);
+    public Subject findSubject(Connection connection, long subjectId, long languageId) throws SQLException {
         Subject subject = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
 
         try{
             statement = connection.prepareStatement(SubjectDAOConstants.SELECT_SUBJECT);
-            statement.setLong(1, id);
-            statement.setLong(2, languageId);
+            statement.setLong(1, subjectId);
             resultSet = statement.executeQuery();
-            if(resultSet.next()) {
-                subject = parseSubjectDescription(resultSet);
+
+            if(resultSet.next()){
+                subject = parseSubject(resultSet);
+                Subject translation = getSubjectTranslation(connection, subjectId, languageId);
+
+                if(translation != null){
+                    subject.setSubject(translation.getSubject());
+                }
             }
-        } catch (SQLException e){
-            logger.error("SQLException while selecting subject", e);
-            throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
             DAOFactory.closeResource(statement);
@@ -144,20 +134,24 @@ public class PostgresSubjectDAO implements SubjectDAO {
     public List<Subject> findAll(Connection connection, long languageId) throws SQLException {
         logger.trace("Find all subject by language id: " + languageId);
 
+        Subject subject = null;
         List<Subject> subjectList = new ArrayList<>();
         PreparedStatement statement = null;
         ResultSet resultSet = null;
 
         try{
             statement = connection.prepareStatement(SubjectDAOConstants.SELECT_ALL);
-            statement.setLong(1, languageId);
             resultSet = statement.executeQuery();
+
             while(resultSet.next()) {
-                subjectList.add(parseSubjectDescription(resultSet));
+                subject = parseSubject(resultSet);
+                Subject translation = getSubjectTranslation(connection, subject.getId(), languageId);
+
+                if(translation != null){
+                    subject.setSubject(translation.getSubject());
+                }
+                subjectList.add(subject);
             }
-        } catch (SQLException e){
-            logger.error("SQLException while selecting all subjects", e);
-            throw e;
         } finally {
             DAOFactory.closeResource(resultSet);
             DAOFactory.closeResource(statement);
@@ -166,71 +160,94 @@ public class PostgresSubjectDAO implements SubjectDAO {
         return subjectList;
     }
 
-    private Subject parseSubjectDescription(ResultSet resultSet) throws SQLException {
-        logger.trace("Parse subject description");
-        Subject subject = new Subject();
-        try {
-            subject.setId(resultSet.getLong(SubjectDAOConstants.SUBJECT_DESCRIPTION_SUBJECT_ID));
-            subject.setSubject(resultSet.getString(SubjectDAOConstants.SUBJECT_DESCRIPTION_SUBJECT_NAME));
-            subject.setLanguageId(resultSet.getLong(SubjectDAOConstants.SUBJECT_DESCRIPTION_LANGUAGE_ID));
-        } catch (SQLException e){
-            logger.error("SQLException while parsing subject description", e);
-            throw e;
+    private Subject getSubjectTranslation(Connection connection, long subjectId, long languageId) throws SQLException {
+        Subject subject = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        try{
+            statement = connection.prepareStatement(SubjectDAOConstants.SELECT_SUBJECT_TRANSLATION);
+            statement.setLong(1, subjectId);
+            statement.setLong(2, languageId);
+            resultSet = statement.executeQuery();
+
+            if(resultSet.next()){
+                subject = new Subject();
+                subject.setId(resultSet.getLong(SubjectDAOConstants.SUBJECT_TRANSLATION_SUBJECT_ID));
+                subject.setLanguageId(resultSet.getLong(SubjectDAOConstants.SUBJECT_TRANSLATION_LANGUAGE_ID));
+                subject.setSubject(resultSet.getString(SubjectDAOConstants.SUBJECT_TRANSLATION_SUBJECT_NAME));
+            }
+        } finally {
+            DAOFactory.closeResource(resultSet);
+            DAOFactory.closeResource(statement);
         }
+
+        return subject;
+    }
+
+    private Subject parseSubject(ResultSet resultSet) throws SQLException {
+        logger.trace("Parse subject description");
+
+        Subject subject = new Subject();
+        subject.setId(resultSet.getLong(SubjectDAOConstants.SUBJECT_ID));
+        subject.setSubject(resultSet.getString(SubjectDAOConstants.SUBJECT_NAME));
 
         return subject;
     }
 
     static class SubjectDAOConstants {
         static final String TABLE_SUBJECT = "subject";
-        static final String TABLE_SUBJECT_DESCRIPTION = "subject_description";
+        static final String TABLE_SUBJECT_TRANSLATION = "subject_translation";
         static final String SUBJECT_ID = "id";
-        static final String SUBJECT_DESCRIPTION_SUBJECT_ID = "subject_id";
-        static final String SUBJECT_DESCRIPTION_SUBJECT_NAME = "name";
-        static final String SUBJECT_DESCRIPTION_LANGUAGE_ID = "language_id";
+        static final String SUBJECT_NAME = "name";
+        static final String SUBJECT_TRANSLATION_SUBJECT_ID = "subject_id";
+        static final String SUBJECT_TRANSLATION_SUBJECT_NAME = "name_translation";
+        static final String SUBJECT_TRANSLATION_LANGUAGE_ID = "language_id";
 
         static final String INSERT_SUBJECT =
-                "INSERT INTO " +
-                        TABLE_SUBJECT + "(" +
-                            SUBJECT_ID +
-                        ") " +
-                        "VALUES (DEFAULT);";
+                "INSERT INTO " + TABLE_SUBJECT + "(" +
+                            SUBJECT_NAME +
+                ") " + "VALUES (?);";
 
-        static final String INSERT_SUBJECT_DESCRIPTION =
-                "INSERT INTO " +
-                        TABLE_SUBJECT_DESCRIPTION + "(" +
-                            SUBJECT_DESCRIPTION_SUBJECT_ID + ", " +
-                            SUBJECT_DESCRIPTION_SUBJECT_NAME + ", " +
-                            SUBJECT_DESCRIPTION_LANGUAGE_ID +
-                        ") VALUES (?, ?, ?);";
+        static final String INSERT_SUBJECT_TRANSLATION =
+                "INSERT INTO " + TABLE_SUBJECT_TRANSLATION + "(" +
+                        SUBJECT_TRANSLATION_SUBJECT_ID + ", " +
+                        SUBJECT_TRANSLATION_SUBJECT_NAME + ", " +
+                        SUBJECT_TRANSLATION_LANGUAGE_ID +
+                ") VALUES (?, ?, ?);";
 
 
         static final String DELETE_SUBJECT =
                 "DELETE FROM " +
                         TABLE_SUBJECT + " " +
-                        "WHERE " + SUBJECT_ID + "=?;";
+                "WHERE " + SUBJECT_ID + "=?;";
 
         static final String UPDATE_SUBJECT =
-                "UPDATE " + TABLE_SUBJECT_DESCRIPTION + " " +
-                "SET " + SUBJECT_DESCRIPTION_SUBJECT_NAME + " = ? " +
-                "WHERE " + SUBJECT_DESCRIPTION_SUBJECT_ID + " = ? " +
-                "AND " + SUBJECT_DESCRIPTION_LANGUAGE_ID + " = ?;";
+                "UPDATE " + TABLE_SUBJECT_TRANSLATION + " " +
+                "SET " + SUBJECT_TRANSLATION_SUBJECT_NAME + " = ? " +
+                "WHERE " + SUBJECT_TRANSLATION_SUBJECT_ID + " = ? " +
+                "AND " + SUBJECT_TRANSLATION_LANGUAGE_ID + " = ?;";
 
         static final String SELECT_SUBJECT =
                 "SELECT " +
-                        SUBJECT_DESCRIPTION_SUBJECT_ID + ", " +
-                        SUBJECT_DESCRIPTION_SUBJECT_NAME + ", " +
-                        SUBJECT_DESCRIPTION_LANGUAGE_ID + " " +
-                "FROM " + TABLE_SUBJECT_DESCRIPTION + " " +
-                "WHERE " + SUBJECT_DESCRIPTION_SUBJECT_ID + " = ? " +
-                "AND " + SUBJECT_DESCRIPTION_LANGUAGE_ID + " = ?;";
+                        SUBJECT_ID + ", " +
+                        SUBJECT_NAME + " " +
+                "FROM " + TABLE_SUBJECT + " " +
+                "WHERE " + SUBJECT_ID + " = ?;";
+
+        static final String SELECT_SUBJECT_TRANSLATION =
+                "SELECT " +
+                        SUBJECT_TRANSLATION_SUBJECT_ID + ", " +
+                        SUBJECT_TRANSLATION_LANGUAGE_ID + ", " +
+                        SUBJECT_TRANSLATION_SUBJECT_NAME + " " +
+                "FROM " + TABLE_SUBJECT_TRANSLATION + " " +
+                "WHERE " + SUBJECT_TRANSLATION_SUBJECT_ID + " = ? " +
+                "AND " + SUBJECT_TRANSLATION_LANGUAGE_ID + " = ?;";
 
         static final String SELECT_ALL =
                 "SELECT " +
-                        SUBJECT_DESCRIPTION_SUBJECT_ID + ", " +
-                        SUBJECT_DESCRIPTION_SUBJECT_NAME + ", " +
-                        SUBJECT_DESCRIPTION_LANGUAGE_ID + " " +
-                "FROM " + TABLE_SUBJECT_DESCRIPTION + " " +
-                "WHERE " + SUBJECT_DESCRIPTION_LANGUAGE_ID + " = ?;";
+                        SUBJECT_ID + ", " +
+                        SUBJECT_NAME + " " +
+                "FROM " + TABLE_SUBJECT + ";";
     }
 }

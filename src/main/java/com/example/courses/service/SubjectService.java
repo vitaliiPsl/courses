@@ -2,7 +2,6 @@ package com.example.courses.service;
 
 import com.example.courses.persistence.DAOFactory;
 import com.example.courses.persistence.SubjectDAO;
-import com.example.courses.persistence.entity.Language;
 import com.example.courses.persistence.entity.Subject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,7 +9,6 @@ import org.apache.logging.log4j.Logger;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 
 public class SubjectService {
     private final DAOFactory daoFactory;
@@ -23,29 +21,26 @@ public class SubjectService {
         subjectDAO = daoFactory.getSubjectDao();
     }
 
+    public SubjectService(DAOFactory daoFactory, SubjectDAO subjectDAO){
+        this.daoFactory = daoFactory;
+        this.subjectDAO = subjectDAO;
+    }
+
     /**
      * Saves new subject
-     * @param subjectTranslations - map of subject translations
+     * @param subject - subject to save
      * @return generated id
      * @throws SQLException
      */
-    public long saveSubject(Map<Language, String> subjectTranslations) throws SQLException {
-        logger.info("Save subject: " + subjectTranslations);
+    public long saveSubject(Subject subject) throws SQLException {
+        logger.info("Save subject: " + subject);
 
         long subjectId;
         Connection connection = null;
 
         try{
             connection = daoFactory.getConnection();
-
-            Subject subject = new Subject();
             subjectId = subjectDAO.saveSubject(connection, subject);
-
-            for(var entry: subjectTranslations.entrySet()){
-                subject.setLanguageId(entry.getKey().getId());
-                subject.setSubject(entry.getValue());
-                subjectDAO.saveSubjectDescription(connection, subject);
-            }
 
             connection.commit();
         } catch (SQLException e) {
@@ -56,6 +51,23 @@ public class SubjectService {
         }
 
         return subjectId;
+    }
+
+    public void saveSubjectTranslation(Subject subject) throws SQLException {
+        logger.info("Save subject translation: " + subject);
+
+        Connection connection = null;
+
+        try{
+            connection = daoFactory.getConnection();
+            subjectDAO.saveSubjectTranslation(connection, subject);
+            connection.commit();
+        } catch (SQLException e) {
+            DAOFactory.rollback(connection);
+            throw e;
+        } finally {
+            DAOFactory.closeResource(connection);
+        }
     }
 
     /**

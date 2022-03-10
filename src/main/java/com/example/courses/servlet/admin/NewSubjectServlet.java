@@ -2,6 +2,7 @@ package com.example.courses.servlet.admin;
 
 import com.example.courses.exception.ServerErrorException;
 import com.example.courses.persistence.entity.Language;
+import com.example.courses.persistence.entity.Subject;
 import com.example.courses.service.LanguageService;
 import com.example.courses.service.SubjectService;
 import org.apache.logging.log4j.LogManager;
@@ -12,6 +13,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -27,10 +29,13 @@ public class NewSubjectServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        String lang = (String) session.getAttribute("lang");
         List<Language> languageList = null;
 
         try{
-            languageList = languageService.getAllLanguages();
+            Language locale = languageService.getLanguageByCode(lang);
+            languageList = languageService.getAllLanguages(locale.getId());
         } catch (SQLException e) {
             logger.error("SQLException", e);
             throw new ServerErrorException();
@@ -42,24 +47,35 @@ public class NewSubjectServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        String lang = (String) session.getAttribute("lang");
         List<Language> languageList = null;
 
         try{
-            languageList = languageService.getAllLanguages();
-
-            Map<Language, String> subjectTranslations = new HashMap<>();
-            for(Language lang: languageList){
-                String subjectTranslation = request.getParameter("subject_" + lang.getLanguageCode());
-                if(subjectTranslation != null && !subjectTranslation.isBlank()){
-                    subjectTranslations.put(lang, subjectTranslation);
-                } else {
-                    request.setAttribute("error", "You have to provide translation in all available languages");
-                    this.doGet(request, response);
-                    return;
-                }
+            String subjectName = request.getParameter("subject_en");
+            if(subjectName == null || subjectName.isBlank()){
+                request.setAttribute("error", "You have to provide subject base name(en)");
+                this.doGet(request, response);
+                return;
             }
 
-            subjectService.saveSubject(subjectTranslations);
+            // save subject base name
+            Subject subject = new Subject();
+            subject.setSubject(subjectName);
+            subjectService.saveSubject(subject);
+
+            // save translations
+            Language locale = languageService.getLanguageByCode(lang);
+            languageList = languageService.getAllLanguages(locale.getId());
+
+            for(Language language: languageList){
+                String subjectTranslation = request.getParameter("subject_" + language.getLanguageCode());
+                if(subjectTranslation != null && !subjectTranslation.isBlank()){
+                    subject.setSubject(subjectTranslation);
+                    subject.setLanguageId(language.getId());
+                    subjectService.saveSubjectTranslation(subject);
+                }
+            }
         } catch (SQLException e) {
             logger.error("SQLException while saving subject", e);
             throw new ServerErrorException();

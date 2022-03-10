@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface SubjectDAO {
     long saveSubject(Connection connection, Subject subject) throws SQLException;
-    void saveSubjectDescription(Connection connection, Subject subject) throws SQLException;
+    void saveSubjectTranslation(Connection connection, Subject subject) throws SQLException;
 
     void deleteSubjectById(Connection connection, long id) throws SQLException;
     void updateSubjectDescription(Connection connection, Subject subject) throws SQLException;

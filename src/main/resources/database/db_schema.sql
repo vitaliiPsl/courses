@@ -30,9 +30,28 @@ DROP TABLE IF EXISTS language CASCADE;
 CREATE TABLE language
 (
     id   BIGSERIAL,
-    name varchar(50) NOT NULL,
-    code varchar(10) NOT NULL,
+    name VARCHAR(50) NOT NULL,
+    code VARCHAR(10) NOT NULL,
     CONSTRAINT pk_language PRIMARY KEY (id)
+);
+
+
+DROP TABLE IF EXISTS language_translation CASCADE;
+CREATE TABLE language_translation
+(
+    language_id             BIGINT      NOT NULL,
+    translation_language_id BIGINT      NOT NULL,
+    name_translation        VARCHAR(50) NOT NULL,
+    code_translation        VARCHAR(10) NOT NULL,
+    CONSTRAINT pk_language_translation PRIMARY KEY (language_id, translation_language_id),
+    CONSTRAINT fk_language_translation_language FOREIGN KEY (language_id)
+        REFERENCES language (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    CONSTRAINT fk_language_translation_language_translation FOREIGN KEY (translation_language_id)
+        REFERENCES language (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 );
 
 DROP TABLE IF EXISTS course CASCADE;
@@ -80,22 +99,23 @@ CREATE TABLE student_course
 DROP TABLE IF EXISTS subject CASCADE;
 CREATE TABLE subject
 (
-    id BIGSERIAL,
+    id   BIGSERIAL,
+    name VARCHAR(50),
     CONSTRAINT pk_subject PRIMARY KEY (id)
 );
 
-DROP TABLE IF EXISTS subject_description CASCADE;
-CREATE TABLE subject_description
+DROP TABLE IF EXISTS subject_translation CASCADE;
+CREATE TABLE subject_translation
 (
-    subject_id  BIGINT,
-    language_id BIGINT,
-    name        varchar(50),
-    CONSTRAINT pk_subject_description PRIMARY KEY (subject_id, language_id),
-    CONSTRAINT fk_subject_description_subject FOREIGN KEY (subject_id)
+    subject_id       BIGINT,
+    language_id      BIGINT,
+    name_translation VARCHAR(50),
+    CONSTRAINT pk_subject_translation PRIMARY KEY (subject_id, language_id),
+    CONSTRAINT fk_subject_translation_subject FOREIGN KEY (subject_id)
         REFERENCES subject (id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
-    CONSTRAINT fk_subject_description_language FOREIGN KEY (language_id)
+    CONSTRAINT fk_subject_translation_language FOREIGN KEY (language_id)
         REFERENCES language (id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
@@ -125,6 +145,12 @@ VALUES ('admin'),
        ('student');
 
 -- insert languages
-INSERT INTO language(name, code)
-VALUES ('english', 'en'),
-       ('українська', 'uk');
+INSERT INTO language(id, name, code)
+VALUES (1, 'english', 'en'),
+       (2, 'ukrainian', 'uk');
+
+INSERT INTO language_translation(language_id, translation_language_id, name_translation, code_translation)
+VALUES (1, 1, 'english', 'en'),
+       (1, 2, 'англійська', 'англ'),
+       (2, 1, 'ukrainian', 'uk'),
+       (2, 2, 'українська', 'укр');
