@@ -32,7 +32,6 @@ public class PostgresLanguageDAO implements LanguageDAO {
 
             statement.setString(1, language.getName());
             statement.setString(2, language.getLanguageCode());
-            statement.setBoolean(3, language.isDefault());
             statement.executeUpdate();
 
             generatedId = DAOUtils.getGeneratedId(statement);
@@ -59,7 +58,7 @@ public class PostgresLanguageDAO implements LanguageDAO {
     }
 
     @Override
-    public Language findLanguageById(Connection connection, long id) throws SQLException {
+    public Language findLanguageById(Connection connection, long id, long translationLanguageId) throws SQLException {
         logger.trace("Find language by id: " + id);
 
         Language language = null;
@@ -72,29 +71,11 @@ public class PostgresLanguageDAO implements LanguageDAO {
             resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 language = parseLanguage(resultSet);
-            }
-        } finally {
-            DAOFactory.closeResource(resultSet);
-            DAOFactory.closeResource(statement);
-        }
 
-        return language;
-    }
-
-    @Override
-    public Language findLanguageByName(Connection connection, String name) throws SQLException {
-        logger.trace("Find language by name: " + name);
-        Language language = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-
-        try {
-            statement = connection.prepareStatement(LanguageDAOConstants.SELECT_LANGUAGE_BY_NAME);
-            statement.setString(1, name);
-
-            resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                language = parseLanguage(resultSet);
+                Language translation = findLanguageTranslation(connection, language.getId(), translationLanguageId);
+                if(translation != null){
+                    language.setName(translation.getName());
+                }
             }
         } finally {
             DAOFactory.closeResource(resultSet);
@@ -128,29 +109,7 @@ public class PostgresLanguageDAO implements LanguageDAO {
     }
 
     @Override
-    public Language findDefaultLanguage(Connection connection) throws SQLException {
-        logger.trace("Find default language");
-        Language language = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-
-        try {
-            statement = connection.prepareStatement(LanguageDAOConstants.SELECT_DEFAULT);
-
-            resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                language = parseLanguage(resultSet);
-            }
-        } finally {
-            DAOFactory.closeResource(resultSet);
-            DAOFactory.closeResource(statement);
-        }
-
-        return language;
-    }
-
-    @Override
-    public List<Language> findAll(Connection connection) throws SQLException {
+    public List<Language> findAll(Connection connection, long translationLanguageId) throws SQLException {
         logger.trace("Find all languages");
 
         List<Language> languageList = new ArrayList<>();
@@ -162,7 +121,14 @@ public class PostgresLanguageDAO implements LanguageDAO {
             resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                languageList.add(parseLanguage(resultSet));
+                Language language = parseLanguage(resultSet);
+
+                Language translation = findLanguageTranslation(connection, language.getId(), translationLanguageId);
+                if(translation != null){
+                    language.setName(translation.getName());
+                }
+
+                languageList.add(language);
             }
         } finally {
             DAOFactory.closeResource(resultSet);
@@ -170,6 +136,29 @@ public class PostgresLanguageDAO implements LanguageDAO {
         }
 
         return languageList;
+    }
+
+    private Language findLanguageTranslation(Connection connection, long languageId, long translationLanguageId) throws SQLException {
+        Language language = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        try{
+            statement = connection.prepareStatement(LanguageDAOConstants.SELECT_LANGUAGE_TRANSLATION);
+            statement.setLong(1, languageId);
+            statement.setLong(2, translationLanguageId);
+            resultSet = statement.executeQuery();
+
+            if(resultSet.next()){
+                language = new Language();
+                language.setName(resultSet.getString(LanguageDAOConstants.LANGUAGE_TRANSLATION_NAME_TRANSLATION));
+            }
+        } finally {
+            DAOFactory.closeResource(resultSet);
+            DAOFactory.closeResource(statement);
+        }
+
+        return language;
     }
 
     private Language parseLanguage(ResultSet resultSet) throws SQLException {
@@ -180,7 +169,6 @@ public class PostgresLanguageDAO implements LanguageDAO {
             language.setId(resultSet.getLong(LanguageDAOConstants.LANGUAGE_ID));
             language.setName(resultSet.getString(LanguageDAOConstants.LANGUAGE_NAME));
             language.setLanguageCode(resultSet.getString(LanguageDAOConstants.LANGUAGE_CODE));
-            language.setDefault(resultSet.getBoolean(LanguageDAOConstants.LANGUAGE_IS_DEFAULT));
         } catch (SQLException e){
             logger.error("Error while parsing language", e);
             throw e;
@@ -191,18 +179,23 @@ public class PostgresLanguageDAO implements LanguageDAO {
 
     private static class LanguageDAOConstants {
         static final String TABLE_LANGUAGE = "language";
+        static final String TABLE_LANGUAGE_TRANSLATION = "language_translation";
+
         static final String LANGUAGE_ID = "id";
         static final String LANGUAGE_NAME = "name";
         static final String LANGUAGE_CODE = "code";
-        static final String LANGUAGE_IS_DEFAULT = "is_default";
+
+        static final String LANGUAGE_TRANSLATION_LANGUAGE_ID = "language_id";
+        static final String LANGUAGE_TRANSLATION_TRANSLATION_LANGUAGE_ID = "translation_language_id";
+        static final String LANGUAGE_TRANSLATION_NAME_TRANSLATION = "name_translation";
+        static final String LANGUAGE_TRANSLATION_CODE_TRANSLATION = "code_translation";
 
         static final String INSERT_LANGUAGE =
                 "INSERT INTO " +
                         TABLE_LANGUAGE + "(" +
                         LANGUAGE_NAME + ", " +
-                        LANGUAGE_CODE + ", " +
-                        LANGUAGE_IS_DEFAULT +
-                        ") VALUES(?, ?, ?);";
+                        LANGUAGE_CODE + " " +
+                        ") VALUES(?, ?);";
 
         static final String DELETE_LANGUAGE_BY_ID =
                 "DELETE FROM " +
@@ -212,8 +205,7 @@ public class PostgresLanguageDAO implements LanguageDAO {
         static final String SELECT_LANGUAGE_PROPERTIES =
                 LANGUAGE_ID + ", " +
                 LANGUAGE_NAME + ", " +
-                LANGUAGE_CODE + ", " +
-                LANGUAGE_IS_DEFAULT;
+                LANGUAGE_CODE;
 
         static final String SELECT_LANGUAGE_BY_ID =
                 "SELECT " +
@@ -221,23 +213,20 @@ public class PostgresLanguageDAO implements LanguageDAO {
                         "FROM " + TABLE_LANGUAGE + " " +
                         "WHERE " + LANGUAGE_ID + " = ?;";
 
-        static final String SELECT_LANGUAGE_BY_NAME =
-                "SELECT " +
-                        SELECT_LANGUAGE_PROPERTIES + " " +
-                        "FROM " + TABLE_LANGUAGE + " " +
-                        "WHERE " + LANGUAGE_NAME + " ilike ?;";
-
         static final String SELECT_LANGUAGE_BY_CODE =
                 "SELECT " +
                         SELECT_LANGUAGE_PROPERTIES + " " +
                         "FROM " + TABLE_LANGUAGE + " " +
                         "WHERE " + LANGUAGE_CODE + " ilike ?;";
 
-        static final String SELECT_DEFAULT =
+        static final String SELECT_LANGUAGE_TRANSLATION =
                 "SELECT " +
-                        SELECT_LANGUAGE_PROPERTIES + " " +
-                        "FROM " + TABLE_LANGUAGE + " " +
-                        "WHERE " + LANGUAGE_IS_DEFAULT + " = true;";
+                        LANGUAGE_TRANSLATION_LANGUAGE_ID + ", " +
+                        LANGUAGE_TRANSLATION_TRANSLATION_LANGUAGE_ID + ", " +
+                        LANGUAGE_TRANSLATION_NAME_TRANSLATION + " " +
+                "FROM " + TABLE_LANGUAGE_TRANSLATION + " " +
+                "WHERE " + LANGUAGE_TRANSLATION_LANGUAGE_ID + " = ?" +
+                "AND " + LANGUAGE_TRANSLATION_TRANSLATION_LANGUAGE_ID + " = ?;";
 
         static final String SELECT_ALL =
                 "SELECT " +

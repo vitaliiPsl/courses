@@ -63,8 +63,8 @@ public class EditCourseServlet extends HttpServlet {
             long id = Long.parseLong(courseId);
             course = courseService.getCourseById(id);
             teachers = userService.getUsersByRole(Role.TEACHER);
-            languages = languageService.getAllLanguages();
             Language locale = languageService.getLanguageByCode(lang);
+            languages = languageService.getAllLanguages(locale.getId());
             subjects = subjectService.getAll(locale.getId());
         } catch (SQLException e) {
             logger.error("SQLException while getting course", e);

@@ -27,7 +27,7 @@ public class LanguageService {
      * @return language or null if it doesn't exist
      * @throws SQLException
      */
-    public Language getLanguageById(long languageId) throws SQLException {
+    public Language getLanguageById(long languageId, long translationLanguageId) throws SQLException {
         logger.trace("Get language by id: " + languageId);
 
         Language language;
@@ -35,7 +35,7 @@ public class LanguageService {
 
         try{
             connection = daoFactory.getConnection();
-            language = languageDAO.findLanguageById(connection, languageId);
+            language = languageDAO.findLanguageById(connection, languageId, translationLanguageId);
             connection.commit();
         } catch (SQLException e) {
             throw e;
@@ -77,7 +77,7 @@ public class LanguageService {
      * @return list of all languages
      * @throws SQLException
      */
-    public List<Language> getAllLanguages() throws SQLException {
+    public List<Language> getAllLanguages(long translationLanguageId) throws SQLException {
         logger.trace("Get all languages");
 
         List<Language> languageList;
@@ -85,7 +85,7 @@ public class LanguageService {
 
         try{
             connection = daoFactory.getConnection();
-            languageList = languageDAO.findAll(connection);
+            languageList = languageDAO.findAll(connection, translationLanguageId);
 
             connection.commit();
         } catch (SQLException e) {

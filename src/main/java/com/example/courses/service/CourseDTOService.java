@@ -94,7 +94,7 @@ public class CourseDTOService {
 
         Language locale = languageDAO.findLanguageByCode(connection, languageCode);
 
-        Language courseLanguage = languageDAO.findLanguageById(connection, course.getLanguageId());
+        Language courseLanguage = languageDAO.findLanguageById(connection, course.getLanguageId(), locale.getId());
         Subject subject = subjectDAO.findSubject(connection, course.getSubjectId(), locale.getId());
         User teacher = userDAO.findUser(connection, course.getTeacherId());
         List<User> students = getStudents(connection, course);

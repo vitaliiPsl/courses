@@ -50,9 +50,8 @@ public class NewCourseServlet extends HttpServlet {
 
         try {
             teachers = userService.getUsersByRole(Role.TEACHER);
-            languages = languageService.getAllLanguages();
-
             Language locale = languageService.getLanguageByCode(lang);
+            languages = languageService.getAllLanguages(locale.getId());
             subjects = subjectService.getAll(locale.getId());
         } catch (SQLException e){
             logger.error("SQLException while retrieving data for new course page", e);

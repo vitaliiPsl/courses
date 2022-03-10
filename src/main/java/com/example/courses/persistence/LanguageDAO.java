@@ -10,10 +10,8 @@ public interface LanguageDAO {
     long saveLanguage(Connection connection, Language language) throws SQLException;
     void deleteLanguageById(Connection connection, long id) throws SQLException;
 
-    Language findLanguageById(Connection connection, long id) throws SQLException;
-    Language findLanguageByName(Connection connection, String name) throws SQLException;
+    Language findLanguageById(Connection connection, long id, long translationLanguageId) throws SQLException;
     Language findLanguageByCode(Connection connection, String code) throws SQLException;
-    Language findDefaultLanguage(Connection connection) throws SQLException;
 
-    List<Language> findAll(Connection connection) throws SQLException;
+    List<Language> findAll(Connection connection, long translationLanguageId) throws SQLException;
 }
