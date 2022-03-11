@@ -10,10 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CourseFilterService {
@@ -36,11 +33,11 @@ public class CourseFilterService {
      * @return map of available filters
      * @throws SQLException
      */
-    public Map<String, List<String>> getAvailableFilters(String languageCode) throws SQLException {
+    public Map<String, List<?>> getAvailableFilters(String languageCode) throws SQLException {
         logger.trace("Get available filters");
         logger.debug("Get available filters. Localization language: " + languageCode);
 
-        Map<String, List<String>> filters = new HashMap<>();
+        Map<String, List<?>> filters = new HashMap<>();
 
         List<Course> courseList;
         List<CourseDTO> courseDTOList;
@@ -53,10 +50,10 @@ public class CourseFilterService {
             throw e;
         }
 
-        List<String> subjects = getSubjects(courseDTOList);
+        List<Subject> subjects = getSubjects(courseDTOList);
         filters.put(SUBJECT_FILTER, subjects);
 
-        List<String> teachers = getTeachers(courseDTOList);
+        List<User> teachers = getTeachers(courseDTOList);
         filters.put(TEACHER_FILTER, teachers);
 
         return filters;
@@ -67,7 +64,7 @@ public class CourseFilterService {
      * @param courseDTOList - list courseDTO objects to filter
      * @param filters - filters selected by user
      */
-    public void applyFilters(List<CourseDTO> courseDTOList, Map<String, List<String>> filters) {
+    public void applyFilters(List<CourseDTO> courseDTOList, Map<String, List<Long>> filters) {
         logger.trace("ApplyFilters to courseDTOList: " + courseDTOList);
         logger.info("Applying filters: " + filters);
 
@@ -83,31 +80,29 @@ public class CourseFilterService {
         logger.debug("After applying filters: " + courseDTOList);
     }
 
-    private static void filterBySubject(List<CourseDTO> courseDTOList, List<String> subjectList) {
+    private static void filterBySubject(List<CourseDTO> courseDTOList, List<Long> subjectList) {
         logger.trace("Filter by subject");
-        courseDTOList.removeIf(courseDTO -> !subjectList.contains(courseDTO.getSubject().getSubject()));
+        courseDTOList.removeIf(courseDTO -> !subjectList.contains(courseDTO.getSubject().getId()));
     }
 
-    private static void filterByTeacher(List<CourseDTO> courseDTOList, List<String> teacherList) {
+    private static void filterByTeacher(List<CourseDTO> courseDTOList, List<Long> teacherList) {
         logger.trace("Filter by teacher");
-        courseDTOList.removeIf(courseDTO -> !teacherList.contains(courseDTO.getTeacher().getFullName()));
+        courseDTOList.removeIf(courseDTO -> !teacherList.contains(courseDTO.getTeacher().getId()));
     }
 
-    private static List<String> getSubjects(List<CourseDTO> courseDTOList) {
+    private static List<Subject> getSubjects(List<CourseDTO> courseDTOList) {
         logger.trace("Get subject");
         return courseDTOList.stream()
                 .map(CourseDTO::getSubject)
-                .map(Subject::getSubject)
-                .distinct().sorted()
+                .distinct().sorted(Comparator.comparing(Subject::getSubject))
                 .collect(Collectors.toList());
     }
 
-    private static List<String> getTeachers(List<CourseDTO> courseDTOList) {
+    private static List<User> getTeachers(List<CourseDTO> courseDTOList) {
         logger.trace("Get teachers");
         return courseDTOList.stream()
                 .map(CourseDTO::getTeacher)
-                .map(User::getFullName)
-                .distinct().sorted()
+                .distinct().sorted(Comparator.comparing(User::getFullName))
                 .collect(Collectors.toList());
     }
 }

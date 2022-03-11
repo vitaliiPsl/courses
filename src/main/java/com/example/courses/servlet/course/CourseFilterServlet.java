@@ -21,16 +21,18 @@ public class CourseFilterServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Get filters stored in session
         HttpSession session = request.getSession();
-        Map<String, List<String>> sessionFilters = (Map<String, List<String>>) session.getAttribute("filters");
+        Map<String, List<Long>> sessionFilters = (Map<String, List<Long>>) session.getAttribute("filters");
         logger.debug("Filters stored in session: " + sessionFilters);
 
         // Get applied / removed filterKey and option and redirect to course list
         String subjectOption = request.getParameter("subject");
         String teacherOption = request.getParameter("teacher");
         if(subjectOption != null){
-            toggleOptions(sessionFilters, "subject", subjectOption);
+            long subject = Long.parseLong(subjectOption);
+            toggleOptions(sessionFilters, "subject", subject);
         } else if(teacherOption != null){
-            toggleOptions(sessionFilters, "teacher", teacherOption);
+            long teacher = Long.parseLong(teacherOption);
+            toggleOptions(sessionFilters, "teacher", teacher);
         }
 
         // save appliedFilters in session
@@ -39,8 +41,8 @@ public class CourseFilterServlet extends HttpServlet {
     }
 
     // Set filter option or remove if already exists
-    private void toggleOptions(Map<String, List<String>> sessionFilters, String filterKey, String filterOption) {
-        List<String> appliedOptions = sessionFilters.get(filterKey);
+    private void toggleOptions(Map<String, List<Long>> sessionFilters, String filterKey, long filterOption) {
+        List<Long> appliedOptions = sessionFilters.get(filterKey);
         if(appliedOptions.contains(filterOption)){
            appliedOptions.remove(filterOption);
         } else {

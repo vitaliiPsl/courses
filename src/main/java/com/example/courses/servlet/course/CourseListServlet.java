@@ -51,7 +51,7 @@ public class CourseListServlet extends HttpServlet {
             String query = request.getParameter("query");
 
             if (query != null && !query.trim().isEmpty()) {
-                courseList = courseService.getCoursesBySearchQuery(query);
+                courseList = courseService.getBySearchQuery(query);
                 request.setAttribute("query", query);
             } else {
                 if (user == null || user.getRole().equals(Role.STUDENT)) {
@@ -80,10 +80,10 @@ public class CourseListServlet extends HttpServlet {
 
     private void filter(HttpServletRequest request, HttpSession session, String lang, List<CourseDTO> courseDTOList) throws SQLException {
         // get available filters
-        Map<String, List<String>> availableFilters = courseFilterService.getAvailableFilters(lang);
+        Map<String, List<?>> availableFilters = courseFilterService.getAvailableFilters(lang);
 
         // get filters from session and apply them
-        Map<String, List<String>> requestFilters = (Map<String, List<String>>) session.getAttribute("filters");
+        Map<String, List<Long>> requestFilters = (Map<String, List<Long>>) session.getAttribute("filters");
         courseFilterService.applyFilters(courseDTOList, requestFilters);
 
         request.setAttribute("filters", availableFilters);

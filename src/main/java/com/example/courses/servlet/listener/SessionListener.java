@@ -32,7 +32,7 @@ public class SessionListener implements HttpSessionListener {
     }
 
     private void addSessionCourseFiltersMap(HttpSession session){
-        Map<String, List<String>> filters = new HashMap<>();
+        Map<String, List<Long>> filters = new HashMap<>();
         filters.put("subject", new ArrayList<>());
         filters.put("teacher", new ArrayList<>());
         session.setAttribute("filters", filters);

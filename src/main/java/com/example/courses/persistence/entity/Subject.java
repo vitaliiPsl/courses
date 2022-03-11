@@ -1,5 +1,7 @@
 package com.example.courses.persistence.entity;
 
+import java.util.Objects;
+
 public class Subject {
     long id;
     String subject;
@@ -36,6 +38,19 @@ public class Subject {
 
     public void setLanguageId(long languageId) {
         this.languageId = languageId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Subject subject = (Subject) o;
+        return id == subject.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     @Override

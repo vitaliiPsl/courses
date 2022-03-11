@@ -61,18 +61,18 @@
                                 <div class="arrow"></div>
                             </div>
                             <div class="dropdown-menu filter-menu hidden">
-                                <c:forEach var="value" items="${filter}">
+                                <c:forEach var="subject" items="${filter}">
                                     <c:set var="checked"
-                                           value="${sessionScope.applied_filters.get('subject').contains(value)}"/>
+                                           value="${sessionScope.applied_filters.get('subject').contains(subject.getId())}"/>
                                     <div class="filter-option option">
                                         <form class="option-form"
                                               action="${pageContext.request.contextPath}/courses/filter" method="post">
 
                                             <input class="filter-checkbox" type="checkbox" name="subject"
-                                                   value="<c:out value="${value}"/>"
+                                                   value="<c:out value="${subject.getId()}"/>"
                                                 ${checked ? 'checked' : ''}/>
                                             <label>
-                                                <c:out value="${value}"/>
+                                                <c:out value="${subject.getSubject()}"/>
                                             </label>
                                         </form>
                                     </div>
@@ -88,17 +88,17 @@
                                 <div class="arrow"></div>
                             </div>
                             <div class="dropdown-menu filter-menu hidden">
-                                <c:forEach var="value" items="${filter}">
+                                <c:forEach var="teacher" items="${filter}">
                                     <c:set var="checked"
-                                           value="${sessionScope.applied_filters.get('teacher').contains(value)}"/>
+                                           value="${sessionScope.applied_filters.get('teacher').contains(teacher.getId())}"/>
                                     <div class="filter-option option">
                                         <form class="option-form"
                                               action="${pageContext.request.contextPath}/courses/filter" method="post">
                                             <input class="filter-checkbox" type="checkbox" name="teacher"
-                                                   value="<c:out value="${value}"/>"
+                                                   value="<c:out value="${teacher.getId()}"/>"
                                                 ${checked ? 'checked' : ''}/>
                                             <label>
-                                                <c:out value="${value}"/>
+                                                <c:out value="${teacher.getFullName()}"/>
                                             </label>
                                         </form>
                                     </div>
