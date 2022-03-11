@@ -2,7 +2,11 @@ package com.example.courses.servlet.teacher;
 
 import com.example.courses.exception.NotFoundException;
 import com.example.courses.exception.ServerErrorException;
+import com.example.courses.persistence.entity.Course;
+import com.example.courses.persistence.entity.CourseStatus;
 import com.example.courses.persistence.entity.StudentCourse;
+import com.example.courses.persistence.entity.User;
+import com.example.courses.service.CourseService;
 import com.example.courses.service.StudentCourseService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,12 +16,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
 @WebServlet("/teacher/course/score")
 public class ScoresServlet extends HttpServlet {
+    private static final CourseService courseService = new CourseService();
     private static final StudentCourseService studentCourseService = new StudentCourseService();
 
     private static final Logger logger = LogManager.getLogger(ScoresServlet.class.getName());
@@ -25,6 +31,8 @@ public class ScoresServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.trace("Save students scores: post");
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
         String courseId = request.getParameter("course_id");
 
         if(courseId == null) {
@@ -35,15 +43,26 @@ public class ScoresServlet extends HttpServlet {
         logger.debug("Course id: " + courseId);
         try {
             long id = Long.parseLong(courseId);
-            List<StudentCourse> studentCourseList = studentCourseService.getStudentsByCourseId(id);
+            Course course = courseService.getCourseById(id);
 
-            for (StudentCourse studentCourse : studentCourseList) {
-                String studentScore = request.getParameter("score_" + studentCourse.getStudentId());
-                if (studentScore != null && !studentScore.isBlank()) {
-                    studentCourse.setScore(Integer.parseInt(studentScore));
+            // check if course exists and in progress
+            if(course != null
+                    && course.getCourseStatus().equals(CourseStatus.IN_PROGRESS)
+                    && course.getTeacherId() == user.getId())
+            {
+                List<StudentCourse> studentCourseList = studentCourseService.getStudentsByCourseId(id);
+
+                for (StudentCourse studentCourse : studentCourseList) {
+                    String studentScore = request.getParameter("score_" + studentCourse.getStudentId());
+                    if (studentScore != null && !studentScore.isBlank()) {
+                        int score = Integer.parseInt(studentScore);
+                        if(score <= course.getMaxScore()) {
+                            studentCourse.setScore(score);
+                        }
+                    }
                 }
+                studentCourseService.updateStudentCourses(studentCourseList);
             }
-            studentCourseService.updateStudentCourses(studentCourseList);
         } catch (SQLException e) {
             logger.error("SQLException while updating scores", e);
             throw new ServerErrorException();
