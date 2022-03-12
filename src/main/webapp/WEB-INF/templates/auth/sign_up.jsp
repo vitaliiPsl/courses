@@ -45,9 +45,10 @@
                 </div>
                 <div class="form-row">
                     <input id="repeat-password" type="password" placeholder="<fmt:message key="label.repeat_password"/>" class="form-input" required/>
+                    <p class="password-message hidden"><fmt:message key="label.repeat_password_message"/></p>
                 </div>
 
-                <button class="form-submit"><fmt:message key="label.sign_up"/></button>
+                <button type="submit" class="form-submit"><fmt:message key="label.sign_up"/></button>
             </form>
 
             <div class="question-block">
@@ -60,7 +61,7 @@
 </main>
 
 <footer></footer>
-<%--<script src="${pageContext.request.contextPath}/static/js/confirm_password.js"></script>--%>
+<script src="${pageContext.request.contextPath}/static/js/confirm_password.js"></script>
 </body>
 
 </html>

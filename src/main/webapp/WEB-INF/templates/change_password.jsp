@@ -35,14 +35,15 @@
         </div>
 
         <div class="form-row">
-          <input type="password" name="password" placeholder="<fmt:message key="label.form.new_password"/>" class="form-input" required/>
+          <input id="password" type="password" name="password" placeholder="<fmt:message key="label.form.new_password"/>" class="form-input" required/>
         </div>
 
         <div class="form-row">
-          <input type="password" placeholder="<fmt:message key="label.form.repeat_password"/>" class="form-input" required/>
+          <input id="repeat-password" type="password" placeholder="<fmt:message key="label.form.repeat_password"/>" class="form-input" required/>
+          <p class="password-message hidden"><fmt:message key="label.form.repeat_password_message"/></p>
         </div>
 
-        <button class="form-submit">
+        <button class="form-submit" type="submit">
           <fmt:message key="label.form.btn_save"/>
         </button>
       </form>
@@ -55,6 +56,7 @@
 </main>
 
 <footer></footer>
+<script src="${pageContext.request.contextPath}/static/js/confirm_password.js"></script>
 </body>
 
 </html>

@@ -34,6 +34,14 @@ main .container{
     gap: 8px;
 }
 
+.password-message{
+    color: red;
+}
+
+.password-message.hidden{
+    display: none;
+}
+
 .form-submit{
     margin-top: 16px;
 }

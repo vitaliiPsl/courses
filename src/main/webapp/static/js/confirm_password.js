@@ -1,13 +1,23 @@
 const form = document.querySelector("form");
 const passwordInput = document.querySelector("#password");
 const repeatPasswordInput = document.querySelector("#repeat-password");
+const repeatPasswordErrorMessage = document.querySelector(".password-message");
 
-const submitBtn = document.querySelector(".form-submit");
+repeatPasswordInput.addEventListener("keyup", () => {
+    if(repeatPasswordInput.value !== passwordInput.value){
+        repeatPasswordInput.style.borderColor = "red";
+    } else {
+        repeatPasswordInput.style.borderColor = "green";
+        repeatPasswordErrorMessage.classList.add("hidden");
+    }
+});
 
-submitBtn.addEventListener("click", () => {
-    if(passwordInput !== repeatPasswordInput){
-        alert("Password don't match");
+form.onsubmit = function(event) {
+    event.preventDefault();
+
+    if (passwordInput.value !== repeatPasswordInput.value) {
+        repeatPasswordErrorMessage.classList.remove("hidden");
     } else {
         form.submit();
     }
-});
+}
