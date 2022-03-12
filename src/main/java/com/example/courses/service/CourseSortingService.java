@@ -5,17 +5,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class CourseSortingService {
-    public static final String SORT_BY_TITLE = "title";
-    public static final String SORT_BY_DURATION = "duration";
-    public static final String SORT_BY_NUMBER_OF_STUDENTS = "number of students";
+    public static final int SORT_BY_TITLE = 1;
+    public static final int SORT_BY_DURATION = 2;
+    public static final int SORT_BY_NUMBER_OF_STUDENTS = 3;
 
-    public static final String SORT_ORDER_ASCENDING = "ascending";
-    public static final String SORT_ORDER_DESCENDING = "descending";
+    public static final int SORT_ORDER_ASCENDING = 1;
+    public static final int SORT_ORDER_DESCENDING = 2;
 
     private static final Logger logger = LogManager.getLogger(CourseSortingService.class.getName());
 
@@ -23,12 +21,16 @@ public class CourseSortingService {
      * Sorting options
      * @return list of sorting options
      */
-    public List<String> getSortingOptions() {
+    public Map<Integer, String> getSortingOptions(String lang) {
         logger.trace("Get sorting options");
-        return Arrays.asList(
-                SORT_BY_TITLE,
-                SORT_BY_DURATION,
-                SORT_BY_NUMBER_OF_STUDENTS
+
+        Locale locale = new Locale(lang);
+        ResourceBundle bundle = ResourceBundle.getBundle("i18n.sorting.sorting", locale);
+
+        return Map.of(
+                SORT_BY_TITLE, bundle.getString("label.sorting_option.title"),
+                SORT_BY_DURATION, bundle.getString("label.sorting_option.duration"),
+                SORT_BY_NUMBER_OF_STUDENTS, bundle.getString("label.sorting_option.number_of_students")
         );
     }
 
@@ -36,11 +38,15 @@ public class CourseSortingService {
      * Sorting order options
      * @return list of sorting order options
      */
-    public List<String> getSortingOrderOptions() {
+    public Map<Integer, String> getSortingOrderOptions(String lang) {
         logger.trace("Get sorting order options");
-        return Arrays.asList(
-                SORT_ORDER_ASCENDING,
-                SORT_ORDER_DESCENDING
+
+        Locale locale = new Locale(lang);
+        ResourceBundle bundle = ResourceBundle.getBundle("i18n.sorting.sorting", locale);
+
+        return Map.of(
+                SORT_ORDER_ASCENDING, bundle.getString("label.sorting_order.ascending"),
+                SORT_ORDER_DESCENDING, bundle.getString("label.sorting_order.descending")
         );
     }
 
@@ -50,7 +56,7 @@ public class CourseSortingService {
      * @param sorting - selected sorting
      * @param order selected sorting order
      */
-    public void applySoring(List<CourseDTO> courseDTOList, String sorting, String order){
+    public void applySoring(List<CourseDTO> courseDTOList, int sorting, int order){
         logger.trace("Apply sorting to following courseDTO list: " + courseDTOList);
         logger.info("Applying sorting. Sorting: " + sorting + ", order: " + order);
 
@@ -70,10 +76,10 @@ public class CourseSortingService {
         logger.debug("After sorting: " + courseDTOList);
     }
 
-    private void sort(String order, List<CourseDTO> courseDTOList, Comparator<CourseDTO> comparator) {
+    private void sort(int order, List<CourseDTO> courseDTOList, Comparator<CourseDTO> comparator) {
         logger.trace("Sort. Course: " + courseDTOList + ". Order: " + order);
 
-        if(order.equals(SORT_ORDER_ASCENDING)) {
+        if(order == SORT_ORDER_ASCENDING) {
             logger.trace("Sort in ascending order");
             courseDTOList.sort(comparator);
         } else {

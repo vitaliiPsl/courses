@@ -125,14 +125,14 @@
                             </div>
                             <div class="dropdown-menu sort-menu hidden">
                                 <c:set var="appliedSorting" value="${sessionScope.sorting}"/>
-                                <c:forEach var="option" items="${requestScope.sorting_options}">
-                                    <c:set var="selected" value="${option.equals(appliedSorting)}"/>
+                                <c:forEach var="option" items="${requestScope.sorting_options.entrySet()}">
+                                    <c:set var="selected" value="${option.getKey() == appliedSorting}"/>
                                     <div class="option sort-option ${selected ? 'selected' : ''}">
                                         <form class="option-form"
                                               action="${pageContext.request.contextPath}/courses/sort" method="post">
                                             <input class="filter-checkbox" type="checkbox"
-                                                   name="sorting" value="<c:out value="${option}"/>" ${selected ? 'checked' : ''} hidden>
-                                            <label><c:out value="${option}"/></label>
+                                                   name="sorting" value="${option.getKey()}" ${selected ? 'checked' : ''} hidden>
+                                            <label><c:out value="${option.getValue()}"/></label>
                                         </form>
                                     </div>
                                 </c:forEach>
@@ -149,15 +149,15 @@
                             </div>
                             <div class="dropdown-menu sort-menu hidden">
                                 <c:set var="appliedOrder" value="${sessionScope.sorting_order}"/>
-                                <c:forEach var="option" items="${requestScope.sorting_order_options}">
+                                <c:forEach var="option" items="${requestScope.sorting_order_options.entrySet()}">
                                     <c:set var="selected"
-                                           value="${option.equals(appliedOrder)}"/>
+                                           value="${option.getKey() == appliedOrder}"/>
                                     <div class="option sort-option ${selected ? 'selected' : ''}">
                                         <form class="option-form"
                                               action="${pageContext.request.contextPath}/courses/sort" method="post">
                                             <input class="filter-checkbox" type="checkbox" name="sorting_order"
-                                                   value="<c:out value="${option}"/>" ${selected ? 'checked' : ''} hidden>
-                                            <label><c:out value="${option}"/></label>
+                                                   value="${option.getKey()}" ${selected ? 'checked' : ''} hidden>
+                                            <label><c:out value="${option.getValue()}"/></label>
                                         </form>
                                     </div>
                                 </c:forEach>

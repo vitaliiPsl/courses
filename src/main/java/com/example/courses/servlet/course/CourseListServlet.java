@@ -90,13 +90,15 @@ public class CourseListServlet extends HttpServlet {
     }
 
     private void sort(HttpServletRequest request, HttpSession session, List<CourseDTO> courseDTOList) {
+        String lang = (String) session.getAttribute("lang");
+
         // get sorting and order options
-        List<String> sortingOptions = courseSortingService.getSortingOptions();
-        List<String> sortingOrderOptions = courseSortingService.getSortingOrderOptions();
+        Map<Integer, String> sortingOptions = courseSortingService.getSortingOptions(lang);
+        Map<Integer, String> sortingOrderOptions = courseSortingService.getSortingOrderOptions(lang);
 
         // get sorting and order from session and apply to courseDTO list
-        String sessionSorting = (String) session.getAttribute("sorting");
-        String sessionSortingOrder = (String) session.getAttribute("sorting_order");
+        int sessionSorting = (int) session.getAttribute("sorting");
+        int sessionSortingOrder = (int) session.getAttribute("sorting_order");
         courseSortingService.applySoring(courseDTOList, sessionSorting, sessionSortingOrder);
 
         request.setAttribute("sorting_options", sortingOptions);

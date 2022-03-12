@@ -25,9 +25,11 @@ public class CourseSortingServlet extends HttpServlet {
         String sortingOption = request.getParameter("sorting");
         String sortingOrder = request.getParameter("sorting_order");
         if(sortingOption != null){
-            session.setAttribute("sorting", sortingOption);
+            int option = Integer.parseInt(sortingOption);
+            session.setAttribute("sorting", option);
         } else if(sortingOrder != null){
-            session.setAttribute("sorting_order", sortingOrder);
+            int order = Integer.parseInt(sortingOrder);
+            session.setAttribute("sorting_order", order);
         }
 
         response.sendRedirect(request.getContextPath() + "/courses");
