@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface LanguageDAO {
     long saveLanguage(Connection connection, Language language) throws SQLException;
+    void saveLanguageTranslation(Connection connection, Language language) throws SQLException;
+
     void deleteLanguageById(Connection connection, long id) throws SQLException;
 
     Language findLanguageById(Connection connection, long id, long translationLanguageId) throws SQLException;

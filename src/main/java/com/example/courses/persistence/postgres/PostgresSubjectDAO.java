@@ -88,7 +88,7 @@ public class PostgresSubjectDAO implements SubjectDAO {
     }
 
     @Override
-    public void updateSubjectDescription(Connection connection, Subject subject) throws SQLException {
+    public void updateSubjectTranslation(Connection connection, Subject subject) throws SQLException {
         logger.trace("Update subject: " + subject);
         PreparedStatement statement = null;
 
@@ -195,7 +195,7 @@ public class PostgresSubjectDAO implements SubjectDAO {
         return subject;
     }
 
-    static class SubjectDAOConstants {
+    private static class SubjectDAOConstants {
         static final String TABLE_SUBJECT = "subject";
         static final String TABLE_SUBJECT_TRANSLATION = "subject_translation";
         static final String SUBJECT_ID = "id";

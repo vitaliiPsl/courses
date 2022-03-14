@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface StudentCourseDAO {
-    long saveStudentCourse(Connection connection, StudentCourse studentCourse) throws SQLException;
+    void saveStudentCourse(Connection connection, StudentCourse studentCourse) throws SQLException;
     void deleteStudentCourse(Connection connection, long studentId, long courseId) throws SQLException;
     void updateStudentCourse(Connection connection, StudentCourse studentCourseList) throws SQLException;
 

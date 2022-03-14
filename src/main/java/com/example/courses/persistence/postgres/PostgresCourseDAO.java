@@ -234,7 +234,7 @@ public class PostgresCourseDAO implements CourseDAO {
             statement.setLong(1, languageId);
 
             resultSet = statement.executeQuery();
-            if (resultSet.next()) {
+            while (resultSet.next()) {
                 courseList.add(parseCourse(resultSet));
             }
         } finally {

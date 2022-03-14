@@ -44,6 +44,25 @@ public class PostgresLanguageDAO implements LanguageDAO {
     }
 
     @Override
+    public void saveLanguageTranslation(Connection connection, Language language) throws SQLException {
+        logger.trace("Save language translation: " + language);
+
+        PreparedStatement statement = null;
+
+        try {
+            statement = connection.prepareStatement(LanguageDAOConstants.INSERT_LANGUAGE_TRANSLATION);
+
+            statement.setLong(1, language.getId());
+            statement.setLong(2, language.getTranslationLanguageId());
+            statement.setString(3, language.getName());
+            statement.setString(4, language.getLanguageCode());
+            statement.executeUpdate();
+        } finally {
+            DAOFactory.closeResource(statement);
+        }
+    }
+
+    @Override
     public void deleteLanguageById(Connection connection, long id) throws SQLException {
         logger.trace("Delete language by id: " + id);
         PreparedStatement statement = null;
@@ -193,9 +212,19 @@ public class PostgresLanguageDAO implements LanguageDAO {
         static final String INSERT_LANGUAGE =
                 "INSERT INTO " +
                         TABLE_LANGUAGE + "(" +
-                        LANGUAGE_NAME + ", " +
-                        LANGUAGE_CODE + " " +
+                            LANGUAGE_NAME + ", " +
+                            LANGUAGE_CODE + " " +
                         ") VALUES(?, ?);";
+
+        static final String INSERT_LANGUAGE_TRANSLATION =
+                "INSERT INTO " +
+                        TABLE_LANGUAGE_TRANSLATION + "(" +
+                            LANGUAGE_TRANSLATION_LANGUAGE_ID + ", " +
+                            LANGUAGE_TRANSLATION_TRANSLATION_LANGUAGE_ID + ", " +
+                            LANGUAGE_TRANSLATION_NAME_TRANSLATION + ", " +
+                            LANGUAGE_TRANSLATION_CODE_TRANSLATION + " " +
+                        ") VALUES(?, ?, ?, ?);";
+
 
         static final String DELETE_LANGUAGE_BY_ID =
                 "DELETE FROM " +

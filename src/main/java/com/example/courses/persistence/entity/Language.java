@@ -6,15 +6,15 @@ public class Language {
     private long id;
     private String name;
     private String languageCode;
-    private boolean isDefault;
+    private long translationLanguageId;
 
     public Language(){}
 
-    public Language(long id, String name, String languageCode, boolean isDefault) {
+    public Language(long id, String name, String languageCode, long translationLanguageId) {
         this.id = id;
         this.name = name;
         this.languageCode = languageCode;
-        this.isDefault = isDefault;
+        this.translationLanguageId = translationLanguageId;
     }
 
     public long getId() {
@@ -41,12 +41,12 @@ public class Language {
         this.languageCode = languageCode;
     }
 
-    public boolean isDefault() {
-        return isDefault;
+    public long getTranslationLanguageId() {
+        return translationLanguageId;
     }
 
-    public void setDefault(boolean aDefault) {
-        isDefault = aDefault;
+    public void setTranslationLanguageId(long translationLanguageId) {
+        this.translationLanguageId = translationLanguageId;
     }
 
     @Override
@@ -54,12 +54,12 @@ public class Language {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Language language = (Language) o;
-        return id == language.id && Objects.equals(name, language.name) && Objects.equals(languageCode, language.languageCode);
+        return id == language.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, languageCode);
+        return Objects.hash(id);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class Language {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", languageCode='" + languageCode + '\'' +
-                ", isDefault=" + isDefault +
+                ", translationLanguageId=" + translationLanguageId +
                 '}';
     }
 }

@@ -1,6 +1,7 @@
 package com.example.courses.persistence.entity;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class StudentCourse {
     long studentId;
@@ -50,6 +51,19 @@ public class StudentCourse {
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        StudentCourse that = (StudentCourse) o;
+        return studentId == that.studentId && courseId == that.courseId && score == that.score;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(studentId, courseId, score);
     }
 
     @Override

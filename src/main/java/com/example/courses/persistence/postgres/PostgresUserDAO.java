@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * PostgreSQL implementation of UserDAO
+ *
  * @see com.example.courses.persistence.UserDAO
  */
 public class PostgresUserDAO implements UserDAO {
@@ -84,11 +85,11 @@ public class PostgresUserDAO implements UserDAO {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
 
-        try{
+        try {
             statement = connection.prepareStatement(UserDAOConstants.SELECT_PERSON_BY_ID);
             statement.setLong(1, id);
             resultSet = statement.executeQuery();
-            if(resultSet.next()) {
+            if (resultSet.next()) {
                 user = parsePerson(resultSet);
             }
         } finally {
@@ -106,12 +107,12 @@ public class PostgresUserDAO implements UserDAO {
         User user = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        try{
+        try {
             statement = connection.prepareStatement(UserDAOConstants.SELECT_PERSON_BY_EMAIL);
             System.out.println(statement);
             statement.setString(1, email);
             resultSet = statement.executeQuery();
-            if(resultSet.next()) {
+            if (resultSet.next()) {
                 user = parsePerson(resultSet);
             }
         } finally {
@@ -130,11 +131,11 @@ public class PostgresUserDAO implements UserDAO {
         Statement statement = null;
         ResultSet resultSet = null;
 
-        try{
+        try {
             statement = connection.createStatement();
             resultSet = statement.executeQuery(UserDAOConstants.SELECT_ALL);
 
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 userList.add(parsePerson(resultSet));
             }
         } finally {
@@ -153,12 +154,12 @@ public class PostgresUserDAO implements UserDAO {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
 
-        try{
+        try {
             statement = connection.prepareStatement(UserDAOConstants.SELECT_ALL_BY_ROLE_NAME);
             statement.setString(1, role.getRole());
             resultSet = statement.executeQuery();
 
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 userList.add(parsePerson(resultSet));
             }
         } finally {
@@ -170,18 +171,13 @@ public class PostgresUserDAO implements UserDAO {
     }
 
     private void setUserProperties(User user, PreparedStatement statement) throws SQLException {
-        try {
-            statement.setString(1, user.getFirstName());
-            statement.setString(2, user.getLastName());
-            statement.setString(3, user.getEmail());
-            statement.setString(4, user.getPassword());
-            statement.setBoolean(5, user.isBlocked());
-            statement.setString(6, user.getImageName());
-            statement.setInt(7, user.getRole().ordinal() + 1);
-        } catch (SQLException e){
-            logger.error("SQLException while setting user's properties", e);
-            throw e;
-        }
+        statement.setString(1, user.getFirstName());
+        statement.setString(2, user.getLastName());
+        statement.setString(3, user.getEmail());
+        statement.setString(4, user.getPassword());
+        statement.setBoolean(5, user.isBlocked());
+        statement.setString(6, user.getImageName());
+        statement.setInt(7, user.getRole().ordinal() + 1);
     }
 
     private User parsePerson(ResultSet resultSet) throws SQLException {
@@ -189,26 +185,22 @@ public class PostgresUserDAO implements UserDAO {
 
         User.Builder userBuilder = new User.Builder();
 
-        try {
-            userBuilder.setId(resultSet.getLong(UserDAOConstants.PERSON_ID))
-                    .setFirstName(resultSet.getString(UserDAOConstants.PERSON_FIRST_NAME))
-                    .setLastName(resultSet.getString(UserDAOConstants.PERSON_LAST_NAME))
-                    .setEmail(resultSet.getString(UserDAOConstants.PERSON_EMAIL))
-                    .setPassword(resultSet.getString(UserDAOConstants.PERSON_PASSWORD))
-                    .setBlocked(resultSet.getBoolean(UserDAOConstants.PERSON_IS_BLOCKED))
-                    .setImageName(resultSet.getString(UserDAOConstants.PERSON_IMAGE_NAME))
-                    .setRole(parseRole(resultSet.getString(UserDAOConstants.ROLE_NAME)));
+        userBuilder.setId(resultSet.getLong(UserDAOConstants.PERSON_ID))
+                .setFirstName(resultSet.getString(UserDAOConstants.PERSON_FIRST_NAME))
+                .setLastName(resultSet.getString(UserDAOConstants.PERSON_LAST_NAME))
+                .setEmail(resultSet.getString(UserDAOConstants.PERSON_EMAIL))
+                .setPassword(resultSet.getString(UserDAOConstants.PERSON_PASSWORD))
+                .setBlocked(resultSet.getBoolean(UserDAOConstants.PERSON_IS_BLOCKED))
+                .setImageName(resultSet.getString(UserDAOConstants.PERSON_IMAGE_NAME))
+                .setRole(parseRole(resultSet.getString(UserDAOConstants.ROLE_NAME)));
 
-        } catch (SQLException e){
-            logger.error("SQLException while building users", e);
-            throw e;
-        }
 
         return userBuilder.build();
     }
 
     /**
      * Makes Role based on retrieved role name
+     *
      * @param roleStr - role name
      * @return Role
      * @throws SQLException if role name is invalid
@@ -216,12 +208,12 @@ public class PostgresUserDAO implements UserDAO {
     private Role parseRole(String roleStr) throws SQLException {
         Role role;
 
-        switch (roleStr){
+        switch (roleStr) {
             case "admin":
                 role = Role.ADMIN;
                 break;
             case "teacher":
-                role =  Role.TEACHER;
+                role = Role.TEACHER;
                 break;
             case "student":
                 role = Role.STUDENT;
@@ -234,7 +226,7 @@ public class PostgresUserDAO implements UserDAO {
         return role;
     }
 
-    private static class UserDAOConstants{
+    private static class UserDAOConstants {
 
         static final String TABLE_PERSON = "person";
         static final String TABLE_ROLE = "role";
@@ -253,7 +245,7 @@ public class PostgresUserDAO implements UserDAO {
                 "INSERT INTO " +
                         TABLE_PERSON + "(" +
                         PERSON_FIRST_NAME + ", " +
-                        PERSON_LAST_NAME  + ", " +
+                        PERSON_LAST_NAME + ", " +
                         PERSON_EMAIL + ", " +
                         PERSON_PASSWORD + ", " +
                         PERSON_IS_BLOCKED + ", " +
@@ -265,7 +257,7 @@ public class PostgresUserDAO implements UserDAO {
                 "UPDATE " + TABLE_PERSON + " " +
                         "SET " +
                         PERSON_FIRST_NAME + " = ?," +
-                        PERSON_LAST_NAME  + " = ?," +
+                        PERSON_LAST_NAME + " = ?," +
                         PERSON_EMAIL + " = ?," +
                         PERSON_PASSWORD + " = ?," +
                         PERSON_IS_BLOCKED + " = ?," +

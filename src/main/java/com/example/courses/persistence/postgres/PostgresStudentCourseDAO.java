@@ -3,7 +3,6 @@ package com.example.courses.persistence.postgres;
 import com.example.courses.persistence.DAOFactory;
 import com.example.courses.persistence.StudentCourseDAO;
 import com.example.courses.persistence.entity.StudentCourse;
-import com.example.courses.utils.DAOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,34 +12,30 @@ import java.util.List;
 
 /**
  * PostgreSQL implementation of StudentCourseDAO
+ *
  * @see com.example.courses.persistence.StudentCourseDAO
  */
 public class PostgresStudentCourseDAO implements StudentCourseDAO {
     private static final Logger logger = LogManager.getLogger(PostgresStudentCourseDAO.class.getName());
 
     @Override
-    public long saveStudentCourse(Connection connection, StudentCourse studentCourse) throws SQLException {
+    public void saveStudentCourse(Connection connection, StudentCourse studentCourse) throws SQLException {
         logger.trace("Save record: " + studentCourse);
 
-        long generatedId;
         PreparedStatement statement = null;
 
         try {
             statement = connection.prepareStatement(
-                    StudentCourseDAOConstants.INSERT_STUDENT_COURSE,
-                    Statement.RETURN_GENERATED_KEYS);
+                    StudentCourseDAOConstants.INSERT_STUDENT_COURSE);
             statement.setLong(1, studentCourse.getStudentId());
             statement.setLong(2, studentCourse.getCourseId());
             statement.setTimestamp(3, Timestamp.valueOf(studentCourse.getRegistrationDate()));
             statement.setInt(4, studentCourse.getScore());
             statement.executeUpdate();
 
-            generatedId = DAOUtils.getGeneratedId(statement);
         } finally {
             DAOFactory.closeResource(statement);
         }
-
-        return generatedId;
     }
 
     @Override
@@ -155,24 +150,19 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
 
         StudentCourse studentCourse = new StudentCourse();
 
-        try {
-            studentCourse.setStudentId(resultSet.getLong(StudentCourseDAOConstants.STUDENT_COURSE_STUDENT_ID));
-            studentCourse.setCourseId(resultSet.getLong(StudentCourseDAOConstants.STUDENT_COURSE_COURSE_ID));
-            studentCourse.setRegistrationDate(
-                    resultSet.getTimestamp(StudentCourseDAOConstants.STUDENT_COURSE_REGISTRATION_DATE)
-                            .toLocalDateTime()
-            );
-            studentCourse.setScore(resultSet.getInt(StudentCourseDAOConstants.STUDENT_COURSE_SCORE));
-        } catch (SQLException e){
-            logger.error("Error while parsing studentCourse record");
-        }
+        studentCourse.setStudentId(resultSet.getLong(StudentCourseDAOConstants.STUDENT_COURSE_STUDENT_ID));
+        studentCourse.setCourseId(resultSet.getLong(StudentCourseDAOConstants.STUDENT_COURSE_COURSE_ID));
+        studentCourse.setRegistrationDate(
+                resultSet.getTimestamp(StudentCourseDAOConstants.STUDENT_COURSE_REGISTRATION_DATE)
+                        .toLocalDateTime()
+        );
+        studentCourse.setScore(resultSet.getInt(StudentCourseDAOConstants.STUDENT_COURSE_SCORE));
 
         return studentCourse;
     }
 
-    static class StudentCourseDAOConstants {
+    private static class StudentCourseDAOConstants {
         static final String TABLE_STUDENT_COURSE = "student_course";
-        static final String STUDENT_COURSE_ID = "id";
         static final String STUDENT_COURSE_STUDENT_ID = "student_id";
         static final String STUDENT_COURSE_COURSE_ID = "course_id";
         static final String STUDENT_COURSE_REGISTRATION_DATE = "registration_date";
@@ -200,8 +190,7 @@ public class PostgresStudentCourseDAO implements StudentCourseDAO {
                         "AND " + STUDENT_COURSE_COURSE_ID + " = ?;";
 
         static final String SELECT_STUDENT_COURSE_PROPERTIES =
-                STUDENT_COURSE_ID + ", " +
-                        STUDENT_COURSE_STUDENT_ID + ", " +
+                STUDENT_COURSE_STUDENT_ID + ", " +
                         STUDENT_COURSE_COURSE_ID + ", " +
                         STUDENT_COURSE_REGISTRATION_DATE + ", " +
                         STUDENT_COURSE_SCORE;
