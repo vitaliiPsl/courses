@@ -27,6 +27,11 @@ public class CourseFilterService {
         courseDTOService = new CourseDTOService();
     }
 
+    public CourseFilterService(CourseService courseService, CourseDTOService courseDTOService) {
+        this.courseService = courseService;
+        this.courseDTOService = courseDTOService;
+    }
+
     /**
      * Makes map of available filters
      * @param languageCode - code of translation language

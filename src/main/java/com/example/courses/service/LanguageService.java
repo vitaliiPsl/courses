@@ -21,6 +21,11 @@ public class LanguageService {
         languageDAO = daoFactory.getLanguageDao();
     }
 
+    public LanguageService(DAOFactory daoFactory, LanguageDAO languageDAO) {
+        this.daoFactory = daoFactory;
+        this.languageDAO = languageDAO;
+    }
+
     /**
      * Retrieve language by its id
      * @param languageId - language id
@@ -38,6 +43,7 @@ public class LanguageService {
             language = languageDAO.findLanguageById(connection, languageId, translationLanguageId);
             connection.commit();
         } catch (SQLException e) {
+            DAOFactory.rollback(connection);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);

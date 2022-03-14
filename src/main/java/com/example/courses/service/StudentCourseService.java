@@ -21,6 +21,11 @@ public class StudentCourseService {
         studentCourseDAO = daoFactory.getStudentCourseDao();
     }
 
+    public StudentCourseService(DAOFactory daoFactory, StudentCourseDAO studentCourseDAO){
+        this.daoFactory = daoFactory;
+        this.studentCourseDAO = studentCourseDAO;
+    }
+
     /**
      * Register student for a course by making new entry in corresponding db table
      * @param studentId - student id
@@ -41,6 +46,7 @@ public class StudentCourseService {
             studentCourseDAO.saveStudentCourse(connection, studentCourse);
             connection.commit();
         } catch (SQLException e) {
+            DAOFactory.rollback(connection);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -48,7 +54,8 @@ public class StudentCourseService {
     }
 
     /**
-     * Updates StudentCourse records
+     * Updates StudentCourse records.
+     * Method takes list of student course records, so there will be fewer calls to db
      * @param studentCourseList - list of studentCourse record
      * @throws SQLException
      */
@@ -64,7 +71,7 @@ public class StudentCourseService {
             }
             connection.commit();
         } catch (SQLException e) {
-            DAOFactory.closeResource(connection);
+            DAOFactory.rollback(connection);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);
@@ -89,7 +96,7 @@ public class StudentCourseService {
             studentCourse = studentCourseDAO.findStudentCourse(connection, studentId, courseId);
             connection.commit();
         } catch (SQLException e) {
-            DAOFactory.closeResource(connection);
+            DAOFactory.rollback(connection);
             throw e;
         } finally {
             DAOFactory.closeResource(connection);

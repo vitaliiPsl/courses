@@ -23,6 +23,11 @@ public class CourseService {
         courseDao = daoFactory.getCourseDao();
     }
 
+    public CourseService(DAOFactory daoFactory, CourseDAO courseDAO){
+        this.daoFactory = daoFactory;
+        this.courseDao = courseDAO;
+    }
+
     /**
      * Validates and saves new course
      * @param course - new course
@@ -218,7 +223,7 @@ public class CourseService {
      * @return list of retrieved courses
      * @throws SQLException
      */
-    public List<Course> getCoursesBySearchQuery(String query) throws SQLException {
+    public List<Course> getBySearchQuery(String query) throws SQLException {
         logger.trace("Get courses by search query: " + query);
 
         List<Course> courseList;
@@ -243,7 +248,7 @@ public class CourseService {
      * @return list of retrieved courses
      * @throws SQLException
      */
-    public List<Course> getAvailableCoursesBySearchQuery(String query) throws SQLException {
+    public List<Course> getAvailableBySearchQuery(String query) throws SQLException {
         logger.trace("Get available courses by search query: " + query);
 
         List<Course> courseList;
@@ -268,7 +273,7 @@ public class CourseService {
      * @return list of retrieved courses
      * @throws SQLException
      */
-    public List<Course> getCoursesByTeacherId(long teacherId) throws SQLException {
+    public List<Course> getByTeacherId(long teacherId) throws SQLException {
         logger.trace("Get courses by teacher id: " + teacherId);
 
         List<Course> courseList;

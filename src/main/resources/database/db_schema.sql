@@ -80,12 +80,11 @@ CREATE TABLE course
 DROP TABLE IF EXISTS student_course;
 CREATE TABLE student_course
 (
-    id                BIGSERIAL,
     student_id        BIGINT NOT NULL,
     course_id         BIGINT NOT NULL,
     score             INT,
     registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT pk_student_course PRIMARY KEY (id),
+    CONSTRAINT pk_student_course PRIMARY KEY (student_id, course_id),
     CONSTRAINT fk_student_course_person FOREIGN KEY (student_id)
         REFERENCES person (id)
         ON DELETE CASCADE
@@ -126,16 +125,14 @@ DROP VIEW IF EXISTS student;
 CREATE VIEW student AS
 SELECT *
 FROM person
-WHERE role_id = (SELECT id FROM role WHERE name
-        ilike 'student');
+WHERE role_id = (SELECT id FROM role WHERE name ilike 'student');
 
 -- teacher view
 DROP VIEW IF EXISTS teacher;
 CREATE VIEW teacher AS
 SELECT *
 FROM person
-WHERE role_id = (SELECT id FROM role WHERE name
-        ilike 'teacher');
+WHERE role_id = (SELECT id FROM role WHERE name ilike 'teacher');
 
 
 -- insert roles
