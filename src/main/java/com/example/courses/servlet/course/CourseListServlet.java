@@ -66,7 +66,7 @@ public class CourseListServlet extends HttpServlet {
             filter(request, session, lang, courseDTOList);
             sort(request, session, courseDTOList);
 
-            courseDTOList = applyPagination(courseDTOList, request, response);
+            courseDTOList = applyPagination(courseDTOList, request);
         } catch (SQLException e) {
             logger.error("SQLException: " + e.getMessage(), e);
             throw new ServerErrorException();
@@ -105,7 +105,7 @@ public class CourseListServlet extends HttpServlet {
         request.setAttribute("sorting_order_options", sortingOrderOptions);
     }
 
-    private List<CourseDTO> applyPagination(List<CourseDTO> courseDTOList, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private List<CourseDTO> applyPagination(List<CourseDTO> courseDTOList, HttpServletRequest request) throws IOException {
         // default page
         int currentPage = 1;
 

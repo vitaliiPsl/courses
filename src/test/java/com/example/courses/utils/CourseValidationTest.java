@@ -113,7 +113,7 @@ class CourseValidationTest {
     static List<Arguments> makeValidDates(){
         return List.of(
                 Arguments.arguments(LocalDateTime.now().plusHours(1), LocalDateTime.now().plusDays(1)),
-                Arguments.arguments(LocalDateTime.of(2022, 3, 10, 10, 10), LocalDateTime.of(2022, 3, 15, 10, 10))
+                Arguments.arguments(LocalDateTime.now().plusDays(5), LocalDateTime.now().plusMonths(3))
         );
     }
 }

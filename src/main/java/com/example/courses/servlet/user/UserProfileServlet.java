@@ -58,7 +58,7 @@ public class UserProfileServlet extends HttpServlet {
                     List<Long> coursesIds = studentCourseList.stream().map(StudentCourse::getCourseId).collect(Collectors.toList());
                     courseList = courseService.getCourses(coursesIds);
                 } else if (user.getRole().equals(Role.TEACHER)) {
-                    courseList = courseService.getCoursesByTeacherId(id);
+                    courseList = courseService.getByTeacherId(id);
                 }
 
                 courseDTOList = courseDTOService.getCourseDTOList(courseList, lang);

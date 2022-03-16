@@ -33,7 +33,7 @@ public class UnblockStudentServlet extends HttpServlet {
         logger.info("Unblock student by id: " + studentId);
         try {
             long id = Long.parseLong(studentId);
-            userService.unblockUserById(id);
+            userService.unblockUser(id);
         } catch (SQLException e) {
             logger.error("SQLException while unblocking student", e);
             throw new ServerErrorException();

@@ -33,7 +33,7 @@ public class BlockStudentServlet extends HttpServlet {
         logger.info("Block student with id: " + studentId);
         try {
             long id = Long.parseLong(studentId);
-            userService.blockUserById(id);
+            userService.blockUser(id);
         } catch (SQLException e) {
             logger.error("SQLException while blocking student", e);
             throw new ServerErrorException();

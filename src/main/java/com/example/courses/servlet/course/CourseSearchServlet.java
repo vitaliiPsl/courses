@@ -44,9 +44,9 @@ public class CourseSearchServlet extends HttpServlet {
             List<Course> courseList = null;
             try{
                 if(user != null && user.getRole().equals(Role.ADMIN)) {
-                    courseList = courseService.getCoursesBySearchQuery(query);
+                    courseList = courseService.getBySearchQuery(query);
                 } else {
-                    courseList = courseService.getAvailableCoursesBySearchQuery(query);
+                    courseList = courseService.getAvailableBySearchQuery(query);
                 }
                 courseDTOList = courseDTOService.getCourseDTOList(courseList,lang);
                 logger.debug("List of courses that match search query: " + courseDTOList);

@@ -54,7 +54,7 @@ public class UserCoursesServlet extends HttpServlet {
 
                 request.setAttribute("scores", scores);
             } else if (user.getRole().equals(Role.TEACHER)) {
-                courseList = courseService.getCoursesByTeacherId(user.getId());
+                courseList = courseService.getByTeacherId(user.getId());
             } else {
                 throw new ForbiddenException();
             }
