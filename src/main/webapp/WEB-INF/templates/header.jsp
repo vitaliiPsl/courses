@@ -18,7 +18,7 @@
     <div class="container">
         <div class="nav-bar">
             <div class="title">
-                <a href="${pageContext.request.contextPath}"><h1>Final Project</h1></a>
+                <a href="${pageContext.request.contextPath}/"><h1>Final Project</h1></a>
             </div>
             <div class="nav">
                 <ul>

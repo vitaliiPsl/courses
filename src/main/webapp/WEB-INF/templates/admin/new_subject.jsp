@@ -34,10 +34,11 @@
         <form action="${pageContext.request.contextPath}/admin/subject/new" method="post">
 
             <c:forEach var="lang" items="${requestScope.languages}">
+                <c:set var="required" value="${lang.getLanguageCode() == 'en'}"/>
                 <div class="form-group subject-group">
                     <input class="form-input" type="text" name="subject_${lang.getLanguageCode()}"
                            placeholder="<fmt:message key="label.subject_placeholder"/>"
-                           autocomplete="off" ${lang.isDefault() ? 'required' : ''}>
+                           autocomplete="off" ${required ? 'required' : ''}>
                     <span class="language-span">${lang.getLanguageCode()}</span>
                 </div>
             </c:forEach>
