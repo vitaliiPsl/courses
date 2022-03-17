@@ -15,10 +15,14 @@ import java.io.OutputStream;
 
 @WebServlet("/image")
 public class ImageServlet extends HttpServlet {
+    private final ImageUtils imageUtils = new ImageUtils();
+
     public static final String TYPE_COURSE = "course";
     public static final String TYPE_USER = "user";
-
     private static final Logger logger = LogManager.getLogger(ImageServlet.class.getName());
+
+    public ImageServlet() throws IOException {
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -39,9 +43,9 @@ public class ImageServlet extends HttpServlet {
 
         try {
             if (imageType.equals(TYPE_COURSE)) {
-                imageBytes = ImageUtils.loadCourseImage(imageName);
+                imageBytes = imageUtils.loadCourseImage(imageName);
             } else if (imageType.equals(TYPE_USER)) {
-                imageBytes = ImageUtils.loadUserImage(imageName);
+                imageBytes = imageUtils.loadUserImage(imageName);
             }
         } catch (IOException e){
             logger.error("Error while loading image: " + imageName, e);

@@ -26,8 +26,12 @@ import java.sql.SQLException;
 )
 public class EditUserInfoServlet extends HttpServlet {
     private static final UserService userService = new UserService();
+    private final ImageUtils imageUtils = new ImageUtils();
 
     private static final Logger logger = LogManager.getLogger(EditUserInfoServlet.class.getName());
+
+    public EditUserInfoServlet() throws IOException {
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -58,7 +62,7 @@ public class EditUserInfoServlet extends HttpServlet {
         user.setEmail(email);
 
         try {
-            String imageName = ImageUtils.saveUserImage(request);
+            String imageName = imageUtils.saveUserImage(request);
             if(imageName != null){
                 user.setImageName(imageName);
             }

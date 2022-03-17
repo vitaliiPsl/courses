@@ -31,12 +31,16 @@ import java.util.List;
         maxRequestSize=1024*1024*50
 )
 public class EditCourseServlet extends HttpServlet {
-    private static final UserService userService = new UserService();
-    private static final LanguageService languageService = new LanguageService();
-    private static final SubjectService subjectService = new SubjectService();
-    private static final CourseService courseService = new CourseService();
+    private final UserService userService = new UserService();
+    private final LanguageService languageService = new LanguageService();
+    private final SubjectService subjectService = new SubjectService();
+    private final CourseService courseService = new CourseService();
+    private final ImageUtils imageUtils = new ImageUtils();
 
     private static final Logger logger = LogManager.getLogger(EditCourseServlet.class.getName());
+
+    public EditCourseServlet() throws IOException {
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -100,7 +104,7 @@ public class EditCourseServlet extends HttpServlet {
             Course course = CourseUtils.buildCourse(request);
             course.setId(id);
 
-            String imageName = ImageUtils.saveCourseImage(request);
+            String imageName = imageUtils.saveCourseImage(request);
             if (imageName != null) {
                 course.setImageName(imageName);
             } else {
