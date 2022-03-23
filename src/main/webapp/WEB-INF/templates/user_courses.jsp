@@ -28,17 +28,27 @@
     <div class="status-filter-box">
         <div class="container">
             <div class="status-filters">
-                <button data-status="" class="status-filter selected">
-                    <fmt:message key="label.status_all"/>
+                <c:set var="status" value="${requestScope.status}"/>
+
+                <button class="status-filter ${status == null ? 'selected' : ''}">
+                    <a href="${pageContext.request.contextPath}/user/courses">
+                        <fmt:message key="label.status_all"/>
+                    </a>
                 </button>
-                <button data-status="not started" class="status-filter">
-                    <fmt:message key="label.status_not_started"/>
+                <button class="status-filter ${status != null && CourseStatus.valueOf(status).equals(CourseStatus.NOT_STARTED) ? 'selected' : ''}">
+                    <a href="${pageContext.request.contextPath}/user/courses?status=${CourseStatus.NOT_STARTED}">
+                        <fmt:message key="label.status_not_started"/>
+                    </a>
                 </button>
-                <button data-status="in progress" class="status-filter">
-                    <fmt:message key="label.status_in_progress"/>
+                <button class="status-filter ${status != null && CourseStatus.valueOf(status).equals(CourseStatus.IN_PROGRESS) ? 'selected' : ''}">
+                    <a href="${pageContext.request.contextPath}/user/courses?status=${CourseStatus.IN_PROGRESS}">
+                        <fmt:message key="label.status_in_progress"/>
+                    </a>
                 </button>
-                <button data-status="completed" class="status-filter">
-                    <fmt:message key="label.status_completed"/>
+                <button class="status-filter ${status != null && CourseStatus.valueOf(status).equals(CourseStatus.COMPLETED) ? 'selected' : ''}">
+                    <a href="${pageContext.request.contextPath}/user/courses?status=${CourseStatus.COMPLETED}">
+                        <fmt:message key="label.status_completed"/>
+                    </a>
                 </button>
             </div>
         </div>

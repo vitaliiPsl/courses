@@ -22,5 +22,8 @@
 
 .status-filter.selected{
     background: var(--main-color);
+}
+
+.status-filter.selected a{
     color: var(--background-color);
 }

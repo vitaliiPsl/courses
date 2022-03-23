@@ -1,12 +1,9 @@
 package com.example.courses.servlet.course;
 
-import com.example.courses.DTO.CourseDTO;
+import com.example.courses.dto.CourseDTO;
 import com.example.courses.exception.ForbiddenException;
 import com.example.courses.exception.ServerErrorException;
-import com.example.courses.persistence.entity.Course;
-import com.example.courses.persistence.entity.Role;
-import com.example.courses.persistence.entity.User;
-import com.example.courses.persistence.entity.StudentCourse;
+import com.example.courses.persistence.entity.*;
 import com.example.courses.service.CourseDTOService;
 import com.example.courses.service.CourseService;
 import com.example.courses.service.StudentCourseService;
@@ -26,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@WebServlet("/user_courses")
+@WebServlet("/user/courses")
 public class UserCoursesServlet extends HttpServlet {
     private static final StudentCourseService studentCourseService = new StudentCourseService();
     private static final CourseService courseService = new CourseService();
@@ -41,6 +38,7 @@ public class UserCoursesServlet extends HttpServlet {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         String lang = (String) session.getAttribute("lang");
+        String requestStatus = request.getParameter("status");
 
         try {
             List<Course> courseList;
@@ -59,6 +57,9 @@ public class UserCoursesServlet extends HttpServlet {
                 throw new ForbiddenException();
             }
 
+            filterByStatus(requestStatus, courseList);
+            request.setAttribute("status", requestStatus);
+
             courseDTOList = courseDTOService.getCourseDTOList(courseList, lang);
             request.setAttribute("courses", courseDTOList);
         } catch (SQLException e) {
@@ -67,6 +68,15 @@ public class UserCoursesServlet extends HttpServlet {
         }
 
         request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.USER_COURSES_JSP).forward(request, response);
+    }
+
+    private void filterByStatus(String requestStatus, List<Course> courseList) {
+        if (requestStatus == null) {
+            return;
+        }
+
+        CourseStatus courseStatus = CourseStatus.valueOf(requestStatus);
+        courseList.removeIf(course -> !course.getCourseStatus().equals(courseStatus));
     }
 
     private Map<Long, Integer> getScores(List<StudentCourse> studentCourseList) {
