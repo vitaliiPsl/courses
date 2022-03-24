@@ -8,8 +8,7 @@ import com.example.courses.persistence.entity.StudentCourse;
 import com.example.courses.persistence.entity.User;
 import com.example.courses.service.CourseService;
 import com.example.courses.service.StudentCourseService;
-import com.example.courses.utils.CertificateUtils;
-import com.itextpdf.text.DocumentException;
+import com.example.courses.service.CertificateService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -49,7 +48,7 @@ public class CertificateServlet extends HttpServlet {
                 throw new NotFoundException();
             }
 
-            certificate = new CertificateUtils(lang).makeCertificate(course, user, studentCourse.getScore());
+            certificate = new CertificateService(lang).makeCertificate(course, user, studentCourse.getScore());
         } catch (SQLException e) {
             logger.error("SQLException", e);
             throw new ServerErrorException();

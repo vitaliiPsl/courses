@@ -10,6 +10,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DAOUtils {
+    private DAOUtils(){}
+
     private static final Logger logger = LogManager.getLogger(PostgresUserDAO.class.getName());
 
     public static long getGeneratedId(PreparedStatement statement) throws SQLException {

@@ -93,7 +93,7 @@
                             <%--When user is TEACHER--%>
                             <c:when test="${sessionScope.user.getRole().equals(Role.TEACHER)}">
                                 <li>
-                                    <a href="${pageContext.request.contextPath}/user_courses">
+                                    <a href="${pageContext.request.contextPath}/user/courses">
                                         <fmt:message key="label.user's_courses"/>
                                     </a>
                                 </li>
@@ -107,7 +107,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="${pageContext.request.contextPath}/user_courses">
+                                    <a href="${pageContext.request.contextPath}/user/courses">
                                         <fmt:message key="label.user's_courses"/>
                                     </a>
                                 </li>

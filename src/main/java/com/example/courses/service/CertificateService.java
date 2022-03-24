@@ -1,4 +1,4 @@
-package com.example.courses.utils;
+package com.example.courses.service;
 import com.example.courses.persistence.entity.Course;
 import com.example.courses.persistence.entity.User;
 import com.itextpdf.text.*;
@@ -9,8 +9,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.UUID;
 
-public class CertificateUtils {
+public class CertificateService {
     private static final String FONT = "/fonts/Arial.ttf";
 
     private final Font titleFont;
@@ -18,9 +19,9 @@ public class CertificateUtils {
     private final Font valueFont;
     private final Font nameFont;
     private final Font serialNumberFont;
-    ResourceBundle bundle;
+    private final ResourceBundle bundle;
 
-    public CertificateUtils(String langCode) throws DocumentException, IOException {
+    public CertificateService(String langCode) throws DocumentException, IOException {
         BaseFont baseFont = BaseFont.createFont(FONT, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
         titleFont = new Font(baseFont, 30, Font.BOLD, BaseColor.DARK_GRAY);
         textFont = new Font(baseFont, 12, Font.NORMAL, BaseColor.GRAY);
@@ -42,7 +43,7 @@ public class CertificateUtils {
 
         addTitle(document);
         addContent(document, course, user, score);
-        addSerialNumber(document, course.getId() + "" + user.getId());
+        addSerialNumber(document, UUID.randomUUID().toString().toUpperCase());
 
         document.close();
 

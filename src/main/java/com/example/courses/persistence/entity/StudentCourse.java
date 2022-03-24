@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class StudentCourse {
-    long studentId;
-    long courseId;
+    private long studentId;
+    private long courseId;
 
     LocalDateTime registrationDate;
     int score;

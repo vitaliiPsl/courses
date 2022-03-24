@@ -1,6 +1,6 @@
 package com.example.courses.service;
 
-import com.example.courses.DTO.CourseDTO;
+import com.example.courses.dto.CourseDTO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

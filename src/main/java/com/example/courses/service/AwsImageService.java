@@ -1,4 +1,4 @@
-package com.example.courses.utils;
+package com.example.courses.service;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
@@ -19,18 +19,18 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.UUID;
 
-public class ImageUtils {
+public class AwsImageService {
     private final AmazonS3 s3client;
     private final String AWS_BUCKET_NAME;
     private final String DIR_COURSE_IMAGE;
     private final String DIR_USER_IMAGE;
 
     public static final String DEFAULT_IMAGE = "default.jpeg";
-    public static final String IMAGE_EXTENSION_REGEX = "(jp?g|png|bmp)";
+    private static final String IMAGE_EXTENSION_REGEX = "(jp?g|png|bmp)";
 
-    public ImageUtils() throws IOException {
+    public AwsImageService() throws IOException {
         // get properties and init AmazonS3Client
-        try (InputStream input = ImageUtils.class.getClassLoader().getResourceAsStream("aws/aws.properties")) {
+        try (InputStream input = AwsImageService.class.getClassLoader().getResourceAsStream("aws/aws.properties")) {
             Properties prop = new Properties();
             prop.load(input);
 

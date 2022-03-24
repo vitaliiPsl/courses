@@ -3,7 +3,7 @@ package com.example.courses.servlet.user;
 import com.example.courses.persistence.entity.User;
 import com.example.courses.service.UserService;
 import com.example.courses.servlet.Constants;
-import com.example.courses.utils.ImageUtils;
+import com.example.courses.service.AwsImageService;
 import com.example.courses.utils.UserValidation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,7 +26,7 @@ import java.sql.SQLException;
 )
 public class EditUserInfoServlet extends HttpServlet {
     private static final UserService userService = new UserService();
-    private final ImageUtils imageUtils = new ImageUtils();
+    private final AwsImageService imageUtils = new AwsImageService();
 
     private static final Logger logger = LogManager.getLogger(EditUserInfoServlet.class.getName());
 

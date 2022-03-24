@@ -1,22 +1,20 @@
 package com.example.courses.persistence.entity;
 
-import com.example.courses.utils.ImageUtils;
+import com.example.courses.service.AwsImageService;
 
 import java.util.Objects;
 
 public class User {
-    long id;
-    String firstName;
-    String lastName;
-    String email;
-    String password;
-    boolean isBlocked;
-    String imageName;
-    Role role;
+    private long id;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String password;
+    private boolean isBlocked;
+    private String imageName = AwsImageService.DEFAULT_IMAGE;
+    private Role role;
 
-    public User(){
-        imageName = ImageUtils.DEFAULT_IMAGE;
-    }
+    public User(){}
 
     public User(long id, String firstName, String lastName, String email, String password, boolean isBlocked, String imageName, Role role) {
         this.id = id;
@@ -131,7 +129,7 @@ public class User {
         String email;
         String password;
         boolean isBlocked;
-        String imageName = ImageUtils.DEFAULT_IMAGE;
+        String imageName = AwsImageService.DEFAULT_IMAGE;
         Role role;
 
         public Builder setId(long id){

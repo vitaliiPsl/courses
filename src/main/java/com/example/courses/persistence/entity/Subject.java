@@ -3,9 +3,9 @@ package com.example.courses.persistence.entity;
 import java.util.Objects;
 
 public class Subject {
-    long id;
-    String subject;
-    long languageId;
+    private long id;
+    private String subject;
+    private long languageId;
 
     public Subject() {
     }

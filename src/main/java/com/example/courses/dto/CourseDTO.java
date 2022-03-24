@@ -1,4 +1,4 @@
-package com.example.courses.DTO;
+package com.example.courses.dto;
 
 import com.example.courses.persistence.entity.Course;
 import com.example.courses.persistence.entity.Language;

@@ -4,6 +4,8 @@ import org.mindrot.jbcrypt.BCrypt;
 
 public class HashingUtils {
 
+    private HashingUtils(){}
+
     public static String hashPassword(String passwordProvided) {
         String salt = BCrypt.gensalt();
         return BCrypt.hashpw(passwordProvided, salt);

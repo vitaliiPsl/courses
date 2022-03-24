@@ -1,6 +1,6 @@
 package com.example.courses.servlet.course;
 
-import com.example.courses.DTO.CourseDTO;
+import com.example.courses.dto.CourseDTO;
 import com.example.courses.exception.NotFoundException;
 import com.example.courses.exception.ServerErrorException;
 import com.example.courses.persistence.entity.Course;

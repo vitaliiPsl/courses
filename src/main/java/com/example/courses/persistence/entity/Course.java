@@ -1,26 +1,24 @@
 package com.example.courses.persistence.entity;
 
-import com.example.courses.utils.ImageUtils;
+import com.example.courses.service.AwsImageService;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Course {
-    long id;
-    long teacherId;
-    long languageId;
-    long subjectId;
-    String title;
-    String description;
-    int maxScore;
-    LocalDateTime startDate;
-    LocalDateTime endDate;
-    String imageName;
-    CourseStatus courseStatus;
+    private long id;
+    private long teacherId;
+    private long languageId;
+    private long subjectId;
+    private String title;
+    private String description;
+    private int maxScore;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
+    private String imageName = AwsImageService.DEFAULT_IMAGE;
+    private CourseStatus courseStatus;
 
-    public Course() {
-        imageName = ImageUtils.DEFAULT_IMAGE;
-    }
+    public Course() {}
 
     public Course(long id, long teacherId, long languageId, long subjectId, String title, String description, int maxScore, LocalDateTime startDate, LocalDateTime endDate, String imageUrl, CourseStatus courseStatus) {
         this.id = id;
@@ -164,7 +162,7 @@ public class Course {
         int maxScore;
         LocalDateTime startDate;
         LocalDateTime endDate;
-        String imageName = ImageUtils.DEFAULT_IMAGE;
+        String imageName = AwsImageService.DEFAULT_IMAGE;
         CourseStatus courseStatus;
 
         public Builder setId(long id){

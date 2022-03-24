@@ -9,7 +9,7 @@ import com.example.courses.service.SubjectService;
 import com.example.courses.service.UserService;
 import com.example.courses.servlet.Constants;
 import com.example.courses.utils.CourseUtils;
-import com.example.courses.utils.ImageUtils;
+import com.example.courses.service.AwsImageService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,7 +35,7 @@ public class EditCourseServlet extends HttpServlet {
     private final LanguageService languageService = new LanguageService();
     private final SubjectService subjectService = new SubjectService();
     private final CourseService courseService = new CourseService();
-    private final ImageUtils imageUtils = new ImageUtils();
+    private final AwsImageService imageUtils = new AwsImageService();
 
     private static final Logger logger = LogManager.getLogger(EditCourseServlet.class.getName());
 

@@ -1,14 +1,12 @@
 package com.example.courses.service;
 
-import com.example.courses.DTO.CourseDTO;
+import com.example.courses.dto.CourseDTO;
 import com.example.courses.persistence.entity.Course;
-import com.example.courses.persistence.entity.Language;
 import com.example.courses.persistence.entity.Subject;
 import com.example.courses.persistence.entity.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;

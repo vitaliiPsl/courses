@@ -1,6 +1,6 @@
 package com.example.courses.service;
 
-import com.example.courses.DTO.CourseDTO;
+import com.example.courses.dto.CourseDTO;
 import com.example.courses.persistence.entity.Course;
 import com.example.courses.persistence.entity.User;
 import org.junit.jupiter.api.BeforeAll;

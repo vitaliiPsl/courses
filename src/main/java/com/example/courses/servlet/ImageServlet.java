@@ -1,7 +1,7 @@
 package com.example.courses.servlet;
 
 import com.example.courses.exception.NotFoundException;
-import com.example.courses.utils.ImageUtils;
+import com.example.courses.service.AwsImageService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,7 +15,7 @@ import java.io.OutputStream;
 
 @WebServlet("/image")
 public class ImageServlet extends HttpServlet {
-    private final ImageUtils imageUtils = new ImageUtils();
+    private final AwsImageService imageUtils = new AwsImageService();
 
     public static final String TYPE_COURSE = "course";
     public static final String TYPE_USER = "user";
