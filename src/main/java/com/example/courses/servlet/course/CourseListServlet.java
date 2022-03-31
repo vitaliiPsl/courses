@@ -11,6 +11,7 @@ import com.example.courses.service.CourseFilterService;
 import com.example.courses.service.CourseService;
 import com.example.courses.service.CourseSortingService;
 import com.example.courses.servlet.Constants;
+import com.example.courses.utils.PaginationUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -66,7 +67,7 @@ public class CourseListServlet extends HttpServlet {
             filter(request, session, lang, courseDTOList);
             sort(request, session, courseDTOList);
 
-            courseDTOList = applyPagination(courseDTOList, request);
+            courseDTOList = (List<CourseDTO>) PaginationUtils.applyPagination(courseDTOList, request);
         } catch (SQLException e) {
             logger.error("SQLException: " + e.getMessage(), e);
             throw new ServerErrorException();
@@ -103,38 +104,5 @@ public class CourseListServlet extends HttpServlet {
 
         request.setAttribute("sorting_options", sortingOptions);
         request.setAttribute("sorting_order_options", sortingOrderOptions);
-    }
-
-    private List<CourseDTO> applyPagination(List<CourseDTO> courseDTOList, HttpServletRequest request) throws IOException {
-        // default page
-        int currentPage = 1;
-
-        // get current page if it is not null
-        String pageStr = request.getParameter("page");
-        if (pageStr != null) {
-            currentPage = Integer.parseInt(pageStr);
-        }
-
-        // calculate total number of pages
-        int numberOfPages = courseDTOList.size() / RECORDS_PER_PAGE;
-        if (courseDTOList.size() % RECORDS_PER_PAGE > 0) {
-            numberOfPages++;
-        }
-
-        // redirect to 'not found' if current page is not in range of total number of pages
-        if (numberOfPages != 0 && (currentPage < 1 || currentPage > numberOfPages)) {
-            logger.error("Chosen page (" + currentPage + ") does not exists");
-            throw new NotFoundException();
-        }
-
-        // save current page and number of pages in request
-        request.setAttribute("page", currentPage);
-        request.setAttribute("number_of_pages", numberOfPages);
-
-        // return sublist
-        int start = currentPage * RECORDS_PER_PAGE - RECORDS_PER_PAGE;
-        int end = Math.min(start + RECORDS_PER_PAGE, courseDTOList.size());
-
-        return courseDTOList.subList(start, end);
     }
 }

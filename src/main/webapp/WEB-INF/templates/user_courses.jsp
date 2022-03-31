@@ -105,6 +105,5 @@
 <footer>
 </footer>
 
-<script src="${pageContext.request.contextPath}/static/js/user_courses.js"></script>
 </body>
 </html>
