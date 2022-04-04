@@ -19,6 +19,9 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.UUID;
 
+/**
+ * Service to work with aws s3
+ */
 public class AwsImageService {
     private final AmazonS3 s3client;
     private final String AWS_BUCKET_NAME;

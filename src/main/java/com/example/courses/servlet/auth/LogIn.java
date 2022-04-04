@@ -5,6 +5,7 @@ import com.example.courses.persistence.entity.User;
 import com.example.courses.service.UserService;
 import com.example.courses.servlet.Constants;
 import com.example.courses.utils.HashingUtils;
+import com.example.courses.utils.ReCaptchaUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,13 +36,24 @@ public class LogIn extends HttpServlet {
 
         String email = request.getParameter("email");
         String password = request.getParameter("password");
+        String recaptchaToken = request.getParameter("g-recaptcha-response");
 
         logger.info("Log in attempt. Provided email: " + email);
+
         if(email == null || email.isBlank() || password == null || password.isBlank()){
             logger.error("Log in credentials are empty");
 
             request.setAttribute("error", "You have to provide email and password");
             this.doGet(request, response);
+            return;
+        }
+
+        if(!ReCaptchaUtils.verifyCaptcha(recaptchaToken)){
+            logger.error("Failed captcha test");
+
+            request.setAttribute("error", "You have failed captcha test");
+            this.doGet(request, response);
+            return;
         }
 
         User existing;

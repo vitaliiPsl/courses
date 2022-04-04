@@ -42,6 +42,11 @@ main .container{
     display: none;
 }
 
+.recaptcha{
+    display: flex;
+    justify-content: center;
+}
+
 .form-submit{
     margin-top: 16px;
 }

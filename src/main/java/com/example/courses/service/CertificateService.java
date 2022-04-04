@@ -11,6 +11,9 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.UUID;
 
+/**
+ * Service to build certificate of course completion
+ */
 public class CertificateService {
     private static final String FONT = "/fonts/Arial.ttf";
 

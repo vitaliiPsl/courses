@@ -15,6 +15,8 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/style.css" />
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/auth/register.css" />
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/form.css" />
+
+    <script src="https://www.google.com/recaptcha/api.js"></script>
     <title><fmt:message key="label.log_in"/></title>
 </head>
 
@@ -36,6 +38,10 @@
 
                 <div class="form-row">
                     <input type="password" name="password" placeholder="<fmt:message key="label.password"/>" class="form-input" required/>
+                </div>
+
+                <div class="form-row">
+                    <div class="g-recaptcha recaptcha" data-sitekey="6LeZGkUfAAAAAA81FghGqs59eCpkuUdUM2egGdJi"></div>
                 </div>
 
                 <button class="form-submit"><fmt:message key="label.log_in"/></button>
