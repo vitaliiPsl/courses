@@ -5,6 +5,7 @@ import com.example.courses.persistence.entity.Role;
 import com.example.courses.persistence.entity.User;
 import com.example.courses.service.UserService;
 import com.example.courses.servlet.Constants;
+import com.example.courses.utils.PaginationUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,6 +32,7 @@ public class StudentListServlet extends HttpServlet {
 
         try{
             studentList = userService.getUsersByRole(Role.STUDENT);
+            studentList = PaginationUtils.applyPagination(studentList, request);
         } catch (SQLException e) {
             logger.error("SQLException while retrieving students", e);
             throw new ServerErrorException();

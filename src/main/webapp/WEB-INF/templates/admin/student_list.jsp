@@ -17,6 +17,7 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/filter.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/table.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/admin/student_list.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/courses/pagination.css">
 </head>
 <body>
 <jsp:include page="/WEB-INF/templates/header.jsp"/>
@@ -90,6 +91,21 @@
             <c:if test="${requestScope.students == null || requestScope.students.isEmpty()}}">
                 <div class="no-students"></div>
             </c:if>
+        </div>
+
+        <%--PAGINATION--%>
+        <div class="pagination-box">
+            <c:set var="page" value="${requestScope.page}"/>
+
+            <c:forEach var="page_number" begin="1" end="${requestScope.number_of_pages}">
+                <div class="page-number ${page == page_number ? 'selected' : ''}">
+                    <a href="${pageContext.request.contextPath}/admin/students?page=${page_number}">
+                        <h5>
+                            <c:out value="${page_number}"/>
+                        </h5>
+                    </a>
+                </div>
+            </c:forEach>
         </div>
     </div>
 </main>

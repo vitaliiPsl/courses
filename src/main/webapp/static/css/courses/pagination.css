@@ -1,0 +1,32 @@
+.pagination-box {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    padding: 24px 0;
+}
+
+.page-number {
+    height: 30px;
+    width: 30px;
+    border: 1px solid var(--main-color);
+    border-radius: 5px;
+}
+
+.page-number *{
+    color: inherit;
+}
+
+.page-number.selected, .page-number:hover{
+    background: var(--main-color);
+    color: var(--background-color);
+}
+
+.page-number a{
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

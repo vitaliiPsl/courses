@@ -28,8 +28,6 @@ import java.util.Map;
 
 @WebServlet("/courses")
 public class CourseListServlet extends HttpServlet {
-    private static final int RECORDS_PER_PAGE = 5;
-
     private static final CourseService courseService = new CourseService();
     private static final CourseDTOService courseDTOService = new CourseDTOService();
     private static final CourseFilterService courseFilterService = new CourseFilterService();
@@ -67,7 +65,7 @@ public class CourseListServlet extends HttpServlet {
             filter(request, session, lang, courseDTOList);
             sort(request, session, courseDTOList);
 
-            courseDTOList = (List<CourseDTO>) PaginationUtils.applyPagination(courseDTOList, request);
+            courseDTOList = PaginationUtils.applyPagination(courseDTOList, request);
         } catch (SQLException e) {
             logger.error("SQLException: " + e.getMessage(), e);
             throw new ServerErrorException();
