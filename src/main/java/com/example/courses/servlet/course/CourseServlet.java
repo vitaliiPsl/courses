@@ -63,28 +63,28 @@ public class CourseServlet extends HttpServlet {
             courseDTO = courseDTOService.getCourseDTO(course, lang);
             request.setAttribute("course", courseDTO);
 
-            getScores(request, user, courseId);
+            if (user != null) {
+                // if user is student than get info about student enrollment in this course
+                if (user.getRole().equals(Role.STUDENT)) {
+                    StudentCourse studentCourse = studentCourseService.getStudentCourse(user.getId(), courseId);
+                    request.setAttribute("student_course", studentCourse);
+                } else if (user.getRole().equals(Role.TEACHER)) {
+                    Map<Long, Integer> studentsScores = getStudentsScores(courseId);
+                    request.setAttribute("scores", studentsScores);
+                }
+            }
         } catch (SQLException e) {
             logger.error("SQLException: " + e.getMessage(), e);
             throw new ServerErrorException();
         } catch (NumberFormatException e) {
             logger.error("Invalid course id: " + courseDTO, e);
             throw new NotFoundException();
+        } catch (Exception e){
+            logger.error("", e);
+            throw new ServletException();
         }
 
         request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.COURSE_JSP).forward(request, response);
-    }
-
-    private void getScores(HttpServletRequest request, User user, long courseId) throws SQLException {
-        if (user != null) {
-            if (user.getRole().equals(Role.STUDENT)) {
-                int studentScore = studentCourseService.getStudentCourse(user.getId(), courseId).getScore();
-                request.setAttribute("student_score", studentScore);
-            } else if (user.getRole().equals(Role.TEACHER)) {
-                Map<Long, Integer> studentsScores = getStudentsScores(courseId);
-                request.setAttribute("scores", studentsScores);
-            }
-        }
     }
 
     private Map<Long, Integer> getStudentsScores(long courseId) throws SQLException {
