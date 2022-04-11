@@ -26,6 +26,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * CourseServlet display information about particular course
+ */
 @WebServlet("/course")
 public class CourseServlet extends HttpServlet {
     private static final CourseService courseService = new CourseService();
@@ -41,15 +44,15 @@ public class CourseServlet extends HttpServlet {
         String lang = (String) session.getAttribute("lang");
 
         CourseDTO courseDTO = null;
-        StudentCourse studentCourse = null;
-        Map<Long, Integer> studentsScores = null;
 
-        String courseId = request.getParameter("course_id");
+        String courseIdStr = request.getParameter("course_id");
+
         try {
-            long id = Long.parseLong(courseId);
-            logger.trace("Get course by id: " + id);
+            long courseId = Long.parseLong(courseIdStr);
+            logger.trace("Get course by id: " + courseId);
 
-            Course course = courseService.getCourseById(id);
+            Course course = courseService.getCourseById(courseId);
+            logger.debug("Retrieved course:" + course);
 
             // Throw not found if a course is null
             if (course == null) {
@@ -58,14 +61,9 @@ public class CourseServlet extends HttpServlet {
             }
 
             courseDTO = courseDTOService.getCourseDTO(course, lang);
+            request.setAttribute("course", courseDTO);
 
-            if (user != null) {
-                if (user.getRole().equals(Role.STUDENT)) {
-                    studentCourse = studentCourseService.getStudentCourse(user.getId(), id);
-                } else if (user.getRole().equals(Role.TEACHER)) {
-                    studentsScores = getStudentsScores(id);
-                }
-            }
+            getScores(request, user, courseId);
         } catch (SQLException e) {
             logger.error("SQLException: " + e.getMessage(), e);
             throw new ServerErrorException();
@@ -74,11 +72,19 @@ public class CourseServlet extends HttpServlet {
             throw new NotFoundException();
         }
 
-        request.setAttribute("course", courseDTO);
-        request.setAttribute("student_course", studentCourse);
-        request.setAttribute("scores", studentsScores);
-
         request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.COURSE_JSP).forward(request, response);
+    }
+
+    private void getScores(HttpServletRequest request, User user, long courseId) throws SQLException {
+        if (user != null) {
+            if (user.getRole().equals(Role.STUDENT)) {
+                int studentScore = studentCourseService.getStudentCourse(user.getId(), courseId).getScore();
+                request.setAttribute("student_score", studentScore);
+            } else if (user.getRole().equals(Role.TEACHER)) {
+                Map<Long, Integer> studentsScores = getStudentsScores(courseId);
+                request.setAttribute("scores", studentsScores);
+            }
+        }
     }
 
     private Map<Long, Integer> getStudentsScores(long courseId) throws SQLException {

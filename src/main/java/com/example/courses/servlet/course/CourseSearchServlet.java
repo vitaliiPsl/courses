@@ -20,6 +20,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * This servlet handles courses search request and writes response in JSON format
+ */
 @WebServlet("/courses/search")
 public class CourseSearchServlet extends HttpServlet {
     private static final CourseService courseService = new CourseService();
@@ -33,35 +36,46 @@ public class CourseSearchServlet extends HttpServlet {
 
         HttpSession session = request.getSession();
         String lang = (String) session.getAttribute("lang");
+        User user = (User) request.getSession().getAttribute("user");
 
         String query = request.getParameter("query");
         logger.debug("Search query: " + query);
 
-        User user = (User) request.getSession().getAttribute("user");
+        List<CourseDTO> courseDTOList = getCourses(lang, query, user);
+        writeResponse(response, courseDTOList);
+    }
+
+    private List<CourseDTO> getCourses(String lang, String query, User user) {
         List<CourseDTO> courseDTOList = null;
-
+        
         if(query != null && !query.trim().isEmpty()){
-            List<Course> courseList = null;
             try{
-                if(user != null && user.getRole().equals(Role.ADMIN)) {
-                    courseList = courseService.getBySearchQuery(query);
-                } else {
-                    courseList = courseService.getAvailableBySearchQuery(query);
-                }
-                courseDTOList = courseDTOService.getCourseDTOList(courseList,lang);
+                List<Course> courseList = getCoursesBasedOnUserRole(query, user);
+                courseDTOList = courseDTOService.getCourseDTOList(courseList, lang);
                 logger.debug("List of courses that match search query: " + courseDTOList);
-
-                writeResponse(response, courseDTOList);
-            } catch (SQLException | IOException e) {
+            } catch (SQLException e) {
                 logger.error("Exception while searching for courses by query: " + query + "." + e.getMessage(), e);
             }
         }
+        
+        return courseDTOList;
+    }
+
+    private List<Course> getCoursesBasedOnUserRole(String query, User user) throws SQLException {
+        List<Course> courseList;
+        if(user != null && user.getRole().equals(Role.ADMIN)) {
+            courseList = courseService.getBySearchQuery(query);
+        } else {
+            courseList = courseService.getAvailableBySearchQuery(query);
+        }
+        return courseList;
     }
 
     private void writeResponse(HttpServletResponse response, List<CourseDTO> courseList) throws IOException {
         logger.info("Initializing Jackson");
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
+
         String json = objectMapper.writeValueAsString(courseList);
         logger.debug("List of courses in json: " + json);
 

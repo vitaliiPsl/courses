@@ -22,6 +22,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
 
+/**
+ * This servlet handles certificate generation request
+ * It requires course id, user to be logged in and current interface language
+ */
 @WebServlet("/certificate")
 public class CertificateServlet extends HttpServlet {
     private static final CourseService courseService = new CourseService();
@@ -31,6 +35,7 @@ public class CertificateServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // required parameters
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         String lang = (String) session.getAttribute("lang");
@@ -43,6 +48,7 @@ public class CertificateServlet extends HttpServlet {
             Course course = courseService.getCourseById(id);
             StudentCourse studentCourse = studentCourseService.getStudentCourse(user.getId(), course.getId());
 
+            // provided course must exist, be completed and student must be registered for that course
             if(course == null || studentCourse == null || !course.getCourseStatus().equals(CourseStatus.COMPLETED)){
                 logger.warn("Certificate. Invalid data: " + course + ", " + studentCourse);
                 throw new NotFoundException();
@@ -57,7 +63,7 @@ public class CertificateServlet extends HttpServlet {
             throw new ServerErrorException();
         }
 
-
+        // write certificate bytes in response
         OutputStream out = response.getOutputStream();
         out.write(certificate);
         out.close();

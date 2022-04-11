@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
+/**
+ * This servlet handles sorting selection requests
+ */
 @WebServlet("/courses/sort")
 public class CourseSortingServlet extends HttpServlet {
 

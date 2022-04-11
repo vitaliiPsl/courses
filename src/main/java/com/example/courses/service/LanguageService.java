@@ -10,6 +10,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Service to work with the Language entity
+ * @see com.example.courses.persistence.entity.Language
+ */
 public class LanguageService {
     private final DAOFactory daoFactory;
     private final LanguageDAO languageDAO;

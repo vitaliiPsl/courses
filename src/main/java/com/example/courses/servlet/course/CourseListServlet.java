@@ -26,6 +26,9 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This servlet displays list of available courses
+ */
 @WebServlet("/courses")
 public class CourseListServlet extends HttpServlet {
     private static final CourseService courseService = new CourseService();
@@ -44,32 +47,18 @@ public class CourseListServlet extends HttpServlet {
         String lang = (String) session.getAttribute("lang");
 
         List<CourseDTO> courseDTOList;
-
         try {
-            List<Course> courseList;
-            String query = request.getParameter("query");
-
-            if (query != null && !query.trim().isEmpty()) {
-                courseList = courseService.getBySearchQuery(query);
-                request.setAttribute("query", query);
-            } else {
-                if (user == null || user.getRole().equals(Role.STUDENT)) {
-                    courseList = courseService.getAvailable();
-                } else {
-                    courseList = courseService.getAll();
-                }
-            }
-
+            List<Course> courseList = getCourses(request, user);
             courseDTOList = courseDTOService.getCourseDTOList(courseList, lang);
-
-            filter(request, session, lang, courseDTOList);
-            sort(request, session, courseDTOList);
-
-            courseDTOList = PaginationUtils.applyPagination(courseDTOList, request);
         } catch (SQLException e) {
             logger.error("SQLException: " + e.getMessage(), e);
             throw new ServerErrorException();
         }
+
+        filter(request, session, lang, courseDTOList);
+        sort(request, session, courseDTOList);
+
+        courseDTOList = PaginationUtils.applyPagination(courseDTOList, request);
 
         logger.debug("CourseDTOList: " + courseDTOList);
         request.setAttribute("courses", courseDTOList);
@@ -77,9 +66,42 @@ public class CourseListServlet extends HttpServlet {
         request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.COURSE_LIST_JSP).forward(request, response);
     }
 
-    private void filter(HttpServletRequest request, HttpSession session, String lang, List<CourseDTO> courseDTOList) throws SQLException {
+    private List<Course> getCourses(HttpServletRequest request, User user) throws SQLException {
+        List<Course> courseList;
+        String query = request.getParameter("query");
+
+        if (query != null && !query.trim().isEmpty()) {
+            courseList = getCoursesBySearchQuery(user, query);
+            request.setAttribute("query", query);
+        } else {
+            courseList = getCoursesBasedOnUserRole(user);
+        }
+        return courseList;
+    }
+
+    private List<Course> getCoursesBasedOnUserRole(User user) throws SQLException {
+        List<Course> courseList;
+        if (user == null || user.getRole().equals(Role.STUDENT)) {
+            courseList = courseService.getAvailable();
+        } else {
+            courseList = courseService.getAll();
+        }
+        return courseList;
+    }
+
+    private List<Course> getCoursesBySearchQuery(User user, String query) throws SQLException {
+        List<Course> courseList;
+        if (user == null || user.getRole().equals(Role.STUDENT)) {
+            courseList = courseService.getAvailableBySearchQuery(query);
+        } else {
+            courseList = courseService.getBySearchQuery(query);
+        }
+        return courseList;
+    }
+
+    private void filter(HttpServletRequest request, HttpSession session, String lang, List<CourseDTO> courseDTOList) {
         // get available filters
-        Map<String, List<?>> availableFilters = courseFilterService.getAvailableFilters(lang);
+        Map<String, List<?>> availableFilters = courseFilterService.getAvailableFilters(courseDTOList);
 
         // get filters from session and apply them
         Map<String, List<Long>> requestFilters = (Map<String, List<Long>>) session.getAttribute("filters");

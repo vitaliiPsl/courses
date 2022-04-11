@@ -17,7 +17,9 @@ import java.io.IOException;
 import java.rmi.ServerError;
 import java.sql.SQLException;
 
-
+/**
+ * Handles enroll into course request
+ */
 @WebServlet(urlPatterns = {"/enroll"})
 public class EnrollServlet extends HttpServlet {
     private static final StudentCourseService studentCourseService = new StudentCourseService();
@@ -35,7 +37,6 @@ public class EnrollServlet extends HttpServlet {
         }
 
         User user = (User) request.getSession().getAttribute("user");
-
         try {
             long id = Long.parseLong(courseId);
             logger.info("Register student" + user.getId() + " for a course: " + id);

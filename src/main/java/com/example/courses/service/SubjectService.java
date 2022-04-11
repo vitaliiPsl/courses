@@ -10,6 +10,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Service to work with the Subject entity
+ * @see com.example.courses.persistence.entity.Subject
+ */
 public class SubjectService {
     private final DAOFactory daoFactory;
     private final SubjectDAO subjectDAO;

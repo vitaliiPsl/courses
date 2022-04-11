@@ -36,6 +36,14 @@ public class CertificateService {
         bundle = ResourceBundle.getBundle("i18n/certificate/certificate", locale);
     }
 
+    /**
+     * Builds certificate using itext document
+     * @param course course student has completed
+     * @param user student that completed course
+     * @param score student's score for course
+     * @return built certificate in bytes
+     * @throws DocumentException
+     */
     public byte[] makeCertificate(Course course, User user, int score) throws DocumentException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 

@@ -11,6 +11,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This service builds CourseDTO based on Course object properties
+ * @see com.example.courses.persistence.entity.Course
+ * @see com.example.courses.dto.CourseDTO
+ */
 public class CourseDTOService {
     private final DAOFactory daoFactory;
     private final LanguageDAO languageDAO;
@@ -93,7 +98,6 @@ public class CourseDTOService {
         CourseDTO courseDTO = new CourseDTO();
 
         Language locale = languageDAO.findLanguageByCode(connection, languageCode);
-
         Language courseLanguage = languageDAO.findLanguageById(connection, course.getLanguageId(), locale.getId());
         Subject subject = subjectDAO.findSubject(connection, course.getSubjectId(), locale.getId());
         User teacher = userDAO.findUser(connection, course.getTeacherId());
@@ -108,6 +112,13 @@ public class CourseDTOService {
         return courseDTO;
     }
 
+    /**
+     * Retrieves list of students that are registered for course
+     * @param connection open database connection
+     * @param course
+     * @return list of students that signed up for this course
+     * @throws SQLException
+     */
     private List<User> getStudents(Connection connection, Course course) throws SQLException {
         logger.trace("Get list of students that takes: " + course);
 

@@ -10,6 +10,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Service to work with the StudentCourse entity
+ * @see com.example.courses.persistence.entity.StudentCourse
+ */
 public class StudentCourseService {
     private final DAOFactory daoFactory;
     private final StudentCourseDAO studentCourseDAO;

@@ -14,6 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 
+/**
+ * This servlet deletes course by provided id
+ */
 @WebServlet("/admin/course/delete")
 public class DeleteCourseServlet extends HttpServlet {
     private static final CourseService courseService = new CourseService();

@@ -1,5 +1,6 @@
 package com.example.courses.servlet.user;
 
+import com.example.courses.exception.ServerErrorException;
 import com.example.courses.persistence.entity.User;
 import com.example.courses.service.UserService;
 import com.example.courses.servlet.Constants;
@@ -17,6 +18,9 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 
+/**
+ * This servlet allows user to change password
+ */
 @WebServlet("/user/password")
 public class ChangePasswordServlet extends HttpServlet {
     private static final UserService userService = new UserService();
@@ -39,6 +43,7 @@ public class ChangePasswordServlet extends HttpServlet {
         String currentPassword = request.getParameter("current_password");
         String newPassword = request.getParameter("password");
 
+        // check if password is valid
         if(!UserValidation.isPasswordValid(currentPassword) || !UserValidation.isPasswordValid(newPassword)){
             logger.warn("Invalid password");
             request.setAttribute("error", "Provided data is invalid");
@@ -46,6 +51,7 @@ public class ChangePasswordServlet extends HttpServlet {
             return;
         }
 
+        // check if provided current password is correct
         if(!HashingUtils.checkPassword(currentPassword, user.getPassword())){
             logger.warn("Password don't match");
             request.setAttribute("error", "Current password is invalid");
@@ -60,8 +66,7 @@ public class ChangePasswordServlet extends HttpServlet {
             userService.updateUser(user);
         } catch (SQLException e) {
             logger.error("SQLException while updating user", e);
-            response.sendRedirect(request.getContextPath() + "/error_handler?type=500");
-            return;
+            throw new ServerErrorException();
         }
 
         response.sendRedirect(request.getContextPath() + "/user?user_id=" + user.getId());

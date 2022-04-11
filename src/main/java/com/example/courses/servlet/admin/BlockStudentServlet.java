@@ -14,6 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 
+/**
+ * This servlet blocks user
+ */
 @WebServlet("/admin/block")
 public class BlockStudentServlet extends HttpServlet {
     private final UserService userService = new UserService();

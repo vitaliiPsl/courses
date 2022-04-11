@@ -16,6 +16,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 
+/**
+ * This servlet allows to register new subject
+ */
 @WebServlet("/admin/new_user")
 public class NewUserServlet extends HttpServlet {
     private static final UserService userService = new UserService();

@@ -12,6 +12,9 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * This servlet handles filter selection requests
+ */
 @WebServlet("/courses/filter")
 public class CourseFilterServlet extends HttpServlet {
 

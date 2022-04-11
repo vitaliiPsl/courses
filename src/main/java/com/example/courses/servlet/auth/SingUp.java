@@ -17,6 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 
+/**
+ * This servlet handles sing up requests
+ */
 @WebServlet("/auth/sign_up")
 public class SingUp extends HttpServlet {
     private final UserService userService = new UserService();
@@ -32,11 +35,13 @@ public class SingUp extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.trace("Sign up: post");
+        // request properties
         String firstName = request.getParameter("first_name");
         String lastName = request.getParameter("last_name");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
+        // build user from provided properties
         User.Builder builder = new User.Builder();
         User user = builder.setFirstName(firstName)
             .setLastName(lastName)
@@ -48,6 +53,7 @@ public class SingUp extends HttpServlet {
         logger.info("Sign up request: " + user);
 
         try{
+            // save user to database
             userService.registerUser(user);
             logger.info("Sing up went successfully");
         } catch (SQLException e) {

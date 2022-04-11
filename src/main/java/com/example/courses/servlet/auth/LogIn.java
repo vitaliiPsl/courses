@@ -18,6 +18,9 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 
+/**
+ * This servlet handles log in request
+ */
 @WebServlet("/auth/log_in")
 public class LogIn extends HttpServlet {
     private final UserService userService = new UserService();
@@ -34,12 +37,14 @@ public class LogIn extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.trace("post: log in");
 
+        // Login request parameters
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         String recaptchaToken = request.getParameter("g-recaptcha-response");
 
         logger.info("Log in attempt. Provided email: " + email);
 
+        // check if user provided all required parameters
         if(email == null || email.isBlank() || password == null || password.isBlank()){
             logger.error("Log in credentials are empty");
 
@@ -48,6 +53,7 @@ public class LogIn extends HttpServlet {
             return;
         }
 
+        // verify captcha test
         if(!ReCaptchaUtils.verifyCaptcha(recaptchaToken)){
             logger.error("Failed captcha test");
 
@@ -56,14 +62,10 @@ public class LogIn extends HttpServlet {
             return;
         }
 
-        User existing;
-        try{
-            existing = userService.getUserByEmail(email);
-        } catch (SQLException e) {
-            logger.error("SQLException while getting existing user by provided email", e);
-            throw new ServerErrorException();
-        }
+        // get existing user by provided email
+        User existing = getExisting(email);
 
+        // check if user with provided email exists and request password match stored
         if(existing == null || !HashingUtils.checkPassword(password, existing.getPassword())){
             logger.info("Invalid email(" + email + ") or password. Log in failed");
             request.setAttribute("error", "Invalid email or password");
@@ -79,5 +81,16 @@ public class LogIn extends HttpServlet {
 
             response.sendRedirect(request.getContextPath() + "/");
         }
+    }
+
+    private User getExisting(String email) {
+        User existing;
+        try{
+            existing = userService.getUserByEmail(email);
+        } catch (SQLException e) {
+            logger.error("SQLException while getting existing user by provided email", e);
+            throw new ServerErrorException();
+        }
+        return existing;
     }
 }

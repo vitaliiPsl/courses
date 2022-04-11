@@ -257,7 +257,7 @@
                             <fmt:message key="label.action_row_score"/>
                         </h3>
                         <h3>
-                            <c:out value="${requestScope.student_course.getScore()}/${course.getMaxScore()}"/>
+                            <c:out value="${requestScope.student_score}/${course.getMaxScore()}"/>
                         </h3>
                     </div>
                 </c:if>

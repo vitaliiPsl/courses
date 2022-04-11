@@ -23,6 +23,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * UserCoursesServlet display courses of particular user
+ */
 @WebServlet("/user/courses")
 public class UserCoursesServlet extends HttpServlet {
     private static final StudentCourseService studentCourseService = new StudentCourseService();
@@ -48,9 +51,9 @@ public class UserCoursesServlet extends HttpServlet {
                 List<StudentCourse> studentCourseList = studentCourseService.getCoursesByStudentId(user.getId());
 
                 Map<Long, Integer> scores = getScores(studentCourseList);
-                courseList = getStudentCourses(studentCourseList);
-
                 request.setAttribute("scores", scores);
+
+                courseList = getStudentCourses(studentCourseList);
             } else if (user.getRole().equals(Role.TEACHER)) {
                 courseList = courseService.getByTeacherId(user.getId());
             } else {

@@ -14,9 +14,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 
+/**
+ * This servlet unblocks user
+ */
 @WebServlet("/admin/unblock")
 public class UnblockStudentServlet extends HttpServlet {
-    private UserService userService = new UserService();
+    private final UserService userService = new UserService();
 
     private static final Logger logger = LogManager.getLogger(UnblockStudentServlet.class.getName());
 

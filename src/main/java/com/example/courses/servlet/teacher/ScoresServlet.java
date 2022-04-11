@@ -21,6 +21,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Saves students scores for particular course
+ */
 @WebServlet("/teacher/course/score")
 public class ScoresServlet extends HttpServlet {
     private static final CourseService courseService = new CourseService();
@@ -33,8 +36,8 @@ public class ScoresServlet extends HttpServlet {
         logger.trace("Save students scores: post");
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        String courseId = request.getParameter("course_id");
 
+        String courseId = request.getParameter("course_id");
         if(courseId == null) {
             logger.warn("Course id is null");
             throw new NotFoundException();
@@ -46,23 +49,12 @@ public class ScoresServlet extends HttpServlet {
             Course course = courseService.getCourseById(id);
 
             // check if course exists and in progress
-            if(course != null
-                    && course.getCourseStatus().equals(CourseStatus.IN_PROGRESS)
-                    && course.getTeacherId() == user.getId())
-            {
-                List<StudentCourse> studentCourseList = studentCourseService.getStudentsByCourseId(id);
-
-                for (StudentCourse studentCourse : studentCourseList) {
-                    String studentScore = request.getParameter("score_" + studentCourse.getStudentId());
-                    if (studentScore != null && !studentScore.isBlank()) {
-                        int score = Integer.parseInt(studentScore);
-                        if(score <= course.getMaxScore()) {
-                            studentCourse.setScore(score);
-                        }
-                    }
-                }
-                studentCourseService.updateStudentCourses(studentCourseList);
+            if(course == null || !course.getCourseStatus().equals(CourseStatus.IN_PROGRESS) || course.getTeacherId() != user.getId()) {
+                response.sendRedirect(request.getContextPath() + "/course?course_id=" + courseId);
+                return;
             }
+
+            updateScores(request, course);
         } catch (SQLException e) {
             logger.error("SQLException while updating scores", e);
             throw new ServerErrorException();
@@ -72,5 +64,21 @@ public class ScoresServlet extends HttpServlet {
         }
 
         response.sendRedirect(request.getContextPath() + "/course?course_id=" + courseId);
+    }
+
+    private void updateScores(HttpServletRequest request, Course course) throws SQLException {
+        List<StudentCourse> studentCourseList = studentCourseService.getStudentsByCourseId(course.getId());
+
+        for (StudentCourse studentCourse : studentCourseList) {
+            String studentScore = request.getParameter("score_" + studentCourse.getStudentId());
+            if (studentScore == null && studentScore.isBlank()) continue;
+
+            int score = Integer.parseInt(studentScore);
+            if(score <= course.getMaxScore()) {
+                studentCourse.setScore(score);
+            }
+        }
+
+        studentCourseService.updateStudentCourses(studentCourseList);
     }
 }

@@ -14,6 +14,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Service to work with User entity
+ * @see com.example.courses.persistence.entity.User
+ */
 public class UserService {
     private final DAOFactory daoFactory;
     private final UserDAO userDAO;

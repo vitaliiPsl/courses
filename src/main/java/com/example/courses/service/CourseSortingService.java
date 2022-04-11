@@ -7,6 +7,9 @@ import org.apache.logging.log4j.Logger;
 import java.time.Duration;
 import java.util.*;
 
+/**
+ * This service sorts list of {@link CourseDTO} objects based on selected sorting option
+ */
 public class CourseSortingService {
     public static final int SORT_BY_TITLE = 1;
     public static final int SORT_BY_DURATION = 2;

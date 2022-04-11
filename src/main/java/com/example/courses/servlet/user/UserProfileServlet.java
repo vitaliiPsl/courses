@@ -1,6 +1,8 @@
 package com.example.courses.servlet.user;
 
 import com.example.courses.dto.CourseDTO;
+import com.example.courses.exception.NotFoundException;
+import com.example.courses.exception.ServerErrorException;
 import com.example.courses.persistence.entity.Course;
 import com.example.courses.persistence.entity.Role;
 import com.example.courses.persistence.entity.StudentCourse;
@@ -25,6 +27,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * This servlet display user's profile
+ */
 @WebServlet("/user")
 public class UserProfileServlet extends HttpServlet {
     private final UserService userService = new UserService();
@@ -42,45 +47,56 @@ public class UserProfileServlet extends HttpServlet {
         String lang = (String) session.getAttribute("lang");
 
         String userId = request.getParameter("user_id");
-        logger.debug("user id: " + userId);
-
-        User user = null;
-        List<CourseDTO> courseDTOList = null;
-
-        if(userId != null) {
-            try {
-                long id = Long.parseLong(userId);
-                user = userService.getUserById(id);
-                List<Course> courseList = new ArrayList<>();
-
-                if (user.getRole().equals(Role.STUDENT)) {
-                    List<StudentCourse> studentCourseList = studentCourseService.getCoursesByStudentId(id);
-                    List<Long> coursesIds = studentCourseList.stream().map(StudentCourse::getCourseId).collect(Collectors.toList());
-                    courseList = courseService.getCourses(coursesIds);
-                } else if (user.getRole().equals(Role.TEACHER)) {
-                    courseList = courseService.getByTeacherId(id);
-                }
-
-                courseDTOList = courseDTOService.getCourseDTOList(courseList, lang);
-            } catch (SQLException e) {
-                logger.error("SQLException: " + e.getMessage(), e);
-                response.sendRedirect(request.getContextPath() + "/error_handler?type=500");
-                return;
-            } catch (NumberFormatException e) {
-                logger.error("Invalid user id: " + userId, e);
-                response.sendRedirect(request.getContextPath() + "/error_handler?type=404");
-                return;
-            }
-
-        } else {
+        if(userId == null) {
             logger.warn("User id is null");
-            response.sendRedirect(request.getContextPath() + "/error_handler?type=404");
-            return;
+            throw new NotFoundException();
         }
 
-        request.setAttribute("user", user);
-        request.setAttribute("courses", courseDTOList);
+        try {
+            long id = Long.parseLong(userId);
+
+            User user = getUser(id);
+            request.setAttribute("user", user);
+
+            List<Course> courseList = getUserCourses(user);
+            List<CourseDTO> courseDTOList = courseDTOService.getCourseDTOList(courseList, lang);
+            request.setAttribute("courses", courseDTOList);
+        } catch (SQLException e) {
+            logger.error("SQLException: " + e.getMessage(), e);
+            throw new ServerErrorException();
+        } catch (NumberFormatException e) {
+            logger.error("Invalid user id: " + userId, e);
+            throw new NotFoundException();
+        }
 
         request.getRequestDispatcher(Constants.TEMPLATES_CONSTANTS.USER_PROFILE).forward(request, response);
+    }
+
+    private User getUser(long id) throws SQLException {
+        User user = userService.getUserById(id);
+        if(user == null){
+            logger.warn("User with id " + id + "doesn't exists");
+            throw new NotFoundException();
+        }
+        return user;
+    }
+
+    private List<Course> getUserCourses(User user) throws SQLException {
+        List<Course> courseList = new ArrayList<>();
+
+        if (user.getRole().equals(Role.STUDENT)) {
+            courseList = getStudentCourses(user);
+        } else if (user.getRole().equals(Role.TEACHER)) {
+            courseList = courseService.getByTeacherId(user.getId());
+        }
+
+        return courseList;
+    }
+
+    private List<Course> getStudentCourses(User user) throws SQLException {
+        List<StudentCourse> studentCourseList = studentCourseService.getCoursesByStudentId(user.getId());
+        List<Long> coursesIds = studentCourseList.stream().map(StudentCourse::getCourseId).collect(Collectors.toList());
+
+        return courseService.getCourses(coursesIds);
     }
 }

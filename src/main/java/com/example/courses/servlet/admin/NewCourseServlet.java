@@ -23,6 +23,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * This servlet allows to create new course
+ */
 @WebServlet("/admin/course/new")
 @MultipartConfig(
         fileSizeThreshold=1024*1024*2,

@@ -7,6 +7,10 @@ import com.example.courses.persistence.entity.User;
 
 import java.util.List;
 
+/**
+ *  CourseDTO is an object that is used by servlets to transfer Course entity data
+ * @see com.example.courses.persistence.entity.Course
+ */
 public class CourseDTO {
     Course course;
     Language language;
@@ -15,14 +19,6 @@ public class CourseDTO {
     List<User> students;
 
     public CourseDTO(){}
-
-    public CourseDTO(Course course, Language language, User teacher, Subject subject, List<User> students) {
-        this.course = course;
-        this.language = language;
-        this.teacher = teacher;
-        this.subject = subject;
-        this.students = students;
-    }
 
     public Course getCourse() {
         return course;

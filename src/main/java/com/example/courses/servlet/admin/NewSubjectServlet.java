@@ -20,6 +20,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This servlet allows to create new subject
+ */
 @WebServlet("/admin/subject/new")
 public class NewSubjectServlet extends HttpServlet {
     private static final LanguageService languageService = new LanguageService();

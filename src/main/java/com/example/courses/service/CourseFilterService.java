@@ -11,47 +11,24 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * This service allows to filter list of {@link CourseDTO} objects based on selected filters
+ */
 public class CourseFilterService {
     public static final String SUBJECT_FILTER = "subject";
     public static final String TEACHER_FILTER = "teacher";
 
-    private final CourseService courseService;
-    private final CourseDTOService courseDTOService;
-
     private static final Logger logger = LogManager.getLogger(CourseFilterService.class.getName());
 
-    public CourseFilterService(){
-        courseService = new CourseService();
-        courseDTOService = new CourseDTOService();
-    }
-
-    public CourseFilterService(CourseService courseService, CourseDTOService courseDTOService) {
-        this.courseService = courseService;
-        this.courseDTOService = courseDTOService;
-    }
-
     /**
-     * Makes map of available filters
-     * @param languageCode - code of translation language
+     * Builds map of available filters with filter name as key and list of filter options as values
+     * It takes list of available courses and
+     * @param courseDTOList list of CourseDTO objects that represents available courses
      * @return map of available filters
-     * @throws SQLException
      */
-    public Map<String, List<?>> getAvailableFilters(String languageCode) throws SQLException {
+    public Map<String, List<?>> getAvailableFilters(List<CourseDTO> courseDTOList) {
         logger.trace("Get available filters");
-        logger.debug("Get available filters. Localization language: " + languageCode);
-
         Map<String, List<?>> filters = new HashMap<>();
-
-        List<Course> courseList;
-        List<CourseDTO> courseDTOList;
-
-        try {
-            courseList = courseService.getAvailable();
-            courseDTOList = courseDTOService.getCourseDTOList(courseList, languageCode);
-        } catch (SQLException e){
-            logger.error("SQLException while getting courseDTOList", e);
-            throw e;
-        }
 
         List<Subject> subjects = getSubjects(courseDTOList);
         filters.put(SUBJECT_FILTER, subjects);

@@ -1,5 +1,6 @@
 package com.example.courses.servlet.user;
 
+import com.example.courses.exception.ServerErrorException;
 import com.example.courses.persistence.entity.User;
 import com.example.courses.service.UserService;
 import com.example.courses.servlet.Constants;
@@ -18,6 +19,9 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 
+/**
+ * This servlet allows user to update profile info
+ */
 @WebServlet("/user/edit")
 @MultipartConfig(
         fileSizeThreshold=1024*1024*2,
@@ -61,16 +65,16 @@ public class EditUserInfoServlet extends HttpServlet {
         user.setLastName(lastName);
         user.setEmail(email);
 
+        String imageName = imageUtils.saveUserImage(request);
+        if(imageName != null){
+            user.setImageName(imageName);
+        }
+
         try {
-            String imageName = imageUtils.saveUserImage(request);
-            if(imageName != null){
-                user.setImageName(imageName);
-            }
             userService.updateUser(user);
         } catch (SQLException e) {
             logger.error("SQLException while updating new user", e);
-            response.sendRedirect(request.getContextPath() + "/error_handler?type=500");
-            return;
+            throw new ServerErrorException();
         }
 
         response.sendRedirect(request.getContextPath() + "/user?user_id=" + user.getId());
