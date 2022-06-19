@@ -66,3 +66,18 @@ main .container{
 .question:hover{
     letter-spacing: 0.5px;
 }
+
+@media screen  and (max-width: 720px) {
+    .container{
+        padding: 0;
+    }
+
+    .log-in-box{
+        width: 100%;
+    }
+
+    .form-group{
+        flex-direction: column;
+        gap: 20px;
+    }
+}

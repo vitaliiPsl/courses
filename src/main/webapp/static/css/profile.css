@@ -101,3 +101,25 @@ main .container{
 
     border-bottom: 1px solid var(--main-color);
 }
+
+@media screen and (max-width: 800px){
+    .info-block{
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .courses-block{
+        width: 100%;
+    }
+
+    .image-block{
+        width: 100%;
+    }
+
+    .data-block{width: 100%}
+
+    .data-row, .action-row{
+        flex-direction: column;
+    }
+}

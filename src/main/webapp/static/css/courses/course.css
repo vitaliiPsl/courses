@@ -228,3 +228,39 @@ main{
     color: var(--main-color);
     background: var(--background-color);
 }
+
+@media screen and (max-width: 800px){
+    .action-block .container{
+        display: flex;
+        gap: 16px;
+    }
+
+    .action-block .status-box{
+        width: 50%;
+    }
+
+    .action-block .manage-box{
+        width: 50%;
+    }
+}
+
+@media screen and (max-width: 600px){
+    .content{
+        flex-direction: column-reverse;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .content .info-block{
+        width: 100%;
+    }
+
+    .content .info-block .course-name{
+        font-size: 24px;
+        margin-bottom: 8px;
+    }
+
+    .enroll-btn, .certificate-btn{
+        width: 100%;
+    }
+}

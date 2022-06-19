@@ -17,9 +17,9 @@
     <title><fmt:message key="label.title"/> 👀</title>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/style.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/filter.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/courses/course_list.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/courses/course_row.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/courses/pagination.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/courses/course_list.css">
 </head>
 
 <body>

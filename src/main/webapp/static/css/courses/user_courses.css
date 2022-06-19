@@ -27,3 +27,24 @@
 .status-filter.selected a{
     color: var(--background-color);
 }
+
+@media screen and (max-width: 800px){
+    .status-filter-box{
+        padding: 8px 16px;
+    }
+
+    .status-filters{
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .status-filter{
+        width: 100%;
+    }
+
+    .content-box .info-row{
+        display: flex;
+        flex-direction: row;
+        gap: 8px;
+    }
+}

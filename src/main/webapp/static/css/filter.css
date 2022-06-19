@@ -209,3 +209,40 @@
 .sort-option.selected, .order-option.selected{
     background: #ccd1d9;
 }
+
+@media screen and (max-width: 800px) {
+    .filter-box .search-row input{
+        width: 100%;
+    }
+
+    .filter-box .search-row input:focus{
+        outline: none;
+        border: 2px solid var(--main-color);
+    }
+
+    .hints-block {
+        width: 100%;
+    }
+
+    .search-row button{
+        display: none;
+    }
+
+    .filter-box .filter-row{
+        margin-top: 16px;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .filter-block, .sorting-block{
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .filters, .sorting{
+        display: flex;
+        justify-content: space-around;
+        gap: 8px;
+    }
+}

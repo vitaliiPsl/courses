@@ -1,44 +1,40 @@
 
-header{
+header {
     width: 100%;
+    padding: 8px 0;
     border-bottom: 1px solid #393939;
-    padding-bottom: 8px;
 }
 
-header .content{
-    display: flex;
-    flex-direction: column;
-}
-
-header .nav-bar{
+header .nav-bar {
     width: 100%;
+
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-header h1{
+header h1 {
     font-size: 46px;
     font-weight: 900;
 }
 
-.title{
+.title {
     display: flex;
     align-items: center;
 }
 
-.title:hover{
+.title:hover {
     cursor: pointer;
 }
 
-.nav{
+.nav {
     width: 60%;
 
     display: flex;
     align-items: center;
 }
 
-.nav ul{
+.nav ul {
     width: 100%;
 
     display: flex;
@@ -47,11 +43,11 @@ header h1{
     gap: 16px;
 }
 
-.nav ul li{
+.nav ul li {
     flex: 1 1 0;
 }
 
-.nav ul li > a{
+.nav ul li > a {
     display: block;
     width: 100%;
     height: 100%;
@@ -63,19 +59,19 @@ header h1{
     cursor: pointer;
 }
 
-.nav ul li > a:hover{
+.nav ul li > a:hover {
     border-radius: 5px;
     background: var(--main-color);
     color: var(--background-color);
 }
 
-.vr{
+.vr {
     width: 1px;
     height: 10px;
     background-color: var(--main-color);
 }
 
-.header-dropdown{
+.header-dropdown {
     min-width: 200px;
     position: relative;
 }
@@ -92,30 +88,30 @@ header h1{
     cursor: pointer;
 }
 
-.header-dropdown-control .profile-img{
+.header-dropdown-control .profile-img {
     width: 30px;
     height: 30px;
 }
 
-.header-dropdown-control .profile-img img{
+.header-dropdown-control .profile-img img {
     width: 100%;
     height: 100%;
     border-radius: 50%;
     object-fit: cover;
 }
 
-.header-dropdown-control .user{
+.header-dropdown-control .user {
     font-size: 14px;
 }
 
-.header-dropdown-control .arrow{
+.header-dropdown-control .arrow {
     height: 12px;
     width: 12px;
     background: url("../icons/arrow-down.png") no-repeat center;
     background-size: cover;
 }
 
-.header-dropdown-control .arrow.up{
+.header-dropdown-control .arrow.up {
     height: 12px;
     width: 12px;
     background: url("../icons/arrow-up.png") no-repeat center;
@@ -152,31 +148,116 @@ header h1{
     color: var(--background-color);
 }
 
-.header-dropdown-menu.hidden{
+.header-dropdown-menu.hidden {
     display: none;
 }
 
-.header-dropdown-menu *{
+.header-dropdown-menu * {
     width: 100%;
 }
 
 .language-switch {
     min-width: 100px;
+
     display: flex;
     justify-content: center;
-    border: 1px solid;
+    border: 1px solid var(--main-color);
     border-radius: 8px;
+
+    overflow: hidden;
 }
 
-.language-switch a{
+.language-switch a {
     color: var(--main-color);
     flex: 1;
     text-align: center;
 }
 
-.language-switch a.selected{
+.language-switch a.selected {
     color: var(--background-color);
     background: var(--main-color);
     border-radius: 5px;
 }
 
+.burger-menu {
+    display: none;
+}
+
+.burger-icon {
+    height: 28px;
+    width: 28px;
+
+    background: url("../icons/menu.png") no-repeat center;
+    background-size: cover;
+
+    cursor: pointer;
+}
+
+@media screen  and (max-width: 1400px) {
+    header{
+        position: relative;
+    }
+
+    .container{
+        padding: 0 16px;
+    }
+
+    .burger-menu {
+        display: block;
+    }
+
+    .burger-menu.open .burger-icon{
+        background: url("../icons/close.png") no-repeat center;
+        background-size: 90%;
+    }
+
+    .nav{
+        display: none;
+        position: absolute;
+        top: 101%;
+        left: 0;
+        z-index: 1000;
+
+        width: 100%;
+        padding: 8px 0;
+
+        background: var(--background-color);
+        border-bottom: 1px solid var(--main-color);
+
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+    }
+
+    .nav.open{
+        display: flex;
+    }
+
+    .nav ul {
+        width: 100%;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .nav li{
+        width: 100%;
+        padding: 8px 16px;
+
+        border-bottom: 1px solid var(--main-color);
+    }
+
+    .header-dropdown{
+        border-bottom: none;
+    }
+
+    .header-dropdown-menu{
+        position: relative;
+    }
+
+    .header-dropdown-menu a{
+        padding: 8px 16px;
+    }
+}

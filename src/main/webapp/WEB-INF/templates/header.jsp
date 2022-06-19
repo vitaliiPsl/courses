@@ -13,8 +13,8 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/header.css">
 </head>
 <body>
-<header>
 
+<header>
     <div class="container">
         <div class="nav-bar">
             <div class="title">
@@ -29,8 +29,6 @@
                                 <fmt:message key="label.courses"/>
                             </a>
                         </li>
-                        <div class="vr"></div>
-
                         <li>
                             <a href="${pageContext.request.contextPath}/auth/log_in">
                                 <fmt:message key="label.log_in"/>
@@ -114,8 +112,6 @@
                             </c:when>
                         </c:choose>
 
-                        <div class="vr"></div>
-
                         <%--Dropdown with profile, log out links and language switch--%>
                         <li class="header-dropdown">
                             <div class="header-dropdown-control">
@@ -144,6 +140,9 @@
                         </li>
                     </c:if>
                 </ul>
+            </div>
+            <div class="burger-menu">
+                <div class="burger-icon"></div>
             </div>
         </div>
     </div>
